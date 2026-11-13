@@ -1,0 +1,28 @@
+/* Riya Dutta · lab projects · shared look (palette, type, a few building blocks) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Space+Mono:wght@400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap');
+
+:root {
+  --cherry: #65232b; --truffle: #432720; --cocoa: #604734; --cocoa-soft: #856a56;
+  --vanilla: #fcf7d9; --paper: #fffdf0; --ivory: #f8e5d7; --line: #e2c9b3;
+  --blush: #f6d8d6; --blossom: #ecaab2; --pink: #f0c5d4;
+  --sage: #b7c9a8; --sage-deep: #8da37c; --slate: #9db2c0; --slate-deep: #56707f;
+  --serif: 'Playfair Display', Georgia, serif; --sans: 'Source Serif 4', Georgia, serif; --mono: 'Space Mono', monospace;
+  --pad: clamp(16px, 4vw, 56px);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--vanilla); color: var(--truffle); font-family: var(--sans); line-height: 1.6; }
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.05; color: var(--cherry); }
+:focus-visible { outline: 2px solid var(--cherry); outline-offset: 3px; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--pad); }
+.kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cherry); }
+.tag { display: inline-block; padding: 9px 18px 7px; background: var(--blossom); color: var(--cherry); font-family: var(--serif); letter-spacing: .06em; transform: rotate(-2deg);
+  clip-path: polygon(0% 10%,4% 0%,9% 7%,15% 1%,22% 8%,30% 0%,38% 6%,46% 1%,55% 7%,63% 0%,71% 7%,80% 1%,88% 8%,95% 0%,100% 7%,99% 92%,94% 100%,87% 93%,79% 100%,70% 94%,61% 100%,52% 93%,43% 100%,35% 94%,26% 100%,18% 93%,10% 100%,3% 94%,0% 100%); }
+.card { padding: 24px 26px; background: var(--paper); box-shadow: 0 18px 36px -26px rgba(67, 39, 32, .6); }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border: 1.5px solid var(--cherry); border-radius: 4px; background: var(--cherry); color: var(--vanilla);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.btn--line { background: transparent; color: var(--cherry); }
+.note { padding-left: 16px; border-left: 3px solid var(--blossom); font-family: var(--serif); font-style: italic; color: var(--cocoa); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

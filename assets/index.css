@@ -1,0 +1,109 @@
+/* The Gifting Index: page layout and charts. Palette and type come from brand.css. */
+:root {
+  --c-jo: #65232b; --c-dip: #56707f; --c-ck: #b4546e; --c-coach: #8a6d2f;
+  --up: #3f6b34; --down: #65232b;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+
+.hero { padding-top: 72px; padding-bottom: 24px; }
+.hero h1 { font-size: clamp(48px, 9vw, 104px); margin: 28px 0 16px; letter-spacing: -0.01em; }
+.lede { max-width: 30em; font-size: clamp(19px, 2.4vw, 23px); margin: 0 0 20px; }
+.meta { color: var(--cocoa-soft); margin: 0; }
+
+.block { padding-top: 56px; padding-bottom: 16px; }
+.block h2 { font-size: clamp(30px, 4.6vw, 46px); margin: 6px 0 10px; }
+.sub { max-width: 44em; color: var(--cocoa); margin: 0 0 28px; }
+.fine { font-size: 14px; color: var(--cocoa-soft); margin: 14px 0 0; max-width: 60em; }
+
+/* ---- This week: one stamp per brand ---- */
+.stamps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.stamp { position: relative; padding: 18px 18px 14px; background: var(--paper); color: var(--truffle);
+  box-shadow: 0 0 0 2px var(--paper), 0 14px 26px -16px rgba(67, 39, 32, .6);
+  outline: 2px dotted var(--line); outline-offset: -8px; min-height: 196px; display: flex; flex-direction: column; }
+.stamp:nth-child(odd) { transform: rotate(-0.8deg); }
+.stamp:nth-child(even) { transform: rotate(0.6deg); }
+.stamp .cat { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--cocoa-soft); }
+.stamp .cat, .stamp .name { padding-right: 52px; }
+.stamp .name { font-family: var(--serif); font-size: 22px; line-height: 1.1; margin: 4px 0 10px; color: var(--brand); }
+.stamp .num { font-family: var(--serif); font-size: 40px; line-height: 1; color: var(--truffle); }
+.stamp .num small { font-size: 18px; color: var(--cocoa-soft); }
+.stamp .dir { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 6px; }
+.dir.up { color: var(--up); } .dir.down { color: var(--down); } .dir.flat { color: var(--cocoa-soft); }
+.stamp svg { width: 100%; height: 44px; margin-top: auto; display: block; }
+.stamp .postmark { position: absolute; top: 12px; right: 12px; width: 50px; height: 50px; border: 1.5px solid currentColor; border-radius: 50%;
+  color: var(--brand); opacity: .45; display: flex; align-items: center; justify-content: center; text-align: center;
+  font-family: var(--mono); font-size: 8px; line-height: 1.2; letter-spacing: .06em; transform: rotate(12deg); }
+.skeleton { background: linear-gradient(90deg, var(--ivory), var(--paper), var(--ivory)); background-size: 200% 100%; animation: shimmer 1.4s infinite; min-height: 196px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ---- Seasons: small multiples ---- */
+.seasons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.season { background: var(--paper); padding: 16px 16px 12px; box-shadow: 0 18px 36px -26px rgba(67, 39, 32, .6); }
+.season h3 { font-size: 19px; margin: 0 0 2px; color: var(--brand); }
+.season .dec { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--cocoa); margin: 0 0 8px; }
+.season .dec b { font-family: var(--serif); font-size: 26px; letter-spacing: 0; text-transform: none; color: var(--truffle); font-weight: 500; }
+.season svg { width: 100%; height: auto; display: block; }
+
+/* ---- Over time ---- */
+.controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin: 0 0 16px; }
+.seg, .legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg button, .legend button { min-height: 40px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 4px; background: var(--paper);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--cocoa); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--cherry); border-color: var(--cherry); color: var(--vanilla); }
+.legend button { display: inline-flex; align-items: center; gap: 8px; }
+.legend button::before { content: ""; width: 14px; height: 3px; background: var(--brand); border-radius: 2px; }
+.legend button[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.chart-card { padding: 18px 18px 16px; }
+.chart { position: relative; width: 100%; }
+.chart svg { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.axis text { font-family: var(--mono); font-size: 11px; fill: var(--cocoa-soft); }
+.grid line { stroke: var(--line); stroke-width: 1; }
+.grid line.base { stroke: var(--cocoa-soft); stroke-dasharray: 3 4; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--truffle); color: var(--vanilla); padding: 10px 12px; border-radius: 6px;
+  font-family: var(--mono); font-size: 11px; line-height: 1.6; box-shadow: 0 10px 24px -10px rgba(0,0,0,.5); min-width: 170px; }
+.tip b { font-family: var(--serif); font-weight: 500; font-size: 14px; display: block; margin-bottom: 4px; }
+.tip i { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; font-style: normal; }
+.tip span { float: right; margin-left: 14px; }
+
+/* ---- Moments: postmarked dispatches ---- */
+.moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.moment { background: var(--paper); padding: 20px 22px; box-shadow: 0 18px 36px -26px rgba(67, 39, 32, .6); border-top: 4px solid var(--brand); }
+.moment.unexplained { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); border-top: 4px solid var(--brand); }
+.moment .when { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--cocoa-soft); margin: 0; }
+.moment h3 { font-size: 22px; margin: 6px 0 10px; }
+.moment p { margin: 0 0 12px; }
+.moment .ask { font-family: var(--serif); font-style: italic; color: var(--cocoa); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); }
+.facts div { min-width: 0; }
+.facts dt { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--cocoa-soft); }
+.facts dd { margin: 2px 0 0; font-family: var(--serif); font-size: 20px; color: var(--truffle); }
+
+/* ---- Method ---- */
+.method .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.method h3 { font-size: 21px; margin: 0 0 8px; }
+.method p { margin: 0 0 12px; color: var(--cocoa); }
+
+.foot { padding-top: 56px; padding-bottom: 120px; color: var(--cocoa); font-size: 15px; }
+.foot p { max-width: 44em; }
+.error { padding: 18px 20px; background: var(--blush); color: var(--cherry); }
+
+@media (max-width: 900px) {
+  .stamps, .seasons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .method .cols { grid-template-columns: 1fr; gap: 8px; }
+  .moments { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .hero { padding-top: 48px; }
+  .stamps { gap: 14px; }
+  .stamp { padding: 14px 12px 10px; min-height: 172px; }
+  .stamp .cat, .stamp .name { padding-right: 0; }
+  .stamp .name { font-size: 18px; }
+  .stamp .num { font-size: 32px; }
+  .stamp .postmark { display: none; }
+  .seasons { gap: 12px; }
+  .season { padding: 12px 10px 8px; }
+  .season h3 { font-size: 16px; }
+  .chart-card { padding: 10px 6px 12px; }
+  .facts dd { font-size: 17px; }
+}

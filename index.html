@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Gifting Index · Riya Dutta</title>
+<meta name="description" content="Live public attention for Jo Malone London, Diptyque, Charles & Keith and Coach: who gets bought as a gift, and what makes attention spike.">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="assets/index.css">
+</head>
+<body>
+<main>
+  <header class="wrap hero">
+    <span class="tag">Lab · 2026</span>
+    <h1>The Gifting Index</h1>
+    <p class="note lede">Four affordable-luxury brands, tracked every day. Which ones do people think of as a gift, and what makes attention spike?</p>
+    <p class="meta kicker" id="updated">Loading live data…</p>
+  </header>
+
+  <section class="wrap block" aria-labelledby="week-h">
+    <p class="kicker">This week</p>
+    <h2 id="week-h">Attention vs each brand’s usual</h2>
+    <p class="sub">The last 7 days of Wikipedia pageviews compared with the brand’s typical day over the past year. ×1.00 is a normal week.</p>
+    <div class="stamps" id="stamps" aria-live="polite"></div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="season-h">
+    <p class="kicker">The finding</p>
+    <h2 id="season-h">Fragrance is a gift. Bags are for you.</h2>
+    <p class="sub" id="season-sub">Typical attention in each month, compared with that year’s typical day. Every full year since 2016 is included.</p>
+    <div class="seasons" id="seasons"></div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="time-h">
+    <p class="kicker">Over time</p>
+    <h2 id="time-h">Ten years of attention</h2>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Time range" id="range">
+        <button type="button" data-range="1" aria-pressed="false">1 year</button>
+        <button type="button" data-range="3" aria-pressed="true">3 years</button>
+        <button type="button" data-range="0" aria-pressed="false">All</button>
+      </div>
+      <div class="legend" role="group" aria-label="Show brands" id="legend"></div>
+    </div>
+    <div class="chart-card card">
+      <div class="chart" id="chart"></div>
+      <p class="fine">Weekly average. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Dots mark the Moments below.</p>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="moments-h">
+    <p class="kicker">Moments</p>
+    <h2 id="moments-h">Spikes, and whether they lasted</h2>
+    <p class="sub">Every day when attention hit at least 6× the brand’s usual level is found automatically. For each one: how high it went, how many days it stayed above 2×, and the lift after: whether attention one to four months later was higher than in the three months before, once each brand’s normal seasonal pattern is taken out.</p>
+    <div class="moments" id="moments"></div>
+  </section>
+
+  <section class="wrap block method" aria-labelledby="method-h">
+    <p class="kicker">Method</p>
+    <h2 id="method-h">What this can and can’t tell you</h2>
+    <div class="cols">
+      <div>
+        <h3>The data</h3>
+        <p>Daily human pageviews (bots excluded) of each brand’s English Wikipedia article, loaded live from the Wikimedia API every time you open this page. The data runs one day behind.</p>
+        <p>Coach’s article only exists under its current name, “Coach New York”, from April 2018, so its history is shorter. Diptyque’s article was missing or renamed from March to August 2020; that stretch is left out rather than counted as zero.</p>
+      </div>
+      <div>
+        <h3>What it measures</h3>
+        <p>Curiosity, not purchase intent. People open a Wikipedia article to find out who a brand is, which makes it a good signal for news, controversy and gift research. It’s a weak signal for people who already know the brand and go straight to its shop.</p>
+        <p>It’s also English-language only, so it under-counts Charles & Keith’s home markets in Asia.</p>
+      </div>
+      <div>
+        <h3>What didn’t hold up</h3>
+        <p>An early version used monthly <em>averages</em> and found a March bump for Jo Malone, which looked like Mother’s Day in the UK. Switching to <em>medians</em> made it disappear: a few one-off spikes had been pulling the average up. The December pattern survived both methods, so it’s the one reported here.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap foot">
+    <p>An independent analysis by Riya Dutta. Not affiliated with, or endorsed by, any of the brands. Pageview data from the <a href="https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews">Wikimedia Pageviews API</a>.</p>
+    <p><a class="btn btn--line" href="https://riyavdutta.github.io/riya-portfolio/">Back to the portfolio</a></p>
+  </footer>
+</main>
+<div class="tip" id="tip" hidden></div>
+<script src="assets/app.js" defer></script>
+<script src="assets/made-by-riya.js" defer></script>
+</body>
+</html>
