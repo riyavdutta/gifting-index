@@ -100,14 +100,32 @@
       }).then(function (j) { parse(b, j.items.map(function (i) { return [i.timestamp.slice(0, 8), i.views]; })); });
     }));
   }
-  function loadAll() {
-    return fetch('api/pageviews').then(function (r) {
-      if (!r.ok) throw new Error('cache ' + r.status);
+  // Wikipedia: the copy saved each morning by the GitHub Action; straight from Wikimedia only if it's missing.
+  function loadWiki() {
+    return fetch('data/wiki.json').then(function (r) {
+      if (!r.ok) throw new Error('snapshot ' + r.status);
       return r.json();
     }).then(function (j) {
       BRANDS.forEach(function (b) { parse(b, j.series[b.id]); });
+      WIKI_AT = j.fetched;
     }).catch(loadDirect);
   }
+  // Google Trends (the main signal), saved by the same Action. Optional: without it the site uses Wikipedia.
+  var TR = null, WIKI_AT = null;
+  function toPoints(block, bid) {
+    return block.dates.map(function (d, i) { return { t: Date.parse(d), v: block.series[bid][i], partial: block.partial[i] }; });
+  }
+  function loadTrends() {
+    return fetch('data/trends.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.weekly || !j.monthly) return;
+      TR = j;
+      BRANDS.forEach(function (b) {
+        b.tw = toPoints(j.weekly, b.id).filter(function (p) { return !p.partial; });   // complete weeks only
+        b.tm = toPoints(j.monthly, b.id).filter(function (p) { return !p.partial; });
+      });
+    }).catch(function () { TR = null; });
+  }
+  function loadAll() { return Promise.all([loadWiki(), loadTrends()]); }
 
   // Trailing 90-day median before each day: "the usual" for spike detection.
   function trailingBase(days) {
@@ -128,14 +146,24 @@
 
   /* ---------- 1. This week ---------- */
   function weekStats(b) {
+    if (TR) {
+      // Google Trends: the last complete week against the median of the 52 weeks before it.
+      var w = b.tw, lastW = w[w.length - 1];
+      var prev = w.slice(-53, -1).map(function (p) { return p.v; });
+      return { idx: lastW.v / median(prev), last: lastW.t, label: 'WEEK OF' };
+    }
     var d = b.days, last = d[d.length - 1].t;
     var recent = d.filter(function (x) { return x.t > last - 7 * DAY; }).map(function (x) { return x.v; });
     var base = d.filter(function (x) { return x.t <= last - 7 * DAY && x.t > last - 372 * DAY; }).map(function (x) { return x.v; });
-    return { idx: mean(recent) / median(base), last: last };
+    return { idx: mean(recent) / median(base), last: last, label: 'WEEK TO' };
   }
   function sparkline(b) {
-    var d = b.days.slice(-120), pts = [];
-    for (var i = 6; i < d.length; i++) pts.push(mean(d.slice(i - 6, i + 1).map(function (x) { return x.v; })));
+    var pts = [];
+    if (TR) pts = b.tw.slice(-26).map(function (p) { return p.v; });   // half a year of weeks
+    else {
+      var d = b.days.slice(-120);
+      for (var i = 6; i < d.length; i++) pts.push(mean(d.slice(i - 6, i + 1).map(function (x) { return x.v; })));
+    }
     var max = Math.max.apply(null, pts), min = Math.min.apply(null, pts), W = 200, H = 44;
     var path = pts.map(function (v, i) {
       var x = (i / (pts.length - 1)) * W, y = H - 3 - ((v - min) / ((max - min) || 1)) * (H - 6);
@@ -160,7 +188,7 @@
       var s = weekStats(b), x = Math.round(s.idx * 100) / 100;   // label from the number shown
       var dir = x >= 1.1 ? ['up', '↑ Busier than usual'] : x <= 0.9 ? ['down', '↓ Quieter than usual'] : ['flat', '→ About usual'];
       return '<article class="stamp" style="--brand:' + b.color + '" aria-label="' + esc(b.name) + ': ' + x.toFixed(2) + ' times usual">' +
-        '<span class="postmark" aria-hidden="true">WEEK TO<br>' + fmtDate(s.last, true).toUpperCase() + '</span>' +
+        '<span class="postmark" aria-hidden="true">' + s.label + '<br>' + fmtDate(s.last, true).toUpperCase() + '</span>' +
         '<span class="cat">' + esc(b.cat) + '</span>' +
         '<span class="name">' + esc(b.name) + '</span>' +
         '<span class="num"><small>×</small><span class="val" data-to="' + x + '">' + x.toFixed(2) + '</span></span>' +
@@ -179,27 +207,42 @@
   }
 
   /* ---------- 2. Seasons (monthly pattern, all full years) ---------- */
-  function seasonality(b) {
-    if (b._season) return b._season;
+  // Monthly pattern from any series of {t, v}: each month vs that year's median, across full years.
+  // With Google Trends it uses monthly points since 2016 (years where the brand barely registers are skipped);
+  // with Wikipedia, daily points. wiki=true forces Wikipedia (the Moments maths always uses daily data).
+  function seasonality(b, wiki) {
+    var key = wiki || !TR ? '_sw' : '_st';
+    if (b[key]) return b[key];
+    var useT = key === '_st';
+    var pts = useT ? b.tm.filter(function (p) { return p.t >= Date.UTC(2016, 0, 1); }) : b.days;
+    var full = useT ? 12 : 360, floor = useT ? 5 : 0;
     var byYear = {};
-    b.days.forEach(function (x) { var y = new Date(x.t).getUTCFullYear(); (byYear[y] = byYear[y] || []).push(x); });
-    var months = [[], [], [], [], [], [], [], [], [], [], [], []], years = [];
+    pts.forEach(function (x) { var y = new Date(x.t).getUTCFullYear(); (byYear[y] = byYear[y] || []).push(x); });
+    var months = [[], [], [], [], [], [], [], [], [], [], [], []], years = [], dec = {};
     Object.keys(byYear).forEach(function (y) {
       var rows = byYear[y];
-      if (rows.length < 360) return;                    // full years only
-      years.push(+y);
+      if (rows.length < full) return;                    // full years only
       var med = median(rows.map(function (x) { return x.v; }));
+      if (!(med > floor)) return;                        // too little search volume to read a pattern
+      years.push(+y);
       rows.forEach(function (x) { months[new Date(x.t).getUTCMonth()].push(x.v / med); });
+      dec[y] = median(rows.filter(function (x) { return new Date(x.t).getUTCMonth() === 11; }).map(function (x) { return x.v / med; }));
     });
-    b._season = { m: months.map(median), from: Math.min.apply(null, years), to: Math.max.apply(null, years), byYear: byYear };
-    return b._season;
+    b[key] = { m: months.map(median), from: Math.min.apply(null, years), to: Math.max.apply(null, years), dec: dec };
+    return b[key];
   }
-  // One year's December, the same way: median December day vs that year's median day.
-  function decemberOf(b, year) {
-    var rows = seasonality(b).byYear[year];
-    if (!rows || rows.length < 360) return null;
-    var med = median(rows.map(function (x) { return x.v; }));
-    return median(rows.filter(function (x) { return new Date(x.t).getUTCMonth() === 11; }).map(function (x) { return x.v / med; }));
+  // One year's December lift, the same way.
+  function decemberOf(b, year) { var v = seasonality(b).dec[year]; return v === undefined ? null : v; }
+  // Year by year: did the classic pair lift more than the cult pair?
+  function classicWins() {
+    var s = BRANDS.map(function (b) { return { b: b, dec: seasonality(b).dec }; });
+    var years = Object.keys(s[0].dec).filter(function (y) { return s.every(function (z) { return z.dec[y] !== undefined; }); });
+    var wins = [], losses = [];
+    years.forEach(function (y) {
+      function avg(g) { return mean(s.filter(function (z) { return z.b.group === g; }).map(function (z) { return z.dec[y]; })); }
+      (avg('classic') > avg('cult') ? wins : losses).push(y);
+    });
+    return { wins: wins, losses: losses, n: years.length };
   }
   function renderSeasons() {
     var all = BRANDS.map(function (b) { return { b: b, s: seasonality(b) }; });
@@ -233,9 +276,19 @@
       var lo = Math.min.apply(null, v).toFixed(2), hi = Math.max.apply(null, v).toFixed(2);
       return lo === hi ? '×' + lo : '×' + lo + '–' + hi;
     }
-    $('season-sub').textContent = 'Typical attention in each month, compared with that year’s typical day (dashed line = ×1). ' +
-      'In December the classic gift names rise to ' + range('classic') + '; the cult niche houses to ' + range('cult') + '. ' +
-      $('season-sub').dataset.reading + ' Every full year of data is included.';
+    // The headline and the year count come from the data on the page, so the copy can't outrun it.
+    function med(g) { return median(all.filter(function (a) { return a.b.group === g; }).map(function (a) { return a.s.m[11]; })); }
+    var holds = med('classic') > med('cult'), w = classicWins(), sub = $('season-sub');
+    var years = !w.n ? '' : !w.losses.length ?
+      ' The classic names lifted more in every one of the last ' + w.n + ' Decembers with data for all four houses.' :
+      ' The classic names lifted more in ' + w.wins.length + ' of the last ' + w.n + ' Decembers with data for all four houses' +
+      (w.losses.length <= 2 ? '; the exception' + (w.losses.length > 1 ? 's were ' + w.losses.join(' and ') : ' was ' + w.losses[0]) : '') + '.';
+    $('season-h').dataset.open = holds ? 'Classics get gifted. Cult houses get chosen.' : 'Cult houses hold their own at Christmas.';
+    if (!$('finding').classList.contains('sealed')) $('season-h').textContent = $('season-h').dataset.open;
+    sub.textContent = (TR ? 'Google searches' : 'Wikipedia pageviews') + ' in each month, compared with that year’s typical month (dashed line = ×1). ' +
+      'In December the classic gift names rise to ' + range('classic') + '; the cult niche houses to ' + range('cult') + '.' + years + ' ' +
+      (holds ? sub.dataset.reading : 'So far the gift-name effect isn’t showing in this data.') +
+      ' Every full year of data is included' + (TR ? ' (Google Trends, worldwide, since 2016).' : '.');
   }
   function unseal(scroll) {
     var wrap = $('finding');
@@ -364,7 +417,7 @@
     $('live-h').textContent = 'Gifting season ' + any.year + ', so far';
     var hot = status.filter(function (s) { return s.read === 'Running hot'; }).map(function (s) { return s.b.name; });
     var cold = status.filter(function (s) { return s.read === 'Running cold'; }).map(function (s) { return s.b.name; });
-    $('live-sub').textContent = 'Each line is this season so far, against the shaded range of the last ' + any.years +
+    $('live-sub').textContent = 'Daily Wikipedia pageviews. Each line is this season so far, against the shaded range of the last ' + any.years +
       ' seasons (middle half of years) and the dashed typical year. ×1 is the brand’s normal for late summer. ' +
       (hot.length ? 'Running hot: ' + hot.join(', ') + '. ' : '') + (cold.length ? 'Running cold: ' + cold.join(', ') + '. ' : '') +
       (!hot.length && !cold.length ? 'So far every brand is within its usual range. ' : '') +
@@ -428,7 +481,7 @@
     });
     // Lift after compares the 90 days before with days 30-120 after, with each brand's normal
     // monthly pattern divided out, so a spike in September isn't credited with December's gifting rise.
-    var season = seasonality(b).m;
+    var season = seasonality(b, true).m;   // spikes are found in daily Wikipedia data, so use its pattern
     function adj(x) { return x.v / season[new Date(x.t).getUTCMonth()]; }
     return clusters.map(function (c) {
       var p = d[c.peak], usual = base[c.start];
@@ -477,9 +530,16 @@
   }
 
   /* ---------- 6. Over time ---------- */
-  var state = { years: 3, on: {}, marks: [], drawn: false };
+  var state = { years: 3, on: {}, marks: [], drawn: false, src: 'wiki' };
   BRANDS.forEach(function (b) { state.on[b.id] = true; });
   function weekly(b, from) {
+    if (state.src === 'trends') {
+      // Google Trends is already weekly; zero weeks (too few searches) are left out rather than drawn as a crash.
+      var tr = b.tw.filter(function (p) { return p.t >= from && p.v > 0; }).map(function (p) { return { t: p.t, v: p.v }; });
+      var tb = median(tr.map(function (r) { return r.v; }));
+      tr.forEach(function (r) { r.i = (r.v / tb) * 100; });
+      return tr;
+    }
     var weeks = {};
     b.days.forEach(function (x) {
       if (x.t < from) return;
@@ -494,8 +554,10 @@
   }
   function renderChart() {
     var host = $('chart'); host.innerHTML = '';
-    var last = Math.max.apply(null, BRANDS.map(function (b) { return b.days[b.days.length - 1].t; }));
-    var from = state.years ? last - state.years * 365.25 * DAY : Date.UTC(2016, 0, 1);   // 2015: articles too new
+    var useT = state.src === 'trends';
+    var last = Math.max.apply(null, BRANDS.map(function (b) { return useT ? b.tw[b.tw.length - 1].t : b.days[b.days.length - 1].t; }));
+    var first = useT ? Math.min.apply(null, BRANDS.map(function (b) { return b.tw[0].t; })) : Date.UTC(2016, 0, 1);   // Wikipedia 2015: articles too new
+    var from = state.years ? Math.max(first, last - state.years * 365.25 * DAY) : first;
     var series = BRANDS.filter(function (b) { return state.on[b.id]; }).map(function (b) { return { b: b, rows: weekly(b, from) }; });
     // Draw at the real width so labels stay 11px on a phone instead of shrinking with the chart.
     var W = Math.max(300, Math.min(1000, host.clientWidth || 1000)), narrow = W < 600;
@@ -508,7 +570,7 @@
     var y = function (v) { return T + (1 - (Math.log2(v) - Math.log2(lo)) / (Math.log2(hi) - Math.log2(lo))) * (H - T - B); };
 
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img',
-      'aria-label': 'Weekly attention for ' + series.map(function (s) { return s.b.name; }).join(', ') + ', indexed so 100 is each brand’s typical week.' });
+      'aria-label': 'Weekly ' + (useT ? 'Google searches' : 'Wikipedia pageviews') + ' for ' + series.map(function (s) { return s.b.name; }).join(', ') + ', indexed so 100 is each brand’s typical week.' });
     var grid = svgEl('g', { class: 'grid' }), axis = svgEl('g', { class: 'axis' });
     for (var g = lo; g <= hi; g *= 2) {
       grid.appendChild(svgEl('line', { x1: L, x2: W - R, y1: y(g), y2: y(g), class: g === 100 ? 'base' : '' }));
@@ -539,9 +601,9 @@
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: s.b.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'data-draw': '' }));
     });
     var dots = svgEl('g', {});
-    state.marks.forEach(function (mk) {
+    (useT ? [] : state.marks).forEach(function (mk) {   // Moments come from Wikipedia data, so dots show on that view only
       var s = series.filter(function (z) { return z.b === mk.brand; })[0];
-      if (!s || mk.t < from) return;
+      if (!s || !s.rows.length || mk.t < from) return;
       var r = s.rows.reduce(function (best, r) { return Math.abs(r.t - mk.t) < Math.abs(best.t - mk.t) ? r : best; }, s.rows[0]);
       var a = svgEl('a', { href: '#' + mk.id, class: 'mark' });
       var title = svgEl('title', {}); title.textContent = mk.brand.name + ', ' + fmtDate(mk.t, true) + ': ' + (mk.note ? mk.note.title : 'unexplained spike') + '. Click to read.';
@@ -597,6 +659,19 @@
       [].forEach.call($('range').children, function (c) { c.setAttribute('aria-pressed', c === btn); });
       renderChart();
     });
+    // Source switch: Google searches (default when saved) or Wikipedia views.
+    if (TR) {
+      state.src = 'trends';
+      $('src').hidden = false;
+      $('src').addEventListener('click', function (e) {
+        var btn = e.target.closest('button'); if (!btn) return;
+        state.src = btn.dataset.src;
+        [].forEach.call($('src').children, function (c) { c.setAttribute('aria-pressed', c === btn); });
+        $('chart-note').textContent = state.src === 'trends' ? $('chart-note').dataset.trends : $('chart-note').dataset.wiki;
+        renderChart();
+      });
+      $('chart-note').textContent = $('chart-note').dataset.trends;
+    }
   }
 
   /* ---------- scroll reveals ---------- */
@@ -617,7 +692,11 @@
     var list = moments(res[1] || []);
     state.marks = list;
     var last = Math.max.apply(null, BRANDS.map(function (b) { return b.days[b.days.length - 1].t; }));
-    $('updated').textContent = 'Live · data to ' + fmtDate(last, true) + ' · ' + fmtNum(BRANDS.reduce(function (t, b) { return t + b.days.length; }, 0)) + ' days of pageviews';
+    // Say which data is showing and how fresh it is.
+    var tLast = TR ? Math.max.apply(null, BRANDS.map(function (b) { return b.tw[b.tw.length - 1].t; })) : null;
+    $('updated').textContent = 'Live · ' + (TR ? 'Google searches to week of ' + fmtDate(tLast, true) + ' · ' : '') +
+      'Wikipedia to ' + fmtDate(last, true) + (WIKI_AT ? ' · refreshed ' + fmtDate(Date.parse(WIKI_AT), true) : '');
+    $('week-sub').textContent = TR ? $('week-sub').dataset.trends : $('week-sub').dataset.wiki;
     renderStamps(); renderDispatch(res[2]);
     renderSeasons(); renderGame();
     renderLive();

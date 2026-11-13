@@ -20,7 +20,7 @@
   <section class="wrap block" aria-labelledby="week-h">
     <p class="kicker">This week</p>
     <h2 id="week-h">Attention vs each brand’s usual</h2>
-    <p class="sub">The last 7 days of Wikipedia pageviews compared with the brand’s typical day over the past year. ×1.00 is a normal week.</p>
+    <p class="sub" id="week-sub" data-trends="Google searches in the last full week, compared with the brand’s typical week over the past year. ×1.00 is a normal week." data-wiki="The last 7 days of Wikipedia pageviews, compared with the brand’s typical day over the past year. ×1.00 is a normal week.">The last 7 days of Wikipedia pageviews, compared with the brand’s typical day over the past year. ×1.00 is a normal week.</p>
     <div class="stamps" id="stamps" aria-live="polite"></div>
     <aside class="dispatch" id="dispatch" hidden></aside>
   </section>
@@ -36,7 +36,7 @@
     <p class="kicker">The finding</p>
     <h2 id="season-h" data-open="Classics get gifted. Cult houses get chosen.">The answer is in the envelope.</h2>
     <div class="seal-wrap">
-      <p class="sub" id="season-sub" data-reading="The classic names lifted more in 7 of the last 8 Decembers; the exception was 2020. A likely reading: when you buy scent for someone else, you reach for a name they’ll recognise. Cult houses are bought by people choosing for themselves.">Typical attention in each month, compared with that year’s typical day. Every full year since 2016 is included.</p>
+      <p class="sub" id="season-sub" data-reading="A likely reading: when you buy scent for someone else, you reach for a name they’ll recognise. Cult houses are bought by people choosing for themselves.">Typical attention in each month, compared with that year’s typical day. Every full year since 2016 is included.</p>
       <div class="seasons" id="seasons"></div>
       <div class="seal" id="seal">
         <span class="wax" aria-hidden="true">GI</span>
@@ -55,25 +55,29 @@
 
   <section class="wrap block reveal" aria-labelledby="time-h">
     <p class="kicker">Over time</p>
-    <h2 id="time-h">Ten years of attention</h2>
+    <h2 id="time-h">Attention over time</h2>
     <div class="controls">
       <div class="seg" role="group" aria-label="Time range" id="range">
         <button type="button" data-range="1" aria-pressed="false">1 year</button>
         <button type="button" data-range="3" aria-pressed="true">3 years</button>
         <button type="button" data-range="0" aria-pressed="false">All</button>
       </div>
+      <div class="seg" role="group" aria-label="Data source" id="src" hidden>
+        <button type="button" data-src="trends" aria-pressed="true">Google searches</button>
+        <button type="button" data-src="wiki" aria-pressed="false">Wikipedia views</button>
+      </div>
       <div class="legend" role="group" aria-label="Show brands" id="legend"></div>
     </div>
     <div class="chart-card card">
       <div class="chart" id="chart"></div>
-      <p class="fine">Weekly average. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Click a dot to read its Moment.</p>
+      <p class="fine" id="chart-note" data-trends="Weekly Google searches, worldwide (last 5 years). 100 = that brand’s typical week in the range shown. Each gridline doubles. Switch to Wikipedia views for ten years of history and the Moments." data-wiki="Weekly Wikipedia pageviews. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Click a dot to read its Moment.">Weekly Wikipedia pageviews. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Click a dot to read its Moment.</p>
     </div>
   </section>
 
   <section class="wrap block" aria-labelledby="moments-h">
     <p class="kicker">Moments</p>
     <h2 id="moments-h">Spikes, and whether they lasted</h2>
-    <p class="sub">Every day when attention hit at least 6× the brand’s usual level is found automatically. For each one: how high it went, how many days it stayed above 2×, and the lift after: whether attention one to four months later was higher than in the three months before, once each brand’s normal seasonal pattern is taken out.</p>
+    <p class="sub">Found automatically in daily Wikipedia pageviews: every day when attention hit at least 6× the brand’s usual level. For each one: how high it went, how many days it stayed above 2×, and the lift after: whether attention one to four months later was higher than in the three months before, once each brand’s normal seasonal pattern is taken out.</p>
     <div class="moments" id="moments"></div>
   </section>
 
@@ -83,13 +87,15 @@
     <div class="cols">
       <div>
         <h3>The data</h3>
-        <p>Daily human pageviews (bots excluded) of each brand’s English Wikipedia article, loaded live from the Wikimedia API every time you open this page. The data runs one day behind.</p>
-        <p>Le Labo’s and Byredo’s articles start in 2017, so their seasons count from 2018. Compared over the same 2018–2025 years only, the gap holds: ×1.39–1.45 for the classic names, ×1.23–1.27 for the cult houses. Diptyque’s article was missing or renamed from March to August 2020; that stretch is left out rather than counted as zero.</p>
+        <p><b>Google searches</b> are the main signal: weekly and monthly Google Trends interest, worldwide, for “Jo Malone”, “Diptyque”, “Le Labo” and “Byredo”, collected through SerpApi. Google scales each search series 0–100 against the busiest point across all four, so the site compares each brand with its own usual level.</p>
+        <p><b>Wikipedia pageviews</b> are the second signal: daily human views (bots excluded) of each brand’s English article. Daily data is what the live season and Moments need.</p>
+        <p>Both are fetched once every morning and saved with the site, so a slow or failed fetch never breaks the page: it simply shows the last good copy and its date.</p>
+        <p>Le Labo’s and Byredo’s articles start in 2017, so their Wikipedia seasons count from 2018. Diptyque’s article was missing or renamed from March to August 2020; that stretch is left out rather than counted as zero.</p>
       </div>
       <div>
         <h3>What it measures</h3>
-        <p>Curiosity, not purchase intent. People open a Wikipedia article to find out who a brand is, which makes it a good signal for news, controversy and gift research. It’s a weak signal for people who already know the brand and go straight to its shop.</p>
-        <p>It’s also English-language only, so it under-counts interest in Diptyque’s home market, France, and Byredo’s, Sweden.</p>
+        <p>Interest, not sales. Searches lean towards intent: people looking up where to buy, or what to give. Wikipedia views lean towards curiosity: news, controversy, or who a brand is. Where the two signals agree, the finding is stronger.</p>
+        <p>Google Trends is worldwide; Wikipedia is English-language only, so it under-counts interest in Diptyque’s home market, France, and Byredo’s, Sweden.</p>
         <p>The live season compares each year with its own late summer (15 Aug to 30 Sep), so a brand that’s growing overall isn’t mistaken for a strong Christmas.</p>
       </div>
       <div>

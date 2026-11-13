@@ -2,7 +2,20 @@
 
 A live look at public attention for four luxury fragrance houses: two classic gift names (Jo Malone London, Diptyque) and two cult niche houses (Le Labo, Byredo). The headline question: which ones people buy as a gift.
 
-Daily Wikipedia pageviews come from the [Wikimedia Pageviews API](https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews) through `api/pageviews.js`, a small Vercel function that Vercel caches for 6 hours. So Wikimedia gets a few requests a day however many people visit. If the function isn't there (a local preview), the page asks Wikimedia directly.
+## Where the data comes from
+
+- **Google searches (main signal):** Google Trends interest, worldwide, collected through [SerpApi](https://serpapi.com/google-trends-api). Weekly for the last 5 years, monthly since 2016.
+- **Wikipedia pageviews (second signal):** daily, from the [Wikimedia Pageviews API](https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews). Used for the live season and Moments, which need daily data.
+
+Every morning at 06:20 UTC, a GitHub Action (`.github/workflows/data.yml`) runs `scripts/fetch_data.py`, saves `data/trends.json` and `data/wiki.json`, and commits them; Vercel redeploys. Visitors only ever load these saved files, so the site never waits on, or breaks because of, an outside service. If a fetch fails, the last good copy stays and the page shows its date. SerpApi use is about 35 requests a month (the free plan allows 100).
+
+Without `data/trends.json` the whole site runs on Wikipedia data; with it, Google searches drive this week, the December finding and the game.
+
+### Set up Google Trends (once)
+
+1. Create a free account at serpapi.com and copy your API key from its dashboard.
+2. On github.com, open this repository: **Settings → Secrets and variables → Actions → New repository secret**. Name: `SERPAPI_KEY`, value: the key.
+3. **Actions → Refresh data → Run workflow** to fetch straight away instead of waiting for the morning.
 
 ## What's here
 
@@ -12,7 +25,9 @@ Daily Wikipedia pageviews come from the [Wikimedia Pageviews API](https://wikite
 | `assets/app.js` | Loads the data and draws everything: the weekly stamps, the seasons, the long-run chart, and Moments |
 | `assets/index.css` | Layout and chart styles |
 | `assets/brand.css`, `assets/made-by-riya.js` | From the lab starter: palette, fonts, and the corner stamp |
-| `api/pageviews.js` | The cached data function (Vercel runs it; nothing to install) |
+| `scripts/fetch_data.py` | Fetches Google Trends and Wikipedia data (run by the Action) |
+| `.github/workflows/data.yml` | Runs the fetcher every morning and commits the data |
+| `data/trends.json`, `data/wiki.json` | The saved data the site reads (written by the Action; don't edit) |
 | `data/moments.json` | Your notes on spikes |
 | `data/dispatch.json` | This week's short note, shown under the stamps |
 
