@@ -8,11 +8,12 @@
   'use strict';
 
   var BRANDS = [
-    { id: 'jo',    name: 'Jo Malone London', article: 'Jo_Malone_London', cat: 'Fragrance & home',   color: '#65232b' },
+    // group: 'classic' = widely known gift names, 'cult' = niche houses with an insider following.
+    { id: 'jo',     name: 'Jo Malone London', article: 'Jo_Malone_London', group: 'classic', cat: 'Classic gift name', color: '#65232b' },
     // Diptyque's article was missing or renamed from March to August 2020: those zeros mean "no page", not "no interest".
-    { id: 'dip',   name: 'Diptyque',         article: 'Diptyque',         cat: 'Fragrance & home',   color: '#56707f', gaps: [['2020-03-01', '2020-09-01']] },
-    { id: 'ck',    name: 'Charles & Keith',  article: 'Charles_%26_Keith', cat: 'Bags & accessories', color: '#b4546e' },
-    { id: 'coach', name: 'Coach',            article: 'Coach_New_York',   cat: 'Bags & accessories', color: '#8a6d2f' }
+    { id: 'dip',    name: 'Diptyque',         article: 'Diptyque',         group: 'classic', cat: 'Classic gift name', color: '#56707f', gaps: [['2020-03-01', '2020-09-01']] },
+    { id: 'lelabo', name: 'Le Labo',          article: 'Le_Labo',          group: 'cult',    cat: 'Cult niche house',  color: '#b4546e' },
+    { id: 'byredo', name: 'Byredo',           article: 'Byredo',           group: 'cult',    cat: 'Cult niche house',  color: '#8a6d2f' }
   ];
   var DAY = 864e5;
   var SPIKE_X = 6, SPIKE_MIN = 300;          // a Moment: at least 6x the usual day, and at least 300 views
@@ -227,12 +228,14 @@
       card.appendChild(svg);
       host.appendChild(card);
     });
-    var frag = all.filter(function (a) { return a.b.cat[0] === 'F'; }).map(function (a) { return a.s.m[11]; });
-    var bags = all.filter(function (a) { return a.b.cat[0] === 'B'; }).map(function (a) { return a.s.m[11]; });
+    function range(group) {
+      var v = all.filter(function (a) { return a.b.group === group; }).map(function (a) { return a.s.m[11]; });
+      var lo = Math.min.apply(null, v).toFixed(2), hi = Math.max.apply(null, v).toFixed(2);
+      return lo === hi ? '×' + lo : '×' + lo + '–' + hi;
+    }
     $('season-sub').textContent = 'Typical attention in each month, compared with that year’s typical day (dashed line = ×1). ' +
-      'In December the fragrance brands rise to ×' + Math.min.apply(null, frag).toFixed(2) + '–' + Math.max.apply(null, frag).toFixed(2) +
-      '; the bag brands reach only ×' + Math.min.apply(null, bags).toFixed(2) + '–' + Math.max.apply(null, bags).toFixed(2) +
-      '. A likely reading: candles and scent get researched as gifts, bags get bought for yourself. Every full year of data is included.';
+      'In December the classic gift names rise to ' + range('classic') + '; the cult niche houses to ' + range('cult') + '. ' +
+      $('season-sub').dataset.reading + ' Every full year of data is included.';
   }
   function unseal(scroll) {
     var wrap = $('finding');
@@ -474,7 +477,8 @@
   }
 
   /* ---------- 6. Over time ---------- */
-  var state = { years: 3, on: { jo: true, dip: true, ck: true, coach: true }, marks: [], drawn: false };
+  var state = { years: 3, on: {}, marks: [], drawn: false };
+  BRANDS.forEach(function (b) { state.on[b.id] = true; });
   function weekly(b, from) {
     var weeks = {};
     b.days.forEach(function (x) {

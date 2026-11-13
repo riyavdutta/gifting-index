@@ -1,6 +1,6 @@
 # The Gifting Index
 
-A live look at public attention for four affordable-luxury brands: Jo Malone London, Diptyque, Charles & Keith and Coach. The headline question: which ones people treat as a gift.
+A live look at public attention for four luxury fragrance houses: two classic gift names (Jo Malone London, Diptyque) and two cult niche houses (Le Labo, Byredo). The headline question: which ones people buy as a gift.
 
 Daily Wikipedia pageviews come from the [Wikimedia Pageviews API](https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews) through `api/pageviews.js`, a small Vercel function that Vercel caches for 6 hours. So Wikimedia gets a few requests a day however many people visit. If the function isn't there (a local preview), the page asks Wikimedia directly.
 
@@ -28,7 +28,7 @@ Moments are found automatically: any day at 6× a brand's usual level. Spikes wi
 { "brand": "jo", "date": "2026-03-12", "title": "Short headline", "note": "What happened and what it shows.", "source": "https://link-to-a-news-story" }
 ```
 
-`brand` is one of `jo`, `dip`, `ck`, `coach`. `date` only has to be within three weeks of the spike. Add a `source` link to every note, including the two already there.
+`brand` is one of `jo`, `dip`, `lelabo`, `byredo`. `date` only has to be within three weeks of the spike. Add a `source` link to every note, including the one already there.
 
 ## Preview locally
 

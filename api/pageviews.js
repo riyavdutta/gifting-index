@@ -5,8 +5,8 @@
 const ARTICLES = {
   jo: 'Jo_Malone_London',
   dip: 'Diptyque',
-  ck: 'Charles_%26_Keith',
-  coach: 'Coach_New_York'
+  lelabo: 'Le_Labo',
+  byredo: 'Byredo'
 };
 
 module.exports = async (req, res) => {
