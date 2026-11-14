@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: '20 6 * * *'     # 06:20 UTC daily
   workflow_dispatch: {}       # "Run workflow" button on the Actions tab
+  push:                       # also runs when the fetcher itself changes (not on its own data commits)
+    branches: [main]
+    paths:
+      - '.github/workflows/data.yml'
+      - 'scripts/fetch_data.py'
 
 permissions:
   contents: write
