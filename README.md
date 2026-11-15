@@ -1,6 +1,6 @@
 # The Gifting Index
 
-Who gets bought as a gift? Four luxury fragrance houses, two classic gift names (Jo Malone London, Diptyque) and two cult niche houses (Le Labo, Byredo), tracked every day. Live at [gifting-index.vercel.app](https://gifting-index.vercel.app/); part of [Riya Dutta's portfolio](https://riya-folio.vercel.app/).
+What gets bought as a gift? Four luxury fragrance houses, two classic gift names (Jo Malone London, Diptyque) and two cult niche houses (Le Labo, Byredo), tracked every day. Live at [gifting-index.vercel.app](https://gifting-index.vercel.app/); part of [Riya Dutta's portfolio](https://riya-folio.vercel.app/).
 
 The page tells one point in four steps, in the portfolio's burgundy-and-cream system:
 
