@@ -316,7 +316,9 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
         c.querySelector('.fill').style.height = Math.round((h.lift - 1) / (top - 1) * 70 + 10) + '%';
         count(x, h.lift, i * 120);
       });
-      var exact = picks.filter(function (id, i) { return order[i].id === id; }).length;
+      // a pick counts as right if it shows the same figure as the house in that spot (×2.0 and ×2.0 are a tie)
+      var shown = function (id) { return H.filter(function (h) { return h.id === id; })[0].lift.toFixed(1); };
+      var exact = picks.filter(function (id, i) { return shown(id) === order[i].lift.toFixed(1); }).length;
       var topTwo = picks.slice(0, 2).every(function (id) { return H.filter(function (h) { return h.id === id; })[0].g === 'classic'; });
       $('hint').textContent = '';
       $('verdict').innerHTML = topTwo ? 'You called it: <em>the classics come first.</em>' : 'December surprised you: <em>the classics come first.</em>';
@@ -325,8 +327,8 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
     }, MOTION ? 700 : 0);
   }
   function count(el, to, delay) {
-    if (!MOTION) { el.textContent = '×' + to.toFixed(2); return; }
-    setTimeout(function () { var t0 = performance.now(); (function f(ts) { var p = Math.min(1, (ts - t0) / 900), e = 1 - Math.pow(1 - p, 3); el.textContent = '×' + (1 + (to - 1) * e).toFixed(2); if (p < 1) requestAnimationFrame(f); })(t0); }, delay);
+    if (!MOTION) { el.textContent = '×' + to.toFixed(1); return; }
+    setTimeout(function () { var t0 = performance.now(); (function f(ts) { var p = Math.min(1, (ts - t0) / 900), e = 1 - Math.pow(1 - p, 3); el.textContent = '×' + (1 + (to - 1) * e).toFixed(1); if (p < 1) requestAnimationFrame(f); })(t0); }, delay);
   }
   $('again').onclick = function () { deal(); };
   deal();
@@ -339,7 +341,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
     $('yrN').textContent = y;
     $('barC').style.width = (c / max * 100) + '%'; $('barK').style.width = (k / max * 100) + '%';
     $('oneC').style.left = $('oneK').style.left = (1 / max * 100) + '%';
-    $('outC').textContent = '×' + c.toFixed(2); $('outK').textContent = '×' + k.toFixed(2);
+    $('outC').textContent = '×' + c.toFixed(1); $('outK').textContent = '×' + k.toFixed(1);
     [].forEach.call($('yrs').children, function (b) { b.setAttribute('aria-pressed', +b.dataset.y === y); });
   }
   ready.then(function () {
@@ -372,7 +374,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
     $('days').textContent = days;
     var rows = H.slice().sort(function (a, b) { return b.now - a.now; });
     $('therm').innerHTML = rows.map(function (h) {
-      return '<div class="th ' + h.g + '" data-id="' + h.id + '"><small><span class="sr-only">' + h.n + '</span>' + MINI[h.id] + '</small><div class="rule"><span class="mid"></span><span class="dot" style="left:50%"></span></div><output>×' + h.now.toFixed(2) + '</output></div>';
+      return '<div class="th ' + h.g + '" data-id="' + h.id + '"><small><span class="sr-only">' + h.n + '</span>' + MINI[h.id] + '</small><div class="rule"><span class="mid"></span><span class="dot" style="left:50%"></span></div><output>×' + h.now.toFixed(1) + '</output></div>';
     }).join('');
     var hot = rows[0];
     $('nowNote').textContent = hot.g === 'cult' ? hot.n + ' is running hottest right now. If a cult house keeps that up through December, it would break the pattern for the first time since 2018.' :
