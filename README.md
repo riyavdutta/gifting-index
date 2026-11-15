@@ -23,6 +23,7 @@ Every morning at 06:20 UTC a GitHub Action (`.github/workflows/data.yml`) runs `
 | File | What it does |
 |---|---|
 | `index.html` | The whole page: words, styles and the script |
+| `assets/jo-malone-logo.jpg`, `assets/jo-malone-wordmark.jpg` | The Jo Malone London logo (public domain, from Wikimedia Commons); the other three houses' wordmarks are set in type |
 | `scripts/fetch_data.py` | Fetches Google Trends and Wikipedia data (run by the Action) |
 | `.github/workflows/data.yml` | Runs the fetcher every morning and commits the data |
 | `data/trends.json`, `data/wiki.json` | The saved data the page reads (written by the Action; don't edit) |
