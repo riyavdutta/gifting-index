@@ -4,114 +4,366 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Gifting Index · Riya Dutta</title>
-<meta name="description" content="Live public attention for four luxury fragrance houses, Jo Malone London, Diptyque, Le Labo and Byredo: which get bought as gifts, and what makes attention spike.">
-<link rel="stylesheet" href="assets/brand.css">
-<link rel="stylesheet" href="assets/index.css">
+<meta name="description" content="Who gets bought as a gift? Four luxury fragrance houses, Jo Malone London, Diptyque, Le Labo and Byredo, tracked every day in Google searches. By Riya Dutta.">
+<link rel="canonical" href="https://gifting-index.vercel.app/">
+<meta property="og:title" content="The Gifting Index · Riya Dutta">
+<meta property="og:description" content="Classics get gifted. Cult houses get chosen. Call the order, then see the data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2714%27 fill=%27%23800020%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f4efe6;--paper:#fffcf6;--b:#800020;--b-deep:#5e0018;--body:#33292c;--mute:#7d726b;--line:#ddd2c6;--you:#2f5bff;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;--read:'Source Serif 4',Georgia,serif;--ease:cubic-bezier(.2,.7,.2,1);--spring:cubic-bezier(.2,.9,.3,1.2)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;overflow-x:clip;-webkit-text-size-adjust:100%}
+body{background:var(--cream);color:var(--body);font-family:var(--read);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+::selection{background:var(--b);color:var(--cream)}
+:focus-visible{outline:2px solid var(--b);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lab{font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+h1,h2{font-family:var(--display);color:var(--b);text-wrap:balance}
+h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing:-.04em;margin:10px 0 16px}
+.sub{font-size:clamp(17px,1.6vw,20px);line-height:1.55;max-width:34em;color:var(--body)}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;border:1.5px solid var(--b);background:var(--b);color:var(--cream);font:700 15px var(--display);text-decoration:none;transition:transform .25s var(--ease),opacity .3s}
+.pill:hover{transform:translateY(-2px)}
+.pill--line{background:transparent;color:var(--b)}
+.pill[hidden]{display:none}
+
+/* scenes: one idea per screen */
+.scene{min-height:100svh;display:flex;align-items:center;padding:90px 0 70px}
+.in{width:100%;max-width:1080px;margin:0 auto;padding:0 32px}
+.rail{position:fixed;right:22px;top:50%;translate:0 -50%;display:flex;flex-direction:column;gap:12px;z-index:10}
+.rail a{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--b);display:block;transition:background .3s,transform .3s}
+.rail a.on{background:var(--b);transform:scale(1.25)}
+.top{position:fixed;left:0;right:0;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px 32px;background:linear-gradient(var(--cream) 60%,transparent)}
+.top b{font:800 16px var(--display);color:var(--b);letter-spacing:-.02em}
+.top a{font:600 13px var(--display);color:var(--mute);text-decoration:none}
+
+/* 1. call it */
+.kin{font:200 clamp(56px,9vw,136px)/.88 var(--display);letter-spacing:-.045em;margin:12px 0 22px;user-select:none}
+.kin .w{white-space:nowrap;display:inline-block}
+.kin .l{display:inline-block;font-variation-settings:'wght' 200,'opsz' 96;transition:font-variation-settings .18s ease-out,transform .18s ease-out,color .9s var(--ease)}
+.deck{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:34px 0 22px}
+.card{position:relative;aspect-ratio:3/4;border-radius:20px;border:1.5px solid var(--b);background:var(--paper);padding:18px;text-align:left;display:flex;flex-direction:column;overflow:hidden;
+  transition:transform .35s var(--spring),box-shadow .35s,background .6s var(--ease),color .6s}
+.card:hover:not([disabled]){transform:translateY(-6px) rotate(-1deg);box-shadow:0 18px 30px -18px rgba(128,0,32,.5)}
+.card[disabled]{cursor:default}
+.card .grp,.card .nm{padding-right:40px}
+.card .grp{font:600 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);opacity:0;transition:opacity .5s}
+.card .nm{font:800 clamp(22px,2.4vw,32px)/1 var(--display);letter-spacing:-.03em;color:var(--b);margin-top:6px;transition:color .6s}
+.card .x{margin-top:auto;font:800 clamp(38px,4.4vw,64px)/1 var(--display);letter-spacing:-.05em;color:var(--b);opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s var(--ease),color .6s;position:relative;z-index:1}
+.card .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--b);opacity:.1;transition:height 1.1s var(--ease)}
+.card .you{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:var(--you);color:#fff;font:800 16px var(--display);display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .35s var(--spring)}
+.card.picked .you{transform:scale(1)}
+.card .real{position:absolute;bottom:18px;right:16px;font:600 11px var(--display);letter-spacing:.1em;color:var(--mute);opacity:0;transition:opacity .5s;z-index:1}
+.deck.done .grp,.deck.done .x,.deck.done .real{opacity:1;transform:none}
+.deck.done .card.classic{background:var(--b)}
+.deck.done .card.classic .nm,.deck.done .card.classic .x{color:var(--cream)}
+.deck.done .card.classic .grp,.deck.done .card.classic .real{color:#f4efe6b3}
+.deck.done .card.classic .fill{background:#fff;opacity:.08}
+.hint{font:600 14px var(--display);color:var(--mute);min-height:22px}
+.verdict{font:800 clamp(26px,3vw,40px)/1.05 var(--display);letter-spacing:-.03em;color:var(--b);margin:6px 0 18px;min-height:1em}
+.verdict em{font-style:normal;color:var(--you)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* 2. every year */
+.yr{display:flex;align-items:baseline;gap:18px;margin:26px 0 8px}
+.yr b{font:800 clamp(72px,11vw,150px)/.85 var(--display);letter-spacing:-.06em;color:var(--b);font-variant-numeric:tabular-nums}
+.yr span{font:600 13px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.duel{display:grid;gap:14px;margin:18px 0 22px}
+.lane{display:grid;grid-template-columns:200px 1fr 90px;align-items:center;gap:16px}
+.lane small{font:700 15px var(--display);color:var(--b)}
+.lane small i{display:block;font:500 12px var(--read);font-style:italic;color:var(--mute)}
+.track{height:46px;border-radius:999px;background:var(--paper);border:1px solid var(--line);position:relative;overflow:hidden}
+.bar{position:absolute;inset:0 auto 0 0;border-radius:999px;transition:width .7s var(--ease)}
+.lane.classic .bar{background:var(--b)}
+.lane.cult .bar{background:var(--paper);border:2px solid var(--b)}
+.one{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed #33292c66}
+.lane output{font:800 30px var(--display);letter-spacing:-.03em;color:var(--b);text-align:right;font-variant-numeric:tabular-nums}
+.years{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.years button{min-width:64px;height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);font:700 14px var(--display);color:var(--mute);position:relative;transition:all .25s}
+.years button.win::after{content:"";position:absolute;top:6px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--b)}
+.years button[aria-pressed="true"]{background:var(--b);border-color:var(--b);color:var(--cream)}
+.years button[aria-pressed="true"].win::after{background:var(--cream)}
+.tally{font:800 clamp(22px,2.4vw,30px)/1.1 var(--display);letter-spacing:-.02em;color:var(--b);margin-top:22px}
+
+/* 3. this December */
+.count{display:flex;align-items:baseline;gap:16px;margin:18px 0 26px}
+.count b{font:800 clamp(90px,14vw,190px)/.8 var(--display);letter-spacing:-.07em;color:var(--b)}
+.count span{font:700 clamp(18px,2vw,26px)/1.1 var(--display);color:var(--b)}
+.therm{display:grid;gap:12px;margin-bottom:22px}
+.th{display:grid;grid-template-columns:170px 1fr 70px;gap:16px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);cursor:default}
+.th small{font:700 16px var(--display);color:var(--b)}
+.th .rule{position:relative;height:34px}
+.th .rule::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line)}
+.th .mid{position:absolute;left:50%;top:2px;bottom:2px;border-left:2px dashed #33292c55}
+.th .dot{position:absolute;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2.5px solid var(--b);background:var(--paper);transition:left 1.2s var(--spring)}
+.th.classic .dot{background:var(--b)}
+.th output{font:800 22px var(--display);color:var(--b);text-align:right}
+.th:hover .dot{transform:scale(1.25)}
+.legend{display:flex;justify-content:space-between;font:600 11px var(--display);letter-spacing:.1em;color:var(--mute);margin:-6px 0 0 186px;padding-right:86px}
+.note{font:700 clamp(20px,2.2vw,28px)/1.2 var(--display);letter-spacing:-.02em;color:var(--b);max-width:26em}
+
+/* 4. how I know */
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:28px 0 30px}
+.how button{text-align:left;border:1.5px solid var(--b);border-radius:20px;background:var(--paper);padding:20px;min-height:200px;display:flex;flex-direction:column;gap:10px;transition:background .4s,color .4s,transform .3s var(--ease)}
+.how button:hover{transform:translateY(-4px)}
+.how button b{font:800 24px/1.05 var(--display);letter-spacing:-.03em;color:var(--b)}
+.how button p{font-size:15px;line-height:1.5;color:var(--body);max-height:0;opacity:0;overflow:hidden;transition:max-height .5s var(--ease),opacity .4s}
+.how button small{margin-top:auto;font:600 12px var(--display);letter-spacing:.1em;color:var(--mute)}
+.how button[aria-expanded="true"]{background:var(--b)}
+.how button[aria-expanded="true"] b,.how button[aria-expanded="true"] p{color:var(--cream)}
+.how button[aria-expanded="true"] p{max-height:220px;opacity:1}
+.how button[aria-expanded="true"] small{color:#f4efe6b3}
+.foot{font:500 13px var(--display);color:var(--mute);margin-top:34px}
+
+/* reveal on scroll */
+.motion .rv{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s var(--ease)}
+.motion .rv.on{opacity:1;transform:none}
+
+@media (max-width:1200px){.in{padding-right:64px}}
+@media (max-width:760px){
+  .in{padding:0 18px}.top{padding:12px 18px}.rail{display:none}
+  .deck{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .lane{grid-template-columns:1fr 70px;gap:6px 10px}.lane small{grid-column:1/-1}
+  .th{grid-template-columns:1fr 60px;gap:4px 10px}.th small{grid-column:1/-1}.legend{margin-left:0;padding-right:70px}
+  .how{grid-template-columns:1fr}.how button{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
+<div class="top"><b>The Gifting Index</b><a href="https://riya-folio.vercel.app/">Riya Dutta ↗</a></div>
+<nav class="rail" aria-label="Steps"><a href="#call" aria-label="Call it"></a><a href="#years" aria-label="Every year"></a><a href="#now" aria-label="This December"></a><a href="#how" aria-label="How I know"></a></nav>
+
 <main>
-  <header class="wrap hero">
-    <span class="tag">Lab · 2026</span>
-    <h1>The Gifting Index</h1>
-    <p class="note lede">Four luxury fragrance houses, tracked every day: two classic gift names and two cult niche houses. Which ones do people buy as a gift, and what makes attention spike?</p>
-    <p class="meta kicker" id="updated">Loading live data…</p>
-  </header>
+<section class="scene" id="call"><div class="in">
+  <p class="lab">Live data · four luxury fragrance houses</p>
+  <h1 class="kin" id="kin">Who gets bought as a gift?</h1>
+  <p class="sub">Every December, people search for some perfume houses far more than usual. <b>Tap the four in the order you think December lifts them</b>, biggest first.</p>
+  <div class="deck" id="deck"></div>
+  <p class="hint" id="hint">Tap your number one.</p>
+  <p class="verdict" id="verdict" aria-live="polite"></p>
+  <div class="row"><a class="pill" id="next1" href="#years" hidden>Was it just one year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Try again</button></div>
+</div></section>
 
-  <section class="wrap block" aria-labelledby="week-h">
-    <p class="kicker">This week</p>
-    <h2 id="week-h">Attention vs each brand’s usual</h2>
-    <p class="sub" id="week-sub" data-trends="Google searches in the last full week, compared with the brand’s typical week over the past year. ×1.00 is a normal week." data-wiki="The last 7 days of Wikipedia pageviews, compared with the brand’s typical day over the past year. ×1.00 is a normal week.">The last 7 days of Wikipedia pageviews, compared with the brand’s typical day over the past year. ×1.00 is a normal week.</p>
-    <div class="stamps" id="stamps" aria-live="polite"></div>
-    <aside class="dispatch" id="dispatch" hidden></aside>
-  </section>
+<section class="scene" id="years"><div class="in rv">
+  <p class="lab">Every year</p>
+  <h2>Classics get gifted. Cult houses get chosen.</h2>
+  <p class="sub">Each December, the average lift for the two classic names against the two cult houses. Tap a year, or drag across them.</p>
+  <div class="yr"><b id="yrN">2025</b><span>December searches<br>vs a typical month</span></div>
+  <div class="duel">
+    <div class="lane classic"><small>Classic gift names<i>Jo Malone London, Diptyque</i></small><div class="track"><div class="bar" id="barC"></div><div class="one" id="oneC"></div></div><output id="outC">×–</output></div>
+    <div class="lane cult"><small>Cult niche houses<i>Le Labo, Byredo</i></small><div class="track"><div class="bar" id="barK"></div><div class="one" id="oneK"></div></div><output id="outK">×–</output></div>
+  </div>
+  <div class="years" id="yrs" role="group" aria-label="Pick a year"></div>
+  <p class="tally" id="tally"></p>
+</div></section>
 
-  <section class="wrap block reveal" aria-labelledby="call-h">
-    <p class="kicker">Call it</p>
-    <h2 id="call-h">How much does December lift each brand?</h2>
-    <p class="sub" id="game-help">Guess how much busier a typical December day is than a typical day of the year. ×1.00 means no lift; ×2.00 means twice the attention. Then open the envelope.</p>
-    <div class="game card" id="game"></div>
-  </section>
+<section class="scene" id="now"><div class="in rv">
+  <p class="lab">This December, live</p>
+  <div class="count"><b id="days">–</b><span>days to<br>Christmas</span></div>
+  <p class="sub" style="margin-bottom:18px">Where each house is this week in Google searches, against its usual week. The dashed line is a normal week.</p>
+  <div class="therm" id="therm"></div>
+  <div class="legend"><span>×0.8 QUIETER</span><span>USUAL</span><span>BUSIER ×1.2</span></div>
+  <p class="note" id="nowNote" style="margin-top:26px"></p>
+</div></section>
 
-  <section class="wrap block sealed" id="finding" aria-labelledby="season-h">
-    <p class="kicker">The finding</p>
-    <h2 id="season-h" data-open="Classics get gifted. Cult houses get chosen.">The answer is in the envelope.</h2>
-    <div class="seal-wrap">
-      <p class="sub" id="season-sub" data-reading="A likely reading: when you buy scent for someone else, you reach for a name they’ll recognise. Cult houses are bought by people choosing for themselves.">Typical attention in each month, compared with that year’s typical day. Every full year since 2016 is included.</p>
-      <div class="seasons" id="seasons"></div>
-      <div class="seal" id="seal">
-        <span class="wax" aria-hidden="true">GI</span>
-        <p>Sealed until you call it.</p>
-        <button type="button" class="btn btn--line" id="open-seal">Open anyway</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap block reveal" aria-labelledby="live-h">
-    <p class="kicker live-kicker" id="live-kicker">Live</p>
-    <h2 id="live-h">This gifting season, so far</h2>
-    <p class="sub" id="live-sub">This season so far, against the range of past seasons.</p>
-    <div class="lives" id="live"></div>
-  </section>
-
-  <section class="wrap block reveal" aria-labelledby="time-h">
-    <p class="kicker">Over time</p>
-    <h2 id="time-h">Attention over time</h2>
-    <div class="controls">
-      <div class="seg" role="group" aria-label="Time range" id="range">
-        <button type="button" data-range="1" aria-pressed="false">1 year</button>
-        <button type="button" data-range="3" aria-pressed="true">3 years</button>
-        <button type="button" data-range="0" aria-pressed="false">All</button>
-      </div>
-      <div class="seg" role="group" aria-label="Data source" id="src" hidden>
-        <button type="button" data-src="trends" aria-pressed="true">Google searches</button>
-        <button type="button" data-src="wiki" aria-pressed="false">Wikipedia views</button>
-      </div>
-      <div class="legend" role="group" aria-label="Show brands" id="legend"></div>
-    </div>
-    <div class="chart-card card">
-      <div class="chart" id="chart"></div>
-      <p class="fine" id="chart-note" data-trends="Weekly Google searches, worldwide (last 5 years). 100 = that brand’s typical week in the range shown. Each gridline doubles. Switch to Wikipedia views for ten years of history and the Moments." data-wiki="Weekly Wikipedia pageviews. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Click a dot to read its Moment.">Weekly Wikipedia pageviews. 100 = that brand’s typical week in the range shown. Each gridline doubles, so a viral spike and a quiet month both fit on one chart. Click a dot to read its Moment.</p>
-    </div>
-  </section>
-
-  <section class="wrap block" aria-labelledby="moments-h">
-    <p class="kicker">Moments</p>
-    <h2 id="moments-h">Spikes, and whether they lasted</h2>
-    <p class="sub">Found automatically in daily Wikipedia pageviews: every day when attention hit at least 6× the brand’s usual level. For each one: how high it went, how many days it stayed above 2×, and the lift after: whether attention one to four months later was higher than in the three months before, once each brand’s normal seasonal pattern is taken out.</p>
-    <div class="moments" id="moments"></div>
-  </section>
-
-  <section class="wrap block method reveal" aria-labelledby="method-h">
-    <p class="kicker">Method</p>
-    <h2 id="method-h">What this can and can’t tell you</h2>
-    <div class="cols">
-      <div>
-        <h3>The data</h3>
-        <p><b>Google searches</b> are the main signal: weekly and monthly Google Trends interest, worldwide, for “Jo Malone”, “Diptyque”, “Le Labo” and “Byredo”, collected through SerpApi. Google scales each search series 0–100 against the busiest point across all four, so the site compares each brand with its own usual level.</p>
-        <p><b>Wikipedia pageviews</b> are the second signal: daily human views (bots excluded) of each brand’s English article. Daily data is what the live season and Moments need.</p>
-        <p>Both are fetched once every morning and saved with the site, so a slow or failed fetch never breaks the page: it simply shows the last good copy and its date.</p>
-        <p>Le Labo’s and Byredo’s articles start in 2017, so their Wikipedia seasons count from 2018. Diptyque’s article was missing or renamed from March to August 2020; that stretch is left out rather than counted as zero.</p>
-      </div>
-      <div>
-        <h3>What it measures</h3>
-        <p>Interest, not sales. Searches lean towards intent: people looking up where to buy, or what to give. Wikipedia views lean towards curiosity: news, controversy, or who a brand is. Where the two signals agree, the finding is stronger.</p>
-        <p>Google Trends is worldwide; Wikipedia is English-language only, so it under-counts interest in Diptyque’s home market, France, and Byredo’s, Sweden.</p>
-        <p>The live season compares each year with its own late summer (15 Aug to 30 Sep), so a brand that’s growing overall isn’t mistaken for a strong Christmas.</p>
-      </div>
-      <div>
-        <h3>What didn’t hold up</h3>
-        <p>An early version used monthly <em>averages</em> and found a March bump for Jo Malone, which looked like Mother’s Day in the UK. Switching to <em>medians</em> made it disappear: a few one-off spikes had been pulling the average up. The December pattern survived both methods, so it’s the one reported here.</p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="wrap foot">
-    <p>An independent analysis by Riya Dutta. Not affiliated with, or endorsed by, any of the brands. Pageview data from the <a href="https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews">Wikimedia Pageviews API</a>.</p>
-    <p><a class="btn btn--line" href="https://riyavdutta.github.io/riya-portfolio/">Back to the portfolio</a></p>
-  </footer>
+<section class="scene" id="how"><div class="in rv">
+  <p class="lab">How I know</p>
+  <h2>Three checks behind the claim.</h2>
+  <div class="how" id="howCards">
+    <button type="button" aria-expanded="false"><b>Two signals agree</b><p>Google searches (people looking to buy) and Wikipedia views (people curious) are fetched every morning. Both show the classics pulling ahead in December.</p><small>TAP TO OPEN</small></button>
+    <button type="button" aria-expanded="false"><b>Medians, not averages</b><p>A first pass found a March bump for Jo Malone. Medians showed it was a few one-off spikes, so it was cut. One loud week can’t make a pattern here.</p><small>TAP TO OPEN</small></button>
+    <button type="button" aria-expanded="false"><b>The data writes the headline</b><p>Every number on this page is calculated from the latest data. If a cult house out-gifts the classics this year, the page will say so.</p><small>TAP TO OPEN</small></button>
+  </div>
+  <div class="row"><a class="pill" href="https://riya-folio.vercel.app/work/the-gifting-index/">Read the case study</a><a class="pill pill--line" href="#call">Play again ↑</a></div>
+  <p class="foot" id="foot">Google Trends (worldwide) via SerpApi and Wikimedia pageviews, refreshed daily.</p>
+</div></section>
 </main>
-<div class="tip" id="tip" hidden></div>
-<script src="assets/app.js" defer></script>
-<script src="assets/made-by-riya.js" defer></script>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FUN = ['#2f5bff', '#00a36c', '#7a3cff', '#d02b8f', '#00a9bd', '#e3bd00', '#0a74da', '#6cb800', '#a86bff', '#1fa0ff'];
+  var H = [
+    { id: 'jo', n: 'Jo Malone London', g: 'classic' }, { id: 'lelabo', n: 'Le Labo', g: 'cult' },
+    { id: 'dip', n: 'Diptyque', g: 'classic' }, { id: 'byredo', n: 'Byredo', g: 'cult' }
+  ];
+  function median(a) { var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+  function mean(a) { return a.reduce(function (t, v) { return t + v; }, 0) / a.length; }
+
+  /* headline: heavier near the cursor, catches a bright colour (as on the portfolio home page) */
+  (function () {
+    var k = $('kin'), text = k.textContent;
+    k.innerHTML = text.split(' ').map(function (w) { return '<span class="w" aria-hidden="true">' + w.split('').map(function (c) { return '<span class="l">' + c + '</span>'; }).join('') + '</span>'; }).join(' ') + '<span class="sr-only">' + text + '</span>';
+    if (!MOTION) return;
+    var L = [].slice.call(k.querySelectorAll('.l'));
+    function hot(s) { if (s._h) return; s._h = 1; s.style.color = FUN[Math.floor(Math.random() * FUN.length)]; setTimeout(function () { s.style.color = ''; s._h = 0; }, 1100); }
+    $('call').addEventListener('mousemove', function (e) {
+      L.forEach(function (s) { var b = s.getBoundingClientRect(), f = Math.max(0, 1 - Math.hypot(b.left + b.width / 2 - e.clientX, b.top + b.height / 2 - e.clientY) / 260);
+        s.style.fontVariationSettings = "'wght' " + Math.round(200 + f * 600) + ",'opsz' 96"; s.style.transform = 'translateY(' + (-f * 6) + 'px)'; if (f > .75) hot(s); });
+    });
+  })();
+
+  /* rail + reveals */
+  var scenes = ['call', 'years', 'now', 'how'], dots = [].slice.call(document.querySelectorAll('.rail a'));
+  if ('IntersectionObserver' in window) {
+    var sio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) dots.forEach(function (d, i) { d.classList.toggle('on', scenes[i] === e.target.id); }); });
+    }, { threshold: .5 });
+    scenes.forEach(function (id) { sio.observe($(id)); });
+    if (MOTION) {
+      document.documentElement.classList.add('motion');
+      var rio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); rio.unobserve(e.target); if (e.target.parentNode.id === 'years') playYears(); if (e.target.parentNode.id === 'now') placeDots(); } }); }, { threshold: .2 });
+      [].forEach.call(document.querySelectorAll('.rv'), function (el) { rio.observe(el); });
+    }
+  }
+
+  /* data: December lift per house per year (Google Trends, monthly) and this week's level (weekly) */
+  var D = {}, YEARS = [], WEEK = {}, ready = fetch('data/trends.json').then(function (r) { return r.json(); }).then(function (t) {
+    var m = t.monthly;
+    H.forEach(function (h) {
+      var by = {};
+      m.dates.forEach(function (d, i) { if (m.partial[i]) return; var y = +d.slice(0, 4); if (y < 2016) return; (by[y] = by[y] || []).push({ mo: +d.slice(5, 7), v: m.series[h.id][i] }); });
+      h.dec = {};
+      Object.keys(by).forEach(function (y) { var r = by[y]; if (r.length < 12) return; var md = median(r.map(function (x) { return x.v; })); if (!(md > 5)) return; h.dec[y] = r.filter(function (x) { return x.mo === 12; })[0].v / md; });
+      h.lift = median(Object.keys(h.dec).map(function (y) { return h.dec[y]; }));
+      var w = t.weekly, pts = w.dates.map(function (d, i) { return { v: w.series[h.id][i], p: w.partial[i], t: d }; }).filter(function (x) { return !x.p; });
+      h.now = pts[pts.length - 1].v / median(pts.slice(-53, -1).map(function (x) { return x.v; }));
+      h.week = pts[pts.length - 1].t;
+    });
+    YEARS = Object.keys(H[0].dec).filter(function (y) { return H.every(function (h) { return h.dec[y] !== undefined; }); }).map(Number);
+   }).catch(function () {
+    $('hint').textContent = 'The data didn’t load. Refresh in a minute.';
+    throw new Error('data');
+  });
+
+  /* 1. call it: tap to rank, then the cards flip and re-sort into the real order */
+  var picks = [];
+  function deal() {
+    picks = [];
+    $('deck').classList.remove('done');
+    $('deck').innerHTML = H.map(function (h) {
+      return '<button type="button" class="card ' + h.g + '" data-id="' + h.id + '"><span class="grp">' + (h.g === 'classic' ? 'Classic gift name' : 'Cult niche house') +
+        '</span><span class="nm">' + h.n + '</span><span class="fill"></span><span class="x">×–</span><span class="real"></span><span class="you"></span></button>';
+    }).join('');
+    $('hint').textContent = 'Tap your number one.'; $('verdict').textContent = ''; $('next1').hidden = true; $('again').hidden = true;
+    [].forEach.call($('deck').children, function (c) {
+      c.addEventListener('click', function () {
+        if (c.classList.contains('picked') || $('deck').classList.contains('done')) return;
+        picks.push(c.dataset.id); c.classList.add('picked'); c.querySelector('.you').textContent = picks.length;
+        $('hint').textContent = picks.length < 4 ? ['', 'Now your number two.', 'And three.', 'Last one.'][picks.length] : 'Opening the data…';
+        if (picks.length === 3) { var last = [].filter.call($('deck').children, function (x) { return !x.classList.contains('picked'); })[0]; setTimeout(function () { last.click(); }, 350); }
+        if (picks.length === 4) ready.then(function () { setTimeout(reveal, MOTION ? 500 : 0); });
+      });
+    });
+  }
+  function reveal() {
+    var deck = $('deck'), cards = [].slice.call(deck.children), first = {};
+    cards.forEach(function (c) { first[c.dataset.id] = c.getBoundingClientRect(); });
+    var order = H.slice().sort(function (a, b) { return b.lift - a.lift; });
+    order.forEach(function (h, i) {
+      var c = deck.querySelector('[data-id="' + h.id + '"]'); deck.appendChild(c); c.disabled = true;
+      c.querySelector('.real').textContent = 'NO. ' + (i + 1);
+    });
+    // slide each card from where it was to where it now belongs
+    order.forEach(function (h) {
+      var c = deck.querySelector('[data-id="' + h.id + '"]'), a = first[h.id], b = c.getBoundingClientRect();
+      if (!MOTION) return;
+      c.style.transition = 'none'; c.style.transform = 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px)';
+      requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.transition = ''; c.style.transform = ''; }); });
+    });
+    setTimeout(function () {
+      deck.classList.add('done');
+      var top = order[0].lift;
+      order.forEach(function (h, i) {
+        var c = deck.querySelector('[data-id="' + h.id + '"]'), x = c.querySelector('.x');
+        c.querySelector('.fill').style.height = Math.round((h.lift - 1) / (top - 1) * 70 + 10) + '%';
+        count(x, h.lift, i * 120);
+      });
+      var exact = picks.filter(function (id, i) { return order[i].id === id; }).length;
+      var topTwo = picks.slice(0, 2).every(function (id) { return H.filter(function (h) { return h.id === id; })[0].g === 'classic'; });
+      $('hint').textContent = '';
+      $('verdict').innerHTML = topTwo ? 'You called it: <em>the classics come first.</em>' : 'December surprised you: <em>the classics come first.</em>';
+      $('verdict').innerHTML += '<br><span style="font-size:.55em;font-weight:600;color:var(--mute);letter-spacing:0">You placed ' + exact + ' of 4 in exactly the right spot.</span>';
+      $('next1').hidden = false; $('again').hidden = false;
+    }, MOTION ? 700 : 0);
+  }
+  function count(el, to, delay) {
+    if (!MOTION) { el.textContent = '×' + to.toFixed(2); return; }
+    setTimeout(function () { var t0 = performance.now(); (function f(ts) { var p = Math.min(1, (ts - t0) / 900), e = 1 - Math.pow(1 - p, 3); el.textContent = '×' + (1 + (to - 1) * e).toFixed(2); if (p < 1) requestAnimationFrame(f); })(t0); }, delay);
+  }
+  $('again').onclick = function () { deal(); };
+  deal();
+
+  /* 2. every year: scrub through the Decembers */
+  var played = false;
+  function showYear(y) {
+    function avg(g) { return mean(H.filter(function (h) { return h.g === g; }).map(function (h) { return h.dec[y]; })); }
+    var c = avg('classic'), k = avg('cult'), max = 2.6;
+    $('yrN').textContent = y;
+    $('barC').style.width = (c / max * 100) + '%'; $('barK').style.width = (k / max * 100) + '%';
+    $('oneC').style.left = $('oneK').style.left = (1 / max * 100) + '%';
+    $('outC').textContent = '×' + c.toFixed(2); $('outK').textContent = '×' + k.toFixed(2);
+    [].forEach.call($('yrs').children, function (b) { b.setAttribute('aria-pressed', +b.dataset.y === y); });
+  }
+  ready.then(function () {
+    var wins = 0;
+    $('yrs').innerHTML = YEARS.map(function (y) {
+      function avg(g) { return mean(H.filter(function (h) { return h.g === g; }).map(function (h) { return h.dec[y]; })); }
+      var w = avg('classic') > avg('cult'); if (w) wins++;
+      return '<button type="button" data-y="' + y + '" class="' + (w ? 'win' : '') + '">' + y + '</button>';
+    }).join('');
+    $('tally').textContent = 'Classics ahead in ' + wins + ' of ' + YEARS.length + ' Decembers.' + (wins === YEARS.length ? ' Every single one.' : '');
+    [].forEach.call($('yrs').children, function (b) {
+      b.addEventListener('click', function () { played = true; showYear(+b.dataset.y); });
+      b.addEventListener('pointerenter', function (e) { if (e.buttons) { played = true; showYear(+b.dataset.y); } });
+    });
+    showYear(YEARS[YEARS.length - 1]);
+    if (!MOTION) placeDots();
+  });
+  function playYears() {
+    ready.then(function () {
+      if (!MOTION) return;
+      var i = 0;
+      (function step() { if (played || i >= YEARS.length) return; showYear(YEARS[i++]); setTimeout(step, 650); })();
+    });
+  }
+
+  /* 3. this December: countdown and where each house is this week */
+  ready.then(function () {
+    var now = new Date(), y = now.getMonth() === 11 && now.getDate() > 25 ? now.getFullYear() + 1 : now.getFullYear();
+    var days = Math.ceil((new Date(y, 11, 25) - now) / 864e5);
+    $('days').textContent = days;
+    var rows = H.slice().sort(function (a, b) { return b.now - a.now; });
+    $('therm').innerHTML = rows.map(function (h) {
+      return '<div class="th ' + h.g + '" data-id="' + h.id + '"><small>' + h.n + '</small><div class="rule"><span class="mid"></span><span class="dot" style="left:50%"></span></div><output>×' + h.now.toFixed(2) + '</output></div>';
+    }).join('');
+    var hot = rows[0];
+    $('nowNote').textContent = hot.g === 'cult' ? hot.n + ' is running hottest right now. If a cult house keeps that up through December, it would break the pattern for the first time since 2018.' :
+      hot.n + ' leads this week. So far, December is following the usual script.';
+    $('foot').textContent = 'Google Trends (worldwide) via SerpApi, latest full week starting ' + new Date(hot.week).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', and Wikimedia pageviews. Refreshed every morning.';
+  });
+  var placed = false;
+  function placeDots() {
+    ready.then(function () {
+      if (placed) return; placed = true;
+      setTimeout(function () {
+        H.forEach(function (h) { var d = document.querySelector('.th[data-id="' + h.id + '"] .dot'); if (d) d.style.left = Math.max(4, Math.min(96, 50 + (h.now - 1) * 250)) + '%'; });
+      }, 200);
+    });
+  }
+
+  /* 4. how I know: tap to open */
+  [].forEach.call($('howCards').children, function (b) {
+    b.addEventListener('click', function () { var o = b.getAttribute('aria-expanded') === 'true'; b.setAttribute('aria-expanded', !o); b.querySelector('small').textContent = o ? 'TAP TO OPEN' : 'TAP TO CLOSE'; });
+  });
+})();
+</script>
 </body>
 </html>
