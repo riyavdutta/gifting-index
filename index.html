@@ -39,7 +39,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
 .rail a.on{background:var(--b);transform:scale(1.25)}
 .top{position:fixed;left:0;right:0;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px 32px;background:linear-gradient(var(--cream) 60%,transparent)}
 .top b{font:800 16px var(--display);color:var(--b);letter-spacing:-.02em}
-.top a{font:600 13px var(--display);color:var(--mute);text-decoration:none}
+.top .by{font:600 13px var(--display);color:var(--mute)}
 
 /* 1. call it */
 .kin{font:200 clamp(56px,9vw,136px)/.88 var(--display);letter-spacing:-.045em;margin:12px 0 22px;user-select:none}
@@ -195,7 +195,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
 </style>
 </head>
 <body>
-<div class="top"><b>The Gifting Index</b><a href="https://riya-folio.vercel.app/">Riya Dutta ↗</a></div>
+<div class="top"><b>The Gifting Index</b><span class="by">by Riya Dutta</span></div>
 <nav class="rail" aria-label="Steps"><a href="#call" aria-label="Call it"></a><a href="#years" aria-label="Every year"></a><a href="#cal" aria-label="The calendar"></a><a href="#now" aria-label="Next up"></a><a href="#how" aria-label="How I know"></a></nav>
 
 <main>
@@ -257,7 +257,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
     <button type="button" aria-expanded="false"><b>Ten moments, honestly dated</b><p>Moon-based holidays (Lunar New Year, Eid, Raksha Bandhan, Diwali) can shift by a day. Google is blocked in mainland China, so Lunar New Year and Singles’ Day are under-counted. Diwali sits at the start of the winter run-up, so part of its lift is the season itself. The dial is the typical year across 2022–2025.</p><small>TAP TO OPEN</small></button>
     <button type="button" aria-expanded="false"><b>The data writes the headline</b><p>Every number on this page is calculated from the latest data. If a cult house out-gifts the classics this year, the page will say so.</p><small>TAP TO OPEN</small></button>
   </div>
-  <div class="row"><a class="pill" href="https://riya-folio.vercel.app/work/the-gifting-index/">Read the case study</a><a class="pill pill--line" href="#call">Play again ↑</a></div>
+  <div class="row"><a class="pill" href="#call">Play again ↑</a></div>
   <p class="foot">Independent analysis by Riya Dutta. Not affiliated with or endorsed by Jo Malone London, Diptyque, Le Labo or Byredo; names and logos are used only to identify each house.</p>
   <p class="foot" id="foot">Google Trends (worldwide) via SerpApi and Wikimedia pageviews, refreshed daily.</p>
 </div></section>
@@ -268,7 +268,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var FUN = ['#2f5bff', '#00a36c', '#7a3cff', '#d02b8f', '#00a9bd', '#e3bd00', '#0a74da', '#6cb800', '#a86bff', '#1fa0ff'];   // the ten agreed headline colours, as on every portfolio page
+  var FUN = ['#2f5bff', '#00a36c', '#7a3cff', '#d02b8f', '#00a9bd', '#e3bd00', '#0a74da', '#6cb800', '#a86bff', '#1fa0ff'];   // the ten headline colours
   var H = [
     { id: 'jo', n: 'Jo Malone London', g: 'classic' }, { id: 'lelabo', n: 'Le Labo', g: 'cult' },
     { id: 'dip', n: 'Diptyque', g: 'classic' }, { id: 'byredo', n: 'Byredo', g: 'cult' }
@@ -276,7 +276,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   function median(a) { var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
   function mean(a) { return a.reduce(function (t, v) { return t + v; }, 0) / a.length; }
 
-  /* headline: heavier near the cursor, catches a bright colour (as on the portfolio home page) */
+  /* headline: heavier near the cursor, catches a bright colour */
   (function () {
     var k = $('kin'), text = k.textContent;
     k.innerHTML = text.split(' ').map(function (w) { return '<span class="w" aria-hidden="true">' + w.split('').map(function (c) { return '<span class="l">' + c + '</span>'; }).join('') + '</span>'; }).join(' ') + '<span class="sr-only">' + text + '</span>';
