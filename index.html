@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--cream:#f4efe6;--paper:#fffcf6;--b:#800020;--b-deep:#5e0018;--body:#33292c;--mute:#7d726b;--line:#ddd2c6;--you:#2f5bff;
+:root{--cream:#f4efe6;--paper:#fffcf6;--b:#800020;--b-deep:#5e0018;--body:#33292c;--mute:#7d726b;--line:#ddd2c6;--you:#c9952c;
   --display:'Bricolage Grotesque',system-ui,sans-serif;--read:'Source Serif 4',Georgia,serif;--ease:cubic-bezier(.2,.7,.2,1);--spring:cubic-bezier(.2,.9,.3,1.2)}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;overflow-x:clip;-webkit-text-size-adjust:100%}
@@ -54,7 +54,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
 .card .nm{font:800 clamp(22px,2.4vw,32px)/1 var(--display);letter-spacing:-.03em;color:var(--b);margin-top:6px;transition:color .6s}
 .card .x{margin-top:auto;font:800 clamp(38px,4.4vw,64px)/1 var(--display);letter-spacing:-.05em;color:var(--b);opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s var(--ease),color .6s;position:relative;z-index:1}
 .card .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--b);opacity:.1;transition:height 1.1s var(--ease)}
-.card .you{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:var(--you);color:#fff;font:800 16px var(--display);display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .35s var(--spring)}
+.card .you{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:var(--you);color:#2a1a1e;font:800 16px var(--display);display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .35s var(--spring)}
 .card.picked .you{transform:scale(1)}
 .card .real{position:absolute;bottom:18px;right:16px;font:600 11px var(--display);letter-spacing:.1em;color:var(--mute);opacity:0;transition:opacity .5s;z-index:1}
 .deck.done .grp,.deck.done .x,.deck.done .real{opacity:1;transform:none}
@@ -125,9 +125,49 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
 .legend{display:flex;justify-content:space-between;font:600 11px var(--display);letter-spacing:.1em;color:var(--mute);margin:-6px 0 0 186px;padding-right:86px}
 .note{font:700 clamp(20px,2.2vw,28px)/1.2 var(--display);letter-spacing:-.02em;color:var(--b);max-width:26em}
 
+/* the year dial: one circle, the whole year; drag the blue hand */
+.dialwrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:34px;align-items:center;margin-top:20px}
+.dial{position:relative;width:100%;max-width:600px;aspect-ratio:1;justify-self:center;touch-action:none;user-select:none}
+.dial svg{width:100%;height:100%;display:block;overflow:visible}
+.dial .mo{font:600 9.5px var(--display);letter-spacing:.12em;fill:#7d726b99}
+.dial .hol{font:700 12px var(--display);fill:var(--b);cursor:pointer}
+.dial .hol.quiet{font-weight:500;font-size:10.5px;fill:var(--mute)}
+.dial .hand{cursor:grab}
+.dial.drag .hand{cursor:grabbing}
+.dial .knob{transition:r .2s}
+.dial:hover .knob{r:13}
+.center{position:absolute;left:50%;top:50%;translate:-50% -50%;width:40%;text-align:center;pointer-events:none}
+.center small{display:block;font:600 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.center b{display:block;font:800 clamp(22px,2.8vw,34px)/1 var(--display);letter-spacing:-.03em;color:var(--b);margin:6px 0 4px}
+.center p{font:600 13px/1.35 var(--display);color:var(--body)}
+.center .vs{display:flex;justify-content:center;gap:14px;margin-top:8px;font:800 20px var(--display);color:var(--b)}
+.center .vs span{display:flex;flex-direction:column;align-items:center;line-height:1}
+.center .vs em{font:600 9px var(--display);font-style:normal;letter-spacing:.1em;color:var(--mute);margin-top:4px}
+.side{display:grid;gap:16px}
+.rank{display:grid;gap:8px}
+.rank .r{display:grid;grid-template-columns:118px 1fr 52px;gap:10px;align-items:center;transition:transform .45s var(--spring)}
+.rank .r i{display:block;height:12px;border-radius:999px;transition:width .35s var(--ease)}
+.rank .r.classic i{background:var(--b)}
+.rank .r.cult i{background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--b)}
+.rank .r output{font:800 18px var(--display);color:var(--b);text-align:right}
+.pickdate{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pickdate label{font:700 14px var(--display);color:var(--b)}
+.pickdate input{font:600 15px var(--display);color:var(--body);background:var(--paper);border:1.5px solid var(--you);border-radius:999px;padding:9px 14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font:700 12px var(--display);color:var(--b);transition:all .2s}
+.chips button:hover{border-color:var(--b)}
+.chips button.today{border-color:var(--you);color:var(--you)}
+.key{font:500 13px/1.5 var(--display);color:var(--mute)}
+.key b{color:var(--b)}
+/* how the last occasion went */
+.went{margin-top:30px;border:1.5px solid var(--b);border-radius:20px;background:var(--paper);padding:20px 22px;display:grid;gap:6px;max-width:640px}
+.went small{font:600 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.went b{font:800 clamp(22px,2.4vw,30px)/1.1 var(--display);letter-spacing:-.02em;color:var(--b)}
+.went p{font-size:16px;line-height:1.5}
+
 /* 4. how I know */
-.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:28px 0 30px}
-.how button{text-align:left;border:1.5px solid var(--b);border-radius:20px;background:var(--paper);padding:20px;min-height:200px;display:flex;flex-direction:column;gap:10px;transition:background .4s,color .4s,transform .3s var(--ease)}
+.how{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:28px 0 30px}
+.how button{text-align:left;border:1.5px solid var(--b);border-radius:20px;background:var(--paper);padding:20px;min-height:150px;display:flex;flex-direction:column;gap:10px;transition:background .4s,color .4s,transform .3s var(--ease)}
 .how button:hover{transform:translateY(-4px)}
 .how button b{font:800 24px/1.05 var(--display);letter-spacing:-.03em;color:var(--b)}
 .how button p{font-size:15px;line-height:1.5;color:var(--body);max-height:0;opacity:0;overflow:hidden;transition:max-height .5s var(--ease),opacity .4s}
@@ -149,23 +189,24 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   .lane{grid-template-columns:1fr 70px;gap:6px 10px}.lane small{grid-column:1/-1}
   .th{grid-template-columns:1fr 60px;gap:4px 10px}.th small{grid-column:1/-1}.legend{margin-left:0;padding-right:70px}
   .how{grid-template-columns:1fr}.how button{min-height:0}
+  .dialwrap{grid-template-columns:1fr;gap:18px}.center{width:46%}.center .vs{font-size:16px;gap:10px}.center p{font-size:11px}.rank .r{grid-template-columns:104px 1fr 46px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 <div class="top"><b>The Gifting Index</b><a href="https://riya-folio.vercel.app/">Riya Dutta ↗</a></div>
-<nav class="rail" aria-label="Steps"><a href="#call" aria-label="Call it"></a><a href="#years" aria-label="Every year"></a><a href="#now" aria-label="This December"></a><a href="#how" aria-label="How I know"></a></nav>
+<nav class="rail" aria-label="Steps"><a href="#call" aria-label="Call it"></a><a href="#years" aria-label="Every year"></a><a href="#cal" aria-label="The calendar"></a><a href="#now" aria-label="Next up"></a><a href="#how" aria-label="How I know"></a></nav>
 
 <main>
 <section class="scene" id="call"><div class="in">
   <p class="lab">Live data · four luxury fragrance houses</p>
   <h1 class="kin" id="kin">What gets bought as a gift?</h1>
-  <p class="sub">Every December, people search for some perfume houses far more than usual. <b>Tap the four in the order you think December lifts them</b>, biggest first.</p>
+  <p class="sub" id="callSub">Before some holidays, people search for some perfume houses far more than usual. <b>Tap the four in the order you think the next one lifts them</b>, biggest first.</p>
   <div class="deck" id="deck"></div>
   <p class="hint" id="hint">Tap your number one.</p>
   <p class="verdict" id="verdict" aria-live="polite"></p>
-  <div class="row"><a class="pill" id="next1" href="#years" hidden>Was it just one year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Try again</button></div>
+  <div class="row"><a class="pill" id="next1" href="#years" hidden>Is it every year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Try again</button></div>
 </div></section>
 
 <section class="scene" id="years"><div class="in rv">
@@ -181,21 +222,39 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   <p class="tally" id="tally"></p>
 </div></section>
 
+<section class="scene" id="cal"><div class="in rv">
+  <p class="lab">The gifting year</p>
+  <h2 id="calH">Perfume is a winter gift.</h2>
+  <p class="sub">The whole year in one circle. The band is how much more people search for these houses than usual. <b>Drag the gold hand</b>, or pick a date that matters to you.</p>
+  <div class="dialwrap">
+    <div class="dial" id="dial"><svg id="dialSvg" viewBox="-300 -300 600 600" role="img" aria-label="A year of searches for the four houses"></svg>
+      <div class="center" id="center" aria-live="polite"></div></div>
+    <div class="side">
+      <div class="pickdate"><label for="pick">Your date</label><input type="date" id="pick"></div>
+      <div class="chips" id="chips"></div>
+      <div class="rank" id="rank"></div>
+      <p class="key"><b>Shaded with a solid edge:</b> classic names. <b>Dashed:</b> cult houses. <b>Inner dashed ring:</b> a normal week. Ten gifting moments are marked; the four in burgundy are the only ones that lift these searches.</p>
+    </div>
+  </div>
+</div></section>
+
 <section class="scene" id="now"><div class="in rv">
-  <p class="lab">This December, live</p>
-  <div class="count"><b id="days">–</b><span>days to<br>Christmas</span></div>
+  <p class="lab">Next up, live</p>
+  <div class="count"><b id="days">–</b><span>days to<br><span id="nextName">the next moment</span></span></div>
   <p class="sub" style="margin-bottom:18px">Where each house is this week in Google searches, against its usual week. The dashed line is a normal week.</p>
   <div class="therm" id="therm"></div>
   <div class="legend"><span>×0.8 QUIETER</span><span>USUAL</span><span>BUSIER ×1.2</span></div>
   <p class="note" id="nowNote" style="margin-top:26px"></p>
+  <div class="went" id="went" hidden></div>
 </div></section>
 
 <section class="scene" id="how"><div class="in rv">
   <p class="lab">How I know</p>
-  <h2>Three checks behind the claim.</h2>
+  <h2>Four checks behind the claim.</h2>
   <div class="how" id="howCards">
     <button type="button" aria-expanded="false"><b>Two signals agree</b><p>Google searches (people looking to buy) and Wikipedia views (people curious) are fetched every morning. Both show the classics pulling ahead in December.</p><small>TAP TO OPEN</small></button>
     <button type="button" aria-expanded="false"><b>Medians, not averages</b><p>A first pass found a March bump for Jo Malone. Medians showed it was a few one-off spikes, so it was cut. One loud week can’t make a pattern here.</p><small>TAP TO OPEN</small></button>
+    <button type="button" aria-expanded="false"><b>Ten moments, honestly dated</b><p>Moon-based holidays (Lunar New Year, Eid, Raksha Bandhan, Diwali) can shift by a day. Google is blocked in mainland China, so Lunar New Year and Singles’ Day are under-counted. Diwali sits at the start of the winter run-up, so part of its lift is the season itself. The dial is the typical year across 2022–2025.</p><small>TAP TO OPEN</small></button>
     <button type="button" aria-expanded="false"><b>The data writes the headline</b><p>Every number on this page is calculated from the latest data. If a cult house out-gifts the classics this year, the page will say so.</p><small>TAP TO OPEN</small></button>
   </div>
   <div class="row"><a class="pill" href="https://riya-folio.vercel.app/work/the-gifting-index/">Read the case study</a><a class="pill pill--line" href="#call">Play again ↑</a></div>
@@ -209,7 +268,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var FUN = ['#2f5bff', '#00a36c', '#7a3cff', '#d02b8f', '#00a9bd', '#e3bd00', '#0a74da', '#6cb800', '#a86bff', '#1fa0ff'];
+  var FUN = ['#c9952c', '#b07d1e', '#d9a93f', '#a8741a'];   // gold catches: burgundy’s partner
   var H = [
     { id: 'jo', n: 'Jo Malone London', g: 'classic' }, { id: 'lelabo', n: 'Le Labo', g: 'cult' },
     { id: 'dip', n: 'Diptyque', g: 'classic' }, { id: 'byredo', n: 'Byredo', g: 'cult' }
@@ -231,7 +290,7 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
   })();
 
   /* rail + reveals */
-  var scenes = ['call', 'years', 'now', 'how'], dots = [].slice.call(document.querySelectorAll('.rail a'));
+  var scenes = ['call', 'years', 'cal', 'now', 'how'], dots = [].slice.call(document.querySelectorAll('.rail a'));
   if ('IntersectionObserver' in window) {
     var sio = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) dots.forEach(function (d, i) { d.classList.toggle('on', scenes[i] === e.target.id); }); });
@@ -258,10 +317,75 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
       h.week = pts[pts.length - 1].t;
     });
     YEARS = Object.keys(H[0].dec).filter(function (y) { return H.every(function (h) { return h.dec[y] !== undefined; }); }).map(Number);
+    buildOccasions(t.weekly);
    }).catch(function () {
     $('hint').textContent = 'The data didn’t load. Refresh in a minute.';
     throw new Error('data');
   });
+
+  /* ---------- the gifting calendar ---------- */
+  var DAY = 864e5;
+  function U(y, m, d) { return Date.UTC(y, m - 1, d); }
+  function fixed(m, d) { return function (y) { return U(y, m, d); }; }
+  function nthDay(m, wd, n) { return function (y) { var f = U(y, m, 1), off = (wd - new Date(f).getUTCDay() + 7) % 7; return f + (off + 7 * (n - 1)) * DAY; }; }
+  function easter(y) { var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), mo = Math.floor((h + l - 7 * m + 114) / 31), da = ((h + l - 7 * m + 114) % 31) + 1; return U(y, mo, da); }
+  // moon-based dates, looked up (add a year here each year; a missing year simply hides that moment)
+  function table(o) { return function (y) { return o[y] ? Date.parse(o[y]) : null; }; }
+  var MOON = 'Moon-based, so the date can shift by a day.', CHINA = 'Google is blocked in mainland China, so this is under-counted.', SEASON = 'It falls inside the winter run-up, so part of this lift is the season itself.';
+  var OCC = [
+    { n: 'Lunar New Year', f: table({ 2022: '2022-02-01', 2023: '2023-01-22', 2024: '2024-02-10', 2025: '2025-01-29', 2026: '2026-02-17', 2027: '2027-02-06' }), note: MOON + ' ' + CHINA },
+    { n: 'Valentine’s Day', f: fixed(2, 14) },
+    { n: 'Eid al-Fitr', f: table({ 2022: '2022-05-02', 2023: '2023-04-21', 2024: '2024-04-10', 2025: '2025-03-30', 2026: '2026-03-20', 2027: '2027-03-10' }), note: MOON },
+    { n: 'Mother’s Day', f: nthDay(5, 0, 2), note: 'The US date, used in most countries; the UK’s falls in March.' },
+    { n: 'Father’s Day', f: nthDay(6, 0, 3) },
+    { n: 'Raksha Bandhan', f: table({ 2022: '2022-08-11', 2023: '2023-08-30', 2024: '2024-08-19', 2025: '2025-08-09', 2026: '2026-08-28', 2027: '2027-08-17' }), note: MOON },
+    { n: 'Diwali', f: table({ 2022: '2022-10-24', 2023: '2023-11-12', 2024: '2024-11-01', 2025: '2025-10-20', 2026: '2026-11-08', 2027: '2027-10-29' }), note: MOON + ' ' + SEASON },
+    { n: 'Singles’ Day', f: fixed(11, 11), note: 'China’s biggest shopping day. ' + CHINA },
+    { n: 'Black Friday', f: function (y) { return nthDay(11, 4, 4)(y) + DAY; } },
+    { n: 'Christmas', f: fixed(12, 25) }
+  ];
+  var YEAR = [], NEXT = null, PREV = null, TODAY = (function () { var n = new Date(); return U(n.getFullYear(), n.getMonth() + 1, n.getDate()); })();
+  function fmt(t, yr) { return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: yr ? 'numeric' : undefined, timeZone: 'UTC' }); }
+  function buildOccasions(w) {
+    var pts = w.dates.map(function (d, i) { return { t: Date.parse(d), p: w.partial[i], i: i }; });
+    var full = pts.filter(function (x) { return !x.p; }), lastT = full[full.length - 1].t;
+    var base = {};   // each year's typical week, per house
+    function yearBase(y) {
+      if (base[y] !== undefined) return base[y];
+      var rows = full.filter(function (x) { return new Date(x.t).getUTCFullYear() === y; });
+      base[y] = rows.length >= 40 ? H.reduce(function (o, h) { o[h.id] = median(rows.map(function (x) { return w.series[h.id][x.i]; })); return o; }, {}) : null;
+      return base[y];
+    }
+    // the shopping week: the full week holding the day before the occasion
+    function liftAt(day) {
+      var wk = full.filter(function (x) { return x.t > day - 8 * DAY && x.t <= day - DAY; })[0];
+      if (!wk) return null;
+      var b = yearBase(new Date(wk.t).getUTCFullYear()); if (!b) return null;
+      var r = {}; H.forEach(function (h) { r[h.id] = w.series[h.id][wk.i] / b[h.id]; });
+      r.c = (r.jo + r.dip) / 2; r.k = (r.lelabo + r.byredo) / 2; return r;
+    }
+    var thisY = new Date(TODAY).getUTCFullYear();
+    OCC.forEach(function (o) {
+      o.years = [];
+      for (var y = 2022; y <= thisY; y++) { var d = o.f(y); if (d && d < TODAY) { var r = liftAt(d); if (r) o.years.push({ y: y, d: d, r: r }); } }
+      o.typ = {}; ['c', 'k'].concat(H.map(function (h) { return h.id; })).forEach(function (k) { o.typ[k] = o.years.length ? median(o.years.map(function (x) { return x.r[k]; })) : NaN; });
+      o.wins = o.years.filter(function (x) { return x.r.c > x.r.k; }).length;
+      var top = Math.max(o.typ.c, o.typ.k); o.tier = top >= 1.3 ? 'big' : top >= 1.1 ? 'some' : 'none';
+      [thisY, thisY + 1].some(function (y) { var d = o.f(y); if (d && d >= TODAY) { o.next = d; return true; } return false; });
+      var last = o.years[o.years.length - 1]; if (last && (!PREV || last.d > PREV.d)) PREV = { o: o, d: last.d, y: last.y, r: last.r };
+      if (o.next && o.years.length && (!NEXT || o.next < NEXT.next)) NEXT = o;
+    });
+    // the typical year: each week of the year against its year's typical week, median across full years
+    var bucket = {}; full.forEach(function (x) {
+      var y = new Date(x.t).getUTCFullYear(), b0 = yearBase(y); if (!b0 || y < 2022) return;
+      var doy = Math.floor((x.t + 3 * DAY - U(y, 1, 1)) / DAY), k = Math.min(51, Math.floor(doy / 7));
+      (bucket[k] = bucket[k] || []).push(H.reduce(function (o, h) { o[h.id] = w.series[h.id][x.i] / b0[h.id]; return o; }, {}));
+    });
+    YEAR = []; for (var k = 0; k < 52; k++) { var rows = bucket[k] || bucket[k - 1]; var o = {}; H.forEach(function (h) { o[h.id] = median(rows.map(function (r) { return r[h.id]; })); }); YEAR.push(o); }
+    YEAR = YEAR.map(function (o, k) { var n = {}; H.forEach(function (h) { n[h.id] = (YEAR[(k + 51) % 52][h.id] + o[h.id] * 2 + YEAR[(k + 1) % 52][h.id]) / 4; }); n.c = (n.jo + n.dip) / 2; n.k = (n.lelabo + n.byredo) / 2; return n; });
+    // the game follows the next moment
+    H.forEach(function (h) { h.lift = NEXT.typ[h.id]; });
+  }
 
   /* each house in its own packaging language (drawn from scratch, no logos) */
   var DIP = 'diptyque'.split('').map(function (c, i) { return '<span style="font-size:' + [1, .82, 1.12, .9, 1.2, .86, 1.04, .92][i] + 'em;transform:translateY(' + [0, -2, 1, -3, 2, -1, 0, -2][i] + 'px)">' + c + '</span>'; }).join('');
@@ -321,17 +445,26 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
       var exact = picks.filter(function (id, i) { return shown(id) === order[i].lift.toFixed(1); }).length;
       var topTwo = picks.slice(0, 2).every(function (id) { return H.filter(function (h) { return h.id === id; })[0].g === 'classic'; });
       $('hint').textContent = '';
-      $('verdict').innerHTML = topTwo ? 'You called it: <em>the classics come first.</em>' : 'December surprised you: <em>the classics come first.</em>';
-      $('verdict').innerHTML += '<br><span style="font-size:.55em;font-weight:600;color:var(--mute);letter-spacing:0">You placed ' + exact + ' of 4 in exactly the right spot.</span>';
+      var flat = Math.max.apply(null, H.map(function (h) { return h.lift; })) < 1.1;
+      $('verdict').innerHTML = flat ? 'Trick question: <em>' + NEXT.n + ' barely moves any of them.</em>' :
+        order[0].g === 'cult' ? NEXT.n + ' turns it around: <em>a cult house leads.</em>' :
+        topTwo ? 'You called it: <em>the classics lead ' + NEXT.n + '.</em>' : NEXT.n + ' surprised you: <em>the classics lead.</em>';
+      $('verdict').innerHTML += '<br><span style="font-size:.55em;font-weight:600;color:var(--mute);letter-spacing:0">' + (flat ? 'Every house sits near ×1.0. The calendar below shows when perfume really gets gifted.' : 'You placed ' + exact + ' of 4 in exactly the right spot.') + ' Typical ' + NEXT.n + ' week, ' + NEXT.years.length + ' years of data.</span>';
       $('next1').hidden = false; $('again').hidden = false;
     }, MOTION ? 700 : 0);
   }
   function count(el, to, delay) {
     if (!MOTION) { el.textContent = '×' + to.toFixed(1); return; }
     setTimeout(function () { var t0 = performance.now(); (function f(ts) { var p = Math.min(1, (ts - t0) / 900), e = 1 - Math.pow(1 - p, 3); el.textContent = '×' + (1 + (to - 1) * e).toFixed(1); if (p < 1) requestAnimationFrame(f); })(t0); }, delay);
+    // the final figure always lands, even if the browser pauses animation (e.g. a background tab)
+    setTimeout(function () { el.textContent = '×' + to.toFixed(1); }, delay + 1000);
   }
   $('again').onclick = function () { deal(); };
   deal();
+  ready.then(function () {
+    var days = Math.round((NEXT.next - TODAY) / DAY);
+    $('callSub').innerHTML = 'Next gifting moment: <b>' + NEXT.n + '</b>, ' + (days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days') + '. <b>Tap the four houses in the order you think it lifts their searches</b>, biggest first.';
+  });
 
   /* 2. every year: scrub through the Decembers */
   var played = false;
@@ -367,18 +500,92 @@ h2{font-weight:800;font-size:clamp(40px,6vw,84px);line-height:.92;letter-spacing
     });
   }
 
-  /* 3. this December: countdown and where each house is this week */
+  /* the year dial */
   ready.then(function () {
-    var now = new Date(), y = now.getMonth() === 11 && now.getDate() > 25 ? now.getFullYear() + 1 : now.getFullYear();
-    var days = Math.ceil((new Date(y, 11, 25) - now) / 864e5);
-    $('days').textContent = days;
+    var svg = $('dialSvg'), NS = 'http://www.w3.org/2000/svg', Y = new Date(TODAY).getUTCFullYear(), Y0 = U(Y, 1, 1);
+    var R0 = 158, K = 82;                        // radius of ×0.8, and pixels per ×1: quiet months make a full circle, winter swells out of it
+    function r(v) { return R0 + (Math.max(.8, Math.min(2.3, v)) - .8) * K; }
+    function ang(k) { return k / 52 * 2 * Math.PI; }   // 0 = 1 Jan at the top, clockwise
+    function pt(a, rad) { return [Math.sin(a) * rad, -Math.cos(a) * rad]; }
+    function el(tag, at) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); svg.appendChild(e); return e; }
+    function ring(key) { return YEAR.map(function (o, k) { var p = pt(ang(k + .5), r(o[key])); return (k ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join('') + 'Z'; }
+    // months
+    ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].forEach(function (m, i) {
+      var a = (U(Y, i + 1, 1) - Y0) / (365 * DAY) * 2 * Math.PI, ma = a + (15 / 365) * 2 * Math.PI, p = pt(ma, R0 - 20), q1 = pt(a, R0 - 8), q2 = pt(a, R0 + 4);
+      el('line', { x1: q1[0], y1: q1[1], x2: q2[0], y2: q2[1], stroke: '#ddd2c6', 'stroke-width': 1.5 });
+      var t = el('text', { x: p[0], y: p[1] + 4, 'text-anchor': 'middle', class: 'mo' }); t.textContent = m;
+    });
+    el('circle', { r: r(1), fill: 'none', stroke: '#33292c55', 'stroke-dasharray': '3 5', 'stroke-width': 1.2 });
+    el('path', { d: ring('c'), fill: '#80002024', stroke: '#800020', 'stroke-width': 3, 'stroke-linejoin': 'round' });
+    el('path', { d: ring('k'), fill: 'none', stroke: '#800020', 'stroke-width': 2, 'stroke-dasharray': '6 5', 'stroke-linejoin': 'round' });
+    // the ten moments: big ones labelled in burgundy, quiet ones as small grey dots
+    function doyOf(o) { var d = o.f(Y) || o.next; return (d - U(new Date(d).getUTCFullYear(), 1, 1)) / DAY; }
+    var lastDoy = -99, lift = 0;
+    OCC.filter(function (o) { return o.years.length; }).sort(function (x, y) { return doyOf(x) - doyOf(y); }).forEach(function (o) {
+      var doy = doyOf(o); lift = doy - lastDoy < 16 ? lift + 1 : 0; lastDoy = doy;
+      var top = Math.max(r(YEAR[Math.min(51, Math.floor(doy / 7))].c), r(YEAR[Math.min(51, Math.floor(doy / 7))].k));
+      var a = doy / 365 * 2 * Math.PI, big = o.tier !== 'none', p = pt(a, top + 28), d = pt(a, r(1));
+      el('circle', { cx: d[0], cy: d[1], r: big ? 4.5 : 3, fill: big ? '#800020' : '#7d726b' });
+      var t = el('text', { x: p[0], y: p[1] + 4 + lift * 14 * (Math.cos(a) > 0 ? -1 : 1), 'text-anchor': Math.sin(a) > .15 ? 'start' : Math.sin(a) < -.15 ? 'end' : 'middle', class: 'hol' + (big ? '' : ' quiet') });
+      t.textContent = o.n; t.addEventListener('click', function () { set(doyOf(o) - 1); });
+    });
+    // today, and the hand
+    var td = (TODAY - Y0) / DAY, tp = pt(td / 365 * 2 * Math.PI, 250);
+    el('circle', { cx: tp[0], cy: tp[1], r: 5, fill: '#fffcf6', stroke: '#c9952c', 'stroke-width': 2 });
+    var g = el('g', { class: 'hand' }), line = document.createElementNS(NS, 'line'), knob = document.createElementNS(NS, 'circle');
+    line.setAttribute('stroke', '#c9952c'); line.setAttribute('stroke-width', 3); line.setAttribute('stroke-linecap', 'round');
+    knob.setAttribute('r', 10); knob.setAttribute('fill', '#c9952c'); knob.setAttribute('class', 'knob'); knob.setAttribute('stroke', '#fffcf6'); knob.setAttribute('stroke-width', 3);
+    g.appendChild(line); g.appendChild(knob);
+    // the houses, re-ranked for the week under the hand
+    $('rank').innerHTML = H.map(function (h) { return '<div class="r ' + h.g + '" data-id="' + h.id + '">' + MINI[h.id] + '<i></i><output></output></div>'; }).join('');
+    var rows = {}; [].forEach.call($('rank').children, function (e) { rows[e.dataset.id] = e; });
+    $('chips').innerHTML = '<button type="button" class="today" data-d="' + td + '">Today</button>' + OCC.filter(function (o) { return o.tier !== 'none' && o.years.length; }).map(function (o) { return '<button type="button" data-d="' + (doyOf(o) - 1) + '">' + o.n + '</button>'; }).join('');
+    [].forEach.call($('chips').children, function (b) { b.onclick = function () { set(+b.dataset.d); }; });
+    var cur = td;
+    function set(doy) {
+      doy = ((doy % 365) + 365) % 365; cur = doy;
+      var k = Math.min(51, Math.floor(doy / 7)), o = YEAR[k], a = doy / 365 * 2 * Math.PI, p = pt(a, r(Math.max(o.c, o.k)));   // the knob rides the edge of the band
+      line.setAttribute('x2', p[0]); line.setAttribute('y2', p[1]); knob.setAttribute('cx', p[0]); knob.setAttribute('cy', p[1]);
+      var day = Y0 + doy * DAY, near = null;
+      OCC.forEach(function (oc) { if (!oc.years.length) return; var dd = doyOf(oc) - doy; if (dd >= -3 && dd <= 24 && (!near || dd < near.dd)) near = { o: oc, dd: Math.round(dd) }; });
+      var mood = Math.max(o.c, o.k) >= 1.5 ? 'Peak gifting' : Math.max(o.c, o.k) >= 1.15 ? 'Rising' : 'A quiet week';
+      $('center').innerHTML = '<small>Week of ' + fmt(day) + '</small><b>' + mood + '</b>' +
+        '<p>' + (near ? (near.dd <= 0 ? near.o.n + ' week' : near.dd + (near.dd === 1 ? ' day' : ' days') + ' before ' + near.o.n) : 'No gifting moment nearby') + '</p>' +
+        '<div class="vs"><span>×' + o.c.toFixed(1) + '<em>CLASSIC</em></span><span style="color:var(--mute)">×' + o.k.toFixed(1) + '<em>CULT</em></span></div>';
+      var order = H.slice().sort(function (x, y) { return o[y.id] - o[x.id]; }), step = rows[H[1].id].offsetTop - rows[H[0].id].offsetTop || 34;
+      order.forEach(function (h, i) { var e = rows[h.id]; e.style.transform = 'translateY(' + ((i - H.indexOf(h)) * step) + 'px)'; e.querySelector('i').style.width = Math.max(4, Math.min(100, (o[h.id] - .6) / 1.7 * 100)) + '%'; e.querySelector('output').textContent = '×' + o[h.id].toFixed(1); });
+      $('pick').value = new Date(day).toISOString().slice(0, 10);
+    }
+    // drag the hand (mouse, touch or pen); arrow keys move it a week
+    var dial = $('dial'), dragging = false;
+    function fromEvent(e) { var b = svg.getBoundingClientRect(), x = e.clientX - (b.left + b.width / 2), y = e.clientY - (b.top + b.height / 2), a = Math.atan2(x, -y); if (a < 0) a += 2 * Math.PI; set(a / (2 * Math.PI) * 365); }
+    dial.addEventListener('pointerdown', function (e) { if (e.target.classList && e.target.classList.contains('hol')) return; dragging = true; dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); fromEvent(e); });
+    dial.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
+    dial.addEventListener('pointerup', function () { dragging = false; dial.classList.remove('drag'); });
+    dial.tabIndex = 0; dial.setAttribute('aria-label', 'Year dial: use the arrow keys to move a week');
+    dial.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { set(cur + 7); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { set(cur - 7); e.preventDefault(); } });
+    $('pick').addEventListener('change', function () { var v = Date.parse(this.value); if (!isNaN(v)) { var d = new Date(v); set((U(Y, d.getUTCMonth() + 1, d.getUTCDate()) - Y0) / DAY); } });
+    set(td);
+  });
+
+  /* 3. next up: countdown and where each house is this week */
+  ready.then(function () {
+    var days = Math.round((NEXT.next - TODAY) / DAY);
+    $('days').textContent = days; $('nextName').textContent = NEXT.n;
+    if (PREV) {
+      var r = PREV.r, o = PREV.o, ahead = r.c > r.k;
+      $('went').innerHTML = '<small>How it went · ' + o.n + ' ' + PREV.y + '</small><b>' + (o.tier === 'none' ? 'Quiet, as usual.' : ahead ? 'The classics led again.' : 'The cult houses led this time.') + '</b>' +
+        '<p>In the week before ' + o.n + ', classic names ×' + r.c.toFixed(1) + ' and cult houses ×' + r.k.toFixed(1) + ', against a typical ×' + o.typ.c.toFixed(1) + ' and ×' + o.typ.k.toFixed(1) + '.</p>';
+      $('went').hidden = false;
+    }
     var rows = H.slice().sort(function (a, b) { return b.now - a.now; });
     $('therm').innerHTML = rows.map(function (h) {
       return '<div class="th ' + h.g + '" data-id="' + h.id + '"><small><span class="sr-only">' + h.n + '</span>' + MINI[h.id] + '</small><div class="rule"><span class="mid"></span><span class="dot" style="left:50%"></span></div><output>×' + h.now.toFixed(1) + '</output></div>';
     }).join('');
     var hot = rows[0];
-    $('nowNote').textContent = hot.g === 'cult' ? hot.n + ' is running hottest right now. If a cult house keeps that up through December, it would break the pattern for the first time since 2018.' :
-      hot.n + ' leads this week. So far, December is following the usual script.';
+    $('nowNote').textContent = NEXT.tier === 'none' ? hot.n + ' leads this week. ' + NEXT.n + ' usually leaves these searches flat.' :
+      hot.g === 'cult' ? hot.n + ' is running hottest right now. If a cult house keeps that up through ' + NEXT.n + ', it would break the pattern.' :
+      hot.n + ' leads this week. So far, ' + NEXT.n + ' is following the usual script.';
     $('foot').textContent = 'Google Trends (worldwide) via SerpApi, latest full week starting ' + new Date(hot.week).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', and Wikimedia pageviews. Refreshed every morning.';
   });
   var placed = false;
