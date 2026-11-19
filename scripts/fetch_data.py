@@ -5,8 +5,8 @@ Run every morning by .github/workflows/data.yml. Uses only the standard library.
 
   data/trends.json  Google Trends search interest (via SerpApi), the main signal.
                     Needs the SERPAPI_KEY environment variable. Each pull is two requests, one per
-                    batch of similar-sized houses (gift names / cult houses), so small houses keep
-                    detail on Google's 0-100 scale. Every figure on the site is a house against its
+                    batch of similar-sized houses (the four big names / the two smaller houses), so
+                    small houses keep detail on Google's 0-100 scale. Every figure on the site is a house against its
                     own typical month, so the batches never need a shared scale.
                     - weekly, last 5 years: "this week" and the long-run chart (daily)
                     - monthly, all time:    the December lift (refreshed weekly)
@@ -37,8 +37,9 @@ BRANDS = {
     'malle': ('Frederic Malle', 'Frédéric_Malle'),
 }
 
-# Google Trends compares up to 5 terms per request; group houses of similar size.
-BATCHES = [['jo', 'dip', 'molton'], ['lelabo', 'byredo', 'malle']]
+# Google Trends compares up to 5 terms per request and scales each request to its biggest
+# term, so houses of similar size share a request (small ones would round to a few points).
+BATCHES = [['jo', 'dip', 'lelabo', 'byredo'], ['molton', 'malle']]
 
 
 def get_json(url, tries=3):
@@ -130,14 +131,14 @@ def fetch_trends_range(key, date_range):
 def fetch_trends(key):
     old = load('trends.json') or {}
     out = {'fetched': now(), 'source': 'Google Trends via SerpApi', 'geo': 'Worldwide',
-           'terms': {bid: term for bid, (term, _) in BRANDS.items()}}
+           'terms': {bid: term for bid, (term, _) in BRANDS.items()}, 'batches': BATCHES}
     out['weekly'] = fetch_trends_range(key, 'today 5-y')
     # Monthly history barely changes, so refresh it once a week (keeps SerpApi use ~70 a month).
     monthly_age = None
     if old.get('monthly_fetched'):
         monthly_age = dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(old['monthly_fetched'])
-    has_all = set(BRANDS) <= set((old.get('monthly') or {}).get('series', {}))
-    if has_all and monthly_age is not None and monthly_age < dt.timedelta(days=7):
+    same = old.get('batches') == BATCHES and set(BRANDS) <= set((old.get('monthly') or {}).get('series', {}))
+    if same and monthly_age is not None and monthly_age < dt.timedelta(days=7):
         out['monthly'], out['monthly_fetched'] = old['monthly'], old['monthly_fetched']
     else:
         out['monthly'], out['monthly_fetched'] = fetch_trends_range(key, 'all'), now()
