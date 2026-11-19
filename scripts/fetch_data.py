@@ -136,7 +136,8 @@ def fetch_trends(key):
     monthly_age = None
     if old.get('monthly_fetched'):
         monthly_age = dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(old['monthly_fetched'])
-    if old.get('monthly') and monthly_age is not None and monthly_age < dt.timedelta(days=7):
+    has_all = set(BRANDS) <= set((old.get('monthly') or {}).get('series', {}))
+    if has_all and monthly_age is not None and monthly_age < dt.timedelta(days=7):
         out['monthly'], out['monthly_fetched'] = old['monthly'], old['monthly_fetched']
     else:
         out['monthly'], out['monthly_fetched'] = fetch_trends_range(key, 'all'), now()
