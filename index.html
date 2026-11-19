@@ -49,7 +49,8 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .fl{display:flex;flex-direction:column;align-items:center;border-radius:20px;padding:2px 0 8px;transition:background .4s}
 .fl:hover:not(:disabled){background:#00000006}
 .fl:disabled{cursor:default}
-.fl svg{width:100%;max-width:180px;height:auto;overflow:visible}
+.fl svg{width:auto;height:clamp(84px,calc((100svh - 420px) / 2),178px);max-width:100%;overflow:visible}
+#call{padding-top:52px;padding-bottom:28px}
 .petal{transition:transform 1.1s var(--ease),opacity .35s;transform-box:fill-box;transform-origin:50% 100%}
 .fl .nm{font:600 clamp(18px,1.9vw,24px)/1.1 var(--serif)}
 .fl .kind{font:500 10px var(--sans);letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin-top:3px}
@@ -57,7 +58,8 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .fl.mine{background:#c9952c14;box-shadow:inset 0 0 0 1px #c9952c55}
 .fl.mine .nm::after{content:' ✦';color:var(--you)}
 .months{max-width:760px;margin:12px auto 0;user-select:none;touch-action:none}
-.months[hidden]{display:none}
+.months.idle{opacity:.4;pointer-events:none}
+.months{transition:opacity .5s}
 .months .rail{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
 .months button{font:500 12px var(--sans);letter-spacing:.08em;color:var(--mute);padding:10px 0;border-radius:999px;transition:all .25s}
 .months button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -138,7 +140,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 
 @media (max-width:760px){
   .top{padding:16px}.scene{padding:56px 14px 40px}
-  .garden{gap:4px}.fl svg{max-width:104px}.fl .kind{font-size:8.5px;letter-spacing:.1em}.fl .nm{font-size:16px}.fl .val{font-size:18px}
+  .garden{gap:4px}.fl svg{height:clamp(84px,calc((100svh - 470px) / 2),104px)}.fl .kind{font-size:8.5px;letter-spacing:.1em}.fl .nm{font-size:16px}.fl .val{font-size:18px}
   .months button{font-size:9.5px;padding:8px 0}
   .yearwrap{grid-template-columns:1fr;gap:14px}.dial .hol{font-size:24px}.dial .hol.quiet{display:none}.dial .mo{font-size:18px}
   .rank .r{grid-template-columns:104px 1fr 40px}.rank .r span{font-size:15px}
@@ -155,7 +157,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   <h1 id="kin">What gets bought as a gift?</h1>
   <p class="prompt" id="prompt">Tap the flower you think the next gifting moment makes biggest.</p>
   <div class="garden" id="garden"></div>
-  <div class="months" id="months" hidden><div class="rail" id="rail" role="group" aria-label="Pick a month"></div></div>
+  <div class="months idle" id="months"><div class="rail" id="rail" role="group" aria-label="Pick a month"></div></div>
   <p class="say" id="say" aria-live="polite"></p>
   <div class="row"><a class="pill" id="next1" href="#years" hidden>Is it every year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Pick again</button></div>
 </div></section>
@@ -365,7 +367,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     open = true;
     document.querySelectorAll('.fl').forEach(f => f.disabled = true);
     document.querySelectorAll('.petal').forEach(p => { p.style.transitionDelay = MOTION ? (+p.dataset.i * .06) + 's' : '0s'; p.style.transform = 'scale(1)'; });
-    setTimeout(() => { $('months').hidden = false; showNext(); }, MOTION ? 1300 : 0);
+    setTimeout(() => { $('months').classList.remove('idle'); showNext(); }, MOTION ? 1300 : 0);
   }
   function highlight(m) {
     month = m;
@@ -402,7 +404,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     mo.addEventListener('pointerup', () => { drag = false; });
     mo.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { showMonth(Math.min(11, month + 1)); e.preventDefault(); } if (e.key === 'ArrowLeft') { showMonth(Math.max(0, month - 1)); e.preventDefault(); } });
   })();
-  $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').hidden = true; $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; setPrompt(); };
+  $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').classList.add('idle'); document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', false)); $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; setPrompt(); };
   function setPrompt() {
     const days = Math.round((NEXT.next - TODAY) / DAY);
     $('prompt').innerHTML = `Next gifting moment: <b>${NEXT.n}</b>, ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}. Tap the flower you think it makes biggest.`;
@@ -466,15 +468,22 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     svgEl(svg, 'circle', { r: RD - 6, fill: '#fdfcfb', stroke: '#ebe7e2', 'stroke-width': 1.5 });
     // the ten moments: big ones in plum serif, quiet ones small and grey
     const doyOf = o => { const d = o.f(Y) || o.next; return (d - U(new Date(d).getUTCFullYear(), 1, 1)) / DAY; };
-    let lastDoy = -99, bump = 0;
+    // holidays within 12 days of each other share one label, stacked line by line, so names never overlap
+    const groups = [];
     OCC.filter(o => o.years.length).sort((x, y) => doyOf(x) - doyOf(y)).forEach(o => {
-      const doy = doyOf(o); bump = doy - lastDoy < 16 ? bump + 1 : 0; lastDoy = doy;
-      const o2 = YEAR[Math.min(51, Math.floor(doy / 7))], a = ang(doy), big = o.tier !== 'none';
-      const p = pt(a, RD + Math.max(L(o2.c), L(o2.k)) + 16 + bump * 16), d = pt(a, RD - 6);
-      svgEl(svg, 'circle', { cx: d[0], cy: d[1], r: big ? 3.5 : 2.5, fill: big ? '#8e3b5f' : '#a49a90' });
-      const s = Math.sin(a * Math.PI / 180);
-      const t = svgEl(svg, 'text', { x: p[0], y: p[1] + 5, 'text-anchor': s > .2 ? 'start' : s < -.2 ? 'end' : 'middle', class: 'hol' + (big ? '' : ' quiet') });
-      t.textContent = o.n; t.addEventListener('click', () => set(doyOf(o) - 1));
+      const last = groups[groups.length - 1];
+      if (last && doyOf(o) - doyOf(last[last.length - 1]) <= 12) last.push(o); else groups.push([o]);
+    });
+    groups.forEach(gr => {
+      gr.forEach(o => { const d = pt(ang(doyOf(o)), RD - 6), big = o.tier !== 'none'; svgEl(svg, 'circle', { cx: d[0], cy: d[1], r: big ? 3.5 : 2.5, fill: big ? '#8e3b5f' : '#a49a90' }); });
+      const doy = mean(gr.map(doyOf)), a = ang(doy), s = Math.sin(a * Math.PI / 180), c = Math.cos(a * Math.PI / 180);
+      const reach = Math.max(...gr.map(o => { const w = YEAR[Math.min(51, Math.floor(doyOf(o) / 7))]; return Math.max(L(w.c), L(w.k)); }));
+      const p = pt(a, RD + reach + 18), lh = 19, y0 = p[1] + 5 - (c < -.2 ? 0 : c > .2 ? (gr.length - 1) * lh : (gr.length - 1) * lh / 2);
+      const t = svgEl(svg, 'text', { x: p[0], y: y0, 'text-anchor': s > .2 ? 'start' : s < -.2 ? 'end' : 'middle' });
+      gr.forEach((o, i) => {
+        const ts = svgEl(t, 'tspan', { x: p[0], dy: i ? lh : 0, class: 'hol' + (o.tier !== 'none' ? '' : ' quiet') });
+        ts.textContent = o.n; ts.addEventListener('click', () => set(doyOf(o) - 1));
+      });
     });
     // today and the hand
     const td = (TODAY - Y0) / DAY;
