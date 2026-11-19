@@ -1,0 +1,29 @@
+# One-off: tests extra perfume houses on Google Trends. Run it from the Actions tab.
+name: Screen new houses
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch each candidate from Google Trends
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python3 scripts/screen_houses.py
+      - name: Commit the results
+        run: |
+          git config user.name "gifting-index-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/screen.json
+          git diff --cached --quiet || { git commit -m "Screen new houses"; git push; }
