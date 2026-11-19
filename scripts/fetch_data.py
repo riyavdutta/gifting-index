@@ -4,9 +4,13 @@
 Run every morning by .github/workflows/data.yml. Uses only the standard library.
 
   data/trends.json  Google Trends search interest (via SerpApi), the main signal.
-                    Needs the SERPAPI_KEY environment variable. Two requests a run:
-                    - weekly, last 5 years: "this week" and the long-run chart
-                    - monthly, all time:    the December lift (only refreshed weekly)
+                    Needs the SERPAPI_KEY environment variable. Each pull is two requests, one per
+                    batch of similar-sized houses (gift names / cult houses), so small houses keep
+                    detail on Google's 0-100 scale. Every figure on the site is a house against its
+                    own typical month, so the batches never need a shared scale.
+                    - weekly, last 5 years: "this week" and the long-run chart (daily)
+                    - monthly, all time:    the December lift (refreshed weekly)
+                    About 70 SerpApi searches a month.
   data/wiki.json    Daily Wikipedia pageviews, the second signal. No key needed.
 
 If a fetch fails, the old file is kept, so the site always has the last good data.
@@ -29,7 +33,12 @@ BRANDS = {
     'dip': ('Diptyque', 'Diptyque'),
     'lelabo': ('Le Labo', 'Le_Labo'),
     'byredo': ('Byredo', 'Byredo'),
+    'molton': ('Molton Brown', 'Molton_Brown'),
+    'malle': ('Frederic Malle', 'Frédéric_Malle'),
 }
+
+# Google Trends compares up to 5 terms per request; group houses of similar size.
+BATCHES = [['jo', 'dip', 'molton'], ['lelabo', 'byredo', 'malle']]
 
 
 def get_json(url, tries=3):
@@ -80,18 +89,18 @@ def fetch_wiki():
 
 # ---------------------------------------------------------------- Google Trends
 
-def parse_trends(resp):
+def parse_trends(resp, ids):
     """SerpApi google_trends TIMESERIES response -> {dates, partial, series}.
-    Values are Google's 0-100 scale, relative to the highest point across all four terms."""
+    Values are Google's 0-100 scale, relative to the highest point among this batch's terms."""
     if resp.get('error'):
         raise RuntimeError('SerpApi: ' + resp['error'])
-    term_to_id = {term.lower(): bid for bid, (term, _) in BRANDS.items()}
-    dates, partial, series = [], [], {bid: [] for bid in BRANDS}
+    term_to_id = {BRANDS[bid][0].lower(): bid for bid in ids}
+    dates, partial, series = [], [], {bid: [] for bid in ids}
     for point in resp['interest_over_time']['timeline_data']:
         dates.append(dt.datetime.fromtimestamp(int(point['timestamp']), dt.timezone.utc).strftime('%Y-%m-%d'))
         partial.append(bool(point.get('partial_data')))
         got = {term_to_id[v['query'].lower()]: v.get('extracted_value', 0) for v in point['values']}
-        for bid in BRANDS:
+        for bid in ids:
             series[bid].append(got.get(bid, 0))
     if not dates:
         raise RuntimeError('SerpApi returned no timeline data')
@@ -99,11 +108,23 @@ def parse_trends(resp):
 
 
 def fetch_trends_range(key, date_range):
-    q = ','.join(term for term, _ in BRANDS.values())
-    url = 'https://serpapi.com/search.json?' + urllib.parse.urlencode({
-        'engine': 'google_trends', 'data_type': 'TIMESERIES', 'q': q, 'date': date_range, 'api_key': key,
-    })
-    return parse_trends(get_json(url))
+    """One request per batch, merged on the shared dates."""
+    out = None
+    for ids in BATCHES:
+        q = ','.join(BRANDS[bid][0] for bid in ids)
+        url = 'https://serpapi.com/search.json?' + urllib.parse.urlencode({
+            'engine': 'google_trends', 'data_type': 'TIMESERIES', 'q': q, 'date': date_range, 'api_key': key,
+        })
+        part = parse_trends(get_json(url), ids)
+        if out is None:
+            out = part
+            continue
+        n = min(len(out['dates']), len(part['dates']))
+        if out['dates'][:n] != part['dates'][:n]:
+            raise RuntimeError('Trends batches came back with different dates')
+        out['dates'], out['partial'] = out['dates'][:n], [a or b for a, b in zip(out['partial'][:n], part['partial'][:n])]
+        out['series'] = {bid: v[:n] for bid, v in {**out['series'], **part['series']}.items()}
+    return out
 
 
 def fetch_trends(key):
@@ -111,7 +132,7 @@ def fetch_trends(key):
     out = {'fetched': now(), 'source': 'Google Trends via SerpApi', 'geo': 'Worldwide',
            'terms': {bid: term for bid, (term, _) in BRANDS.items()}}
     out['weekly'] = fetch_trends_range(key, 'today 5-y')
-    # Monthly history barely changes, so refresh it once a week (keeps SerpApi use ~35 a month).
+    # Monthly history barely changes, so refresh it once a week (keeps SerpApi use ~70 a month).
     monthly_age = None
     if old.get('monthly_fetched'):
         monthly_age = dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(old['monthly_fetched'])
