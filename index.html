@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://gifting-index.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-16 -16 32 32%27%3E%3Cg fill=%27%238e3b5f%27 fill-opacity=%27.75%27%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(72)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(144)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(216)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(288)%27/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#fdfcfb;--paper2:#f4f2ef;--ink:#2b2622;--mute:#736b63;--line:#e7e3de;--you:#c9952c;
   --gift:#8e3b5f;--cult:#6f8f6a;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Zen Kaku Gothic New',system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.2,1)}
@@ -448,53 +448,172 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     lines.push(line); lines.forEach((l, i) => ctx.fillText(l, x, y + i * lh)); return lines.length;
   }
   const val = id => $(id).value.trim();
+/* ---------- month flowers: one pressed flower for each birth month, drawn flat ---------- */
+  const MF = ['Snowdrop', 'Violet', 'Daffodil', 'Sweet pea', 'Lily of the valley', 'Rose', 'Larkspur', 'Poppy', 'Aster', 'Cosmos', 'Chrysanthemum', 'Holly'];
+  const LEAF = '#7f9a6a', STEM = '#86977a';
+  function pressedFill(c, path, col, a, line) {
+    c.save(); c.shadowColor = 'rgba(60,40,30,.13)'; c.shadowBlur = 8; c.shadowOffsetY = 3;
+    c.globalAlpha = a; c.fillStyle = col; c.fill(path); c.restore();
+    c.save(); c.globalAlpha = .55; c.strokeStyle = line || col; c.lineWidth = 1.6; c.stroke(path); c.restore();
+  }
+  const ell = (x, y, rx, ry, rot) => { const p = new Path2D(); p.ellipse(x, y, rx, ry, rot || 0, 0, Math.PI * 2); return p; };
+  function stem(c, pts, w) { c.save(); c.strokeStyle = STEM; c.lineWidth = w || 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(pts[0], pts[1]); c.bezierCurveTo(...pts.slice(2)); c.stroke(); c.restore(); }
+  function leaf(c, x, y, len, wid, rot, col) {
+    c.save(); c.translate(x, y); c.rotate(rot);
+    const p = new Path2D(`M0,0 C${wid},${-len * .3} ${wid * .8},${-len * .8} 0,${-len} C${-wid * .8},${-len * .8} ${-wid},${-len * .3} 0,0Z`);
+    pressedFill(c, p, col || LEAF, .62);
+    c.globalAlpha = .4; c.strokeStyle = '#5d7550'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, -4); c.lineTo(0, -len * .92); c.stroke(); c.restore();
+  }
+  function ring(c, n, r, w, col, a, off) { for (let i = 0; i < n; i++) { c.save(); c.rotate((i + (off || 0)) * 2 * Math.PI / n); pressedFill(c, ell(0, -r, w, r, 0), col, a); c.restore(); } }
+  function heart(c, x, y, s) { c.fillStyle = '#e9c95a'; c.beginPath(); c.arc(x, y, s, 0, 7); c.fill(); }
+  // each draws with the flower head near (0,0) and the stem running down to about y = 300
+  const DRAW = [
+    c => { // snowdrop: nodding white bells
+      stem(c, [0, 300, 6, 180, -4, 40, 30, 0], 3.5); leaf(c, -2, 300, 230, 12, -.18); leaf(c, 2, 300, 190, 11, .22);
+      c.save(); c.translate(38, 18); c.rotate(.3); c.scale(1.45, 1.45);
+      for (const r of [-.45, 0, .45]) pressedFill(c, ell(Math.sin(r) * 10, 34, 13, 32, r), '#f3f1ec', .95, '#b8c2ad');
+      c.fillStyle = '#8fae7a'; c.beginPath(); c.arc(0, 4, 7, 0, 7); c.fill(); c.restore();
+    },
+    c => { // violet
+      stem(c, [0, 300, -8, 200, 8, 80, 0, 10], 3); leaf(c, 0, 230, 70, 40, -1.1); leaf(c, 0, 190, 60, 34, 1.0);
+      const pp = [[0, -34, 20, 26, 0], [-30, -10, 20, 24, -1.1], [30, -10, 20, 24, 1.1], [-18, 22, 20, 24, -2.4], [18, 22, 20, 24, 2.4]];
+      pp.forEach(([x, y, rx, ry, r]) => pressedFill(c, ell(x, y, rx, ry, r), '#7a59a8', .78));
+      heart(c, 0, 0, 6);
+    },
+    c => { // daffodil
+      leaf(c, -6, 300, 250, 13, -.12, '#8aa476'); leaf(c, 6, 300, 220, 12, .16, '#8aa476'); stem(c, [0, 300, 4, 200, -4, 100, 0, 20], 4);
+      ring(c, 6, 40, 18, '#efe2a2', .9); c.save(); c.rotate(.5);
+      pressedFill(c, ell(0, 0, 26, 26), '#e9c84a', .92); c.globalAlpha = .45; c.strokeStyle = '#b89a2c'; c.lineWidth = 1.5;
+      for (let i = 0; i < 12; i++) { c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.cos(i * .52) * 24, Math.sin(i * .52) * 24); c.stroke(); } c.restore();
+    },
+    c => { // sweet pea: ruffled pink with a curling tendril
+      stem(c, [0, 300, -6, 200, 10, 100, 0, 20], 3);
+      c.save(); c.strokeStyle = STEM; c.lineWidth = 2; c.beginPath(); for (let t = 0; t < 14; t += .2) { const r = 26 - t * 1.6; c.lineTo(40 + Math.cos(t) * r, 170 + Math.sin(t) * r); } c.stroke(); c.restore();
+      leaf(c, 0, 220, 60, 22, -1.0);
+      pressedFill(c, ell(0, -8, 42, 36), '#e9a3bd', .82); pressedFill(c, ell(-14, 18, 22, 18, -.4), '#d97ea0', .85); pressedFill(c, ell(14, 18, 22, 18, .4), '#d97ea0', .85);
+      c.save(); c.translate(34, 70); c.scale(.6, .6); pressedFill(c, ell(0, -8, 42, 36), '#c9a2d8', .82); pressedFill(c, ell(0, 18, 26, 18), '#b383c9', .85); c.restore();
+    },
+    c => { // lily of the valley: a broad leaf and a row of bells
+      leaf(c, 20, 300, 260, 52, -.12); stem(c, [0, 300, -10, 160, 10, 40, 70, 10], 2.5);
+      for (let i = 0; i < 6; i++) { const t = i / 5, x = 70 - t * 70 + (1 - t) * 0, y = 10 + t * 150 - t * t * 40;
+        c.save(); c.translate(x + 14, y + 18); c.strokeStyle = STEM; c.lineWidth = 1.4; c.beginPath(); c.moveTo(0, -18); c.lineTo(0, -8); c.stroke();
+        const p = new Path2D('M-13,6 C-14,-6 -8,-12 0,-12 C8,-12 14,-6 13,6 C10,3 8,9 5,6 C3,10 -3,10 -5,6 C-8,9 -10,3 -13,6Z');
+        pressedFill(c, p, '#f6f5ef', .97, '#b9c4ad'); c.restore(); }
+    },
+    c => { // rose
+      stem(c, [0, 300, 6, 200, -6, 100, 0, 30], 4.5); leaf(c, 0, 200, 64, 26, -1.2); leaf(c, 0, 150, 58, 24, 1.1); leaf(c, 0, 240, 54, 22, .9);
+      for (let k = 0; k < 4; k++) { const r = 46 - k * 11; c.save(); c.rotate(k * .7); ring(c, 5, r * .55, r * .55, ['#e8a0b4', '#dc839e', '#cf6b8a', '#b9516f'][k], .55); c.restore(); }
+    },
+    c => { // larkspur: a spike of small florets
+      stem(c, [0, 300, 4, 200, -4, 100, 0, -110], 3); leaf(c, 0, 280, 70, 10, -.9); leaf(c, 0, 270, 64, 10, .8);
+      for (let i = 0; i < 9; i++) { const y = 150 - i * 30, s = 1 - i * .08, x = (i % 2 ? 1 : -1) * 12;
+        c.save(); c.translate(x, y); c.scale(s, s); ring(c, 5, 13, 9, '#8d72c6', .78); heart(c, 0, 0, 3); c.restore(); }
+    },
+    c => { // poppy (pink)
+      stem(c, [0, 300, 14, 200, -10, 100, 0, 30], 3); leaf(c, 0, 260, 80, 22, -.8, '#93a888');
+      [[-26, -18], [26, -18], [-24, 22], [24, 22]].forEach(([x, y], i) => { const p = ell(x, y, 40, 36, i * .4); pressedFill(c, p, '#e7819c', .72);
+        c.save(); c.clip(p); c.globalAlpha = .25; c.strokeStyle = '#a84a66'; for (let j = 0; j < 8; j++) { c.beginPath(); c.moveTo(0, 0); c.lineTo(x * 3 + (j - 4) * 12, y * 3 + (j - 4) * 6); c.stroke(); } c.restore(); });
+      c.fillStyle = '#3c2c3a'; c.beginPath(); c.arc(0, 0, 13, 0, 7); c.fill();
+      c.strokeStyle = '#3c2c3a'; c.lineWidth = 1.2; for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8; c.beginPath(); c.moveTo(Math.cos(a) * 12, Math.sin(a) * 12); c.lineTo(Math.cos(a) * 22, Math.sin(a) * 22); c.stroke(); }
+    },
+    c => { // aster: many thin rays
+      stem(c, [0, 300, -6, 200, 6, 100, 0, 20], 3); leaf(c, 0, 210, 70, 14, -1.0); leaf(c, 0, 170, 64, 13, 1.0);
+      ring(c, 26, 30, 4.5, '#a891d6', .78); ring(c, 26, 20, 3.5, '#9278c8', .6, .5); heart(c, 0, 0, 11);
+    },
+    c => { // cosmos: broad notched petals
+      stem(c, [0, 300, 10, 200, -8, 100, 0, 20], 2.5);
+      c.save(); c.strokeStyle = LEAF; c.lineWidth = 1.6; for (let i = 0; i < 6; i++) { const y = 170 + i * 16; c.beginPath(); c.moveTo(0, y); c.lineTo((i % 2 ? 1 : -1) * 34, y - 18); c.stroke(); } c.restore();
+      for (let i = 0; i < 8; i++) { c.save(); c.rotate(i * Math.PI / 4);
+        pressedFill(c, new Path2D('M0,-6 C16,-14 22,-40 18,-54 L10,-50 L4,-56 L-4,-50 L-10,-56 L-18,-52 C-22,-40 -16,-14 0,-6Z'), '#e6a3c4', .8); c.restore(); }
+      heart(c, 0, 0, 10);
+    },
+    c => { // chrysanthemum: dense narrow petals
+      stem(c, [0, 300, -8, 200, 8, 100, 0, 20], 4); leaf(c, 0, 200, 66, 26, -1.1, '#8a9c78'); leaf(c, 0, 160, 58, 22, 1.0, '#8a9c78');
+      ring(c, 22, 34, 6, '#e4b3c4', .7); ring(c, 18, 24, 5.5, '#d897ae', .72, .5); ring(c, 12, 14, 5, '#c97d97', .78); 
+    },
+    c => { // holly: spiky leaves and berries
+      stem(c, [0, 300, 4, 220, -4, 120, 0, 40], 3);
+      const spiky = 'M0,0 L10,-14 L22,-12 L20,-28 L32,-34 L24,-48 L32,-62 L18,-64 L12,-80 L0,-92 L-12,-80 L-18,-64 L-32,-62 L-24,-48 L-32,-34 L-20,-28 L-22,-12 L-10,-14Z';
+      [[0, 70, -.9], [0, 60, .9], [0, 30, 0]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r); pressedFill(c, new Path2D(spiky), '#4f7d58', .78); c.restore(); });
+      [[-10, 26], [10, 24], [0, 40]].forEach(([x, y]) => { pressedFill(c, ell(x, y, 11, 11), '#b8323f', .9); c.fillStyle = '#ffffff88'; c.beginPath(); c.arc(x - 3, y - 4, 3, 0, 7); c.fill(); });
+    }
+  ];
+
+  /* ---------- paper touches ---------- */
+  function deckle(c, x, y, w, h, rnd) {   // a soft, uneven handmade-paper edge
+    const p = new Path2D(), step = 9, j = () => (rnd() - .5) * 7;
+    p.moveTo(x, y); for (let i = 0; i <= w; i += step) p.lineTo(x + i, y + j());
+    for (let i = 0; i <= h; i += step) p.lineTo(x + w + j(), y + i);
+    for (let i = w; i >= 0; i -= step) p.lineTo(x + i, y + h + j());
+    for (let i = h; i >= 0; i -= step) p.lineTo(x + j(), y + i); p.closePath(); return p;
+  }
+  function washi(c, x, y, w, h, rot, col, rnd) {   // torn ends, faint stripes
+    c.save(); c.translate(x, y); c.rotate(rot);
+    const p = new Path2D(); p.moveTo(-w / 2, -h / 2); p.lineTo(w / 2, -h / 2);
+    for (let i = -h / 2; i <= h / 2; i += 5) p.lineTo(w / 2 + (rnd() - .5) * 8, i);
+    p.lineTo(-w / 2, h / 2); for (let i = h / 2; i >= -h / 2; i -= 5) p.lineTo(-w / 2 + (rnd() - .5) * 8, i); p.closePath();
+    c.fillStyle = col; c.globalAlpha = .34; c.fill(p); c.clip(p);
+    c.globalAlpha = .18; c.strokeStyle = '#ffffff'; c.lineWidth = 6; for (let i = -w; i < w; i += 22) { c.beginPath(); c.moveTo(i, -h); c.lineTo(i + h * 2, h); c.stroke(); }
+    c.restore();
+  }
+  function postmark(c, x, y, top, bottom, col) {   // a round stamp with wavy cancel lines
+    c.save(); c.translate(x, y); c.rotate(-.18); c.globalAlpha = .55; c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 2.5;
+    c.beginPath(); c.arc(0, 0, 74, 0, 7); c.stroke(); c.beginPath(); c.arc(0, 0, 64, 0, 7); c.lineWidth = 1.2; c.stroke();
+    c.textAlign = 'center'; c.font = "700 20px 'Zen Kaku Gothic New', sans-serif"; c.fillText(top, 0, -10);
+    c.font = "500 italic 24px 'Cormorant Garamond', serif"; c.fillText(bottom, 0, 22);
+    c.lineWidth = 2; for (let k = 0; k < 4; k++) { c.beginPath(); for (let i = 0; i <= 150; i += 4) c.lineTo(-240 + i, -30 + k * 18 + Math.sin(i / 10) * 5); c.stroke(); }
+    c.restore();
+  }
+
   async function pressCard() {
-    await document.fonts.ready;
+    await document.fonts.ready; await document.fonts.load("600 80px 'Caveat'");
     const h = H.find(x => x.id === picked);
     const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
     const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
-    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif";
-    // paper: soft white, faint grain, pressed-paper border (same grain every redraw)
-    c.fillStyle = '#fdfcfb'; c.fillRect(0, 0, W, HT);
-    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let i = 0; i < 9000; i++) { c.fillStyle = `rgba(120,100,80,${rnd() * .035})`; c.fillRect(rnd() * W, rnd() * HT, 1.4, 1.4); }
-    c.strokeStyle = '#e7e2db'; c.lineWidth = 2; c.strokeRect(44, 44, W - 88, HT - 88);
-    c.textAlign = 'center';
-    // "For Mum", like a hand-written tag
-    if (who) { c.fillStyle = '#2b2622'; c.font = `italic 500 64px ${serif}`; c.fillText('For ' + who, W / 2, 168); }
-    else { c.fillStyle = '#736b63'; c.font = `500 22px ${sans}`; c.fillText('THE GIFTING INDEX', W / 2, 120); }
-    // the flower, pressed flat, with the month that matters picked out
-    const cx = W / 2, cy = who ? 520 : 480, k = 2.75;
+    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif", hand = "'Caveat', cursive";
+    let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    // the table, then a sheet of handmade paper with a deckled edge
+    c.fillStyle = '#f1ede8'; c.fillRect(0, 0, W, HT);
+    const sheet = deckle(c, 30, 30, W - 60, HT - 60, rnd);
+    c.save(); c.shadowColor = 'rgba(60,40,30,.16)'; c.shadowBlur = 24; c.shadowOffsetY = 6; c.fillStyle = '#fdfbf8'; c.fill(sheet); c.restore();
+    c.save(); c.clip(sheet);
+    for (let i = 0; i < 1400; i++) { c.strokeStyle = `rgba(150,130,110,${rnd() * .08})`; c.lineWidth = .8; const x = rnd() * W, y = rnd() * HT, a = rnd() * 6.3, l = 4 + rnd() * 14; c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); c.stroke(); }
+    for (let i = 0; i < 6000; i++) { c.fillStyle = `rgba(120,100,80,${rnd() * .03})`; c.fillRect(rnd() * W, rnd() * HT, 1.3, 1.3); }
+    c.restore();
+    // postmark: the month and the house
+    postmark(c, W - 190, 190, M[mon], h.s.length > 12 ? h.s.split(' ').pop() : h.s, h.c);
+    // "For Mum" in handwriting
+    c.textAlign = 'left'; c.fillStyle = '#2b2622';
+    if (who) { c.font = `600 84px ${hand}`; c.fillText('For ' + who, 120, 200); }
+    // the perfume flower, pressed
+    const cx = 420, cy = 520, k = 2.5;
     c.save(); c.translate(cx, cy);
-    c.strokeStyle = '#8a9a78'; c.lineWidth = 6; c.lineCap = 'round';
-    c.beginPath(); c.moveTo(0, 30); c.bezierCurveTo(14, 130, -16, 200, 4, 310); c.stroke();
-    c.fillStyle = 'rgba(157,176,138,.75)'; c.beginPath(); c.moveTo(2, 210); c.bezierCurveTo(50, 165, 98, 172, 120, 196); c.bezierCurveTo(84, 226, 40, 232, 2, 210); c.fill();
-    c.strokeStyle = 'rgba(110,130,95,.5)'; c.lineWidth = 2; c.beginPath(); c.moveTo(4, 210); c.quadraticCurveTo(60, 196, 116, 197); c.stroke();
+    c.strokeStyle = '#8a9a78'; c.lineWidth = 6; c.lineCap = 'round'; c.beginPath(); c.moveTo(0, 30); c.bezierCurveTo(14, 130, -16, 200, 4, 330); c.stroke();
+    leaf(c, 2, 230, 120, 34, 1.2);
     h.months.forEach((v, i) => {
       const L = len(v) * k, w = (11 + len(v) * .12) * k, on = i === mon;
-      c.save(); c.rotate(i * Math.PI / 6);
-      const P = new Path2D(petal(L, w));
+      c.save(); c.rotate(i * Math.PI / 6); const P = new Path2D(petal(L, w));
       c.shadowColor = 'rgba(60,40,30,.12)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
       c.globalAlpha = on ? .8 : v > 1.3 ? .48 : .32; c.fillStyle = h.c; c.fill(P);
       c.shadowColor = 'transparent'; c.globalAlpha = on ? 1 : .68; c.strokeStyle = h.c; c.lineWidth = on ? 3 : 2; c.stroke(P);
-      c.globalAlpha = .35; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, -6); c.lineTo(0, -L * .86); c.stroke();
-      c.globalAlpha = 1; c.restore();
-      if (on) { const a = i * Math.PI / 6, r = L + 34; c.fillStyle = '#2b2622'; c.font = `700 22px ${sans}`; c.fillText(M[i], Math.sin(a) * r, -Math.cos(a) * r + 8); }
+      c.globalAlpha = .35; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, -6); c.lineTo(0, -L * .86); c.stroke(); c.restore();
     });
-    c.fillStyle = h.c; c.beginPath(); c.arc(0, 0, 22, 0, 7); c.fill();
-    c.fillStyle = '#fdfcfb'; c.globalAlpha = .7; c.beginPath(); c.arc(0, 0, 10, 0, 7); c.fill(); c.globalAlpha = 1;
-    c.save(); c.translate(6, 262); c.rotate(-.12); c.fillStyle = 'rgba(201,149,44,.22)'; c.fillRect(-70, -18, 140, 36); c.restore();
+    c.fillStyle = h.c; c.beginPath(); c.arc(0, 0, 20, 0, 7); c.fill(); c.fillStyle = '#fdfbf8'; c.globalAlpha = .7; c.beginPath(); c.arc(0, 0, 9, 0, 7); c.fill(); c.globalAlpha = 1;
     c.restore();
-    // the house
-    let y = cy + 395;
-    c.fillStyle = h.c; c.font = `600 54px ${serif}`; c.fillText(h.n, W / 2, y);
-    // the message: their memory, or their result if they wrote nothing
-    y += 100;
-    if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 48 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50); }
-    if (from) { c.fillStyle = '#4a433e'; c.font = `italic 500 40px ${serif}`; c.fillText('from ' + from, W / 2, y + 26); }
-    // who made it, quietly
-    c.fillStyle = '#736b63'; c.font = `500 18px ${sans}`;
-    c.fillText('GIFTING-INDEX.VERCEL.APP  ·  CREATED BY RIYA DUTTA  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 74);
+    // the month flower, tucked in beside it
+    c.save(); c.translate(720, 560); c.rotate(.16); c.scale(1.25, 1.25); DRAW[mon](c); c.restore();
+    // tape holding both stems down
+    washi(c, 430, 830, 170, 40, -.14, '#c9952c', rnd);
+    washi(c, 770, 900, 150, 38, .2, h.c, rnd);
+    // little labels, like a herbarium note
+    c.textAlign = 'center'; c.fillStyle = '#736b63'; c.font = `italic 500 26px ${serif}`;
+    c.fillText(h.n, cx, 940); c.fillText(cap(M[mon]) + ' · ' + MF[mon].toLowerCase(), 770, 980);
+    // the message
+    let y = 1078;
+    if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 50 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50) - 6; }
+    if (from) { c.textAlign = 'right'; c.fillStyle = '#2b2622'; c.font = `600 64px ${hand}`; c.fillText('from ' + from, W - 130, Math.max(y + 34, 1150)); }
+    c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `500 17px ${sans}`;
+    c.fillText('GIFTING-INDEX.VERCEL.APP  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 70);
     return cv;
   }
   let fileForShare = null;
@@ -512,7 +631,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   $('share').onclick = () => { if (fileForShare) navigator.share({ files: [fileForShare], title: 'A pressed flower', text: 'gifting-index.vercel.app' }).catch(() => {}); };
   $('press').onclick = () => {
     const occ = new Date(NEXT.next).getUTCMonth();
-    $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)}${i === occ ? ' · ' + NEXT.n : ''}</option>`).join('');
+    $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)} · ${MF[i].toLowerCase()}${i === occ ? ' (' + NEXT.n + ')' : ''}</option>`).join('');
     $('pressBox').hidden = false; redraw(); $('tFor').focus();
   };
   $('closeP').onclick = () => { $('pressBox').hidden = true; $('press').focus(); };
