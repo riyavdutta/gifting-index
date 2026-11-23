@@ -147,7 +147,9 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .press{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:#fdfcfbf2;backdrop-filter:blur(6px);animation:fade .35s var(--ease)}
 .press[hidden]{display:none}
 .pbox{display:grid;grid-template-columns:auto 320px;gap:36px;align-items:center;max-height:100%;overflow:auto;padding:4px}
-.pbox img{height:min(82svh,660px);width:auto;max-width:100%;border-radius:6px;box-shadow:0 0 0 1px #ece8e3,0 24px 50px -24px #0000004d;animation:pressin .7s var(--ease)}
+.pbox img,.pbox canvas{height:min(82svh,660px);width:auto;max-width:100%;border-radius:6px;box-shadow:0 0 0 1px #ece8e3,0 24px 50px -24px #0000004d}.pbox img{animation:pressin .7s var(--ease)}.pbox [hidden]{display:none}
+.spray{display:flex;gap:10px;align-items:flex-end}.spray label{flex:1}.spray .pill{padding-block:11px}
+.snotes{font:500 italic 17px/1.3 var(--serif);color:var(--mute);margin-top:-6px}.snotes:empty{display:none}
 .tag{display:flex;flex-direction:column;gap:14px}
 .tlab{font:500 italic 30px var(--serif)}
 .tag label{display:flex;flex-direction:column;gap:6px;font:500 11.5px var(--sans);letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
@@ -155,7 +157,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .tag select{font:500 15px var(--sans)}
 .tag input:focus,.tag textarea:focus,.tag select:focus{outline:2px solid #c9952c66;border-color:#c9952c}
 .tnote{font:400 12px/1.5 var(--sans);color:var(--mute)}
-@media (max-width:760px){.press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img{height:auto;width:min(100%,330px)}.tag{width:100%}}
+@media (max-width:760px){.press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}}
 @keyframes fade{from{opacity:0}}
 @keyframes pressin{from{transform:scale(1.06) rotate(-1.5deg);opacity:0}}
 @media (max-width:760px){
@@ -230,10 +232,12 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 <button class="fab" id="pressFab" type="button" hidden><svg viewBox="-12 -12 24 24" width="18" height="18" aria-hidden="true"><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(0)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(72)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(144)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(216)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(288)"/><circle r="2.4" fill="#f7e2a0"/></svg>Press a flower for someone</button>
 <div class="press" id="pressBox" hidden role="dialog" aria-modal="true" aria-label="Press a flower for someone">
   <div class="pbox">
-    <img id="card" alt="">
+    <img id="card" alt=""><canvas id="cardLive" width="1080" height="1350" hidden aria-hidden="true"></canvas>
     <form class="tag" id="tag" autocomplete="off">
       <p class="tlab">Press it for someone</p>
       <label>Perfume<select id="tHouse"></select></label>
+      <div class="spray"><label>Scent<select id="tScent"></select></label><button class="pill pill--line" id="sprayB" type="button">Spray</button></div>
+      <p class="snotes" id="tNotes"></p>
       <label>For<input id="tFor" maxlength="24" placeholder="Mum"></label>
       <label>It reminds me of<textarea id="tMem" maxlength="80" rows="2" placeholder="summers at my grandmother’s house"></textarea></label>
       <label>A month that matters<select id="tMon"></select></label>
@@ -567,56 +571,357 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     c.save(); c.translate(x, y); c.rotate(-.18); c.globalAlpha = .55; c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 2.5;
     c.beginPath(); c.arc(0, 0, 74, 0, 7); c.stroke(); c.beginPath(); c.arc(0, 0, 64, 0, 7); c.lineWidth = 1.2; c.stroke();
     c.textAlign = 'center'; c.font = "700 20px 'Zen Kaku Gothic New', sans-serif"; c.fillText(top, 0, -10);
-    c.font = "500 italic 24px 'Cormorant Garamond', serif"; c.fillText(bottom, 0, 22);
+    let fs = 24; do { c.font = `500 italic ${fs}px 'Cormorant Garamond', serif`; fs--; } while (c.measureText(bottom).width > 104 && fs > 14); c.fillText(bottom, 0, 22);
     c.lineWidth = 2; for (let k = 0; k < 4; k++) { c.beginPath(); for (let i = 0; i <= 150; i += 4) c.lineTo(-240 + i, -30 + k * 18 + Math.sin(i / 10) * 5); c.stroke(); }
     c.restore();
   }
 
-  async function pressCard() {
-    await document.fonts.ready; await document.fonts.load("400 80px 'Pinyon Script'");
-    const h = H.find(x => x.id === $('tHouse').value);
-    const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
-    const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
-    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif", hand = "'Pinyon Script', cursive";
+  /* ---------- spray: a scent from the chosen house, misted onto the card, with its key notes pressed beside the flower ---------- */
+  // Two or three scents per house and their key notes. Diptyque's notes and Le Labo's Santal 33 and Thé Noir 29 notes are from the houses'
+  // own pages (checked 23 Nov 2026); Jo Malone, Molton Brown, Byredo and Frédéric Malle follow the notes retailers and reviewers agree on.
+  const SCENTS = [
+    { id: 'jo', n: 'Jo Malone London', c: '#8e3b5f', scents: [
+      { id: 'wss', n: 'Wood Sage & Sea Salt', pm: 'Wood Sage', notes: 'ambrette seeds, sea salt, sage', tint: '#7f9a8c', pressed: ['sage', 'ambrette', 'seasalt'] },
+      { id: 'epf', n: 'English Pear & Freesia', pm: 'Pear & Freesia', notes: 'pear, freesia, patchouli', tint: '#b7a44e', pressed: ['pear', 'freesia', 'patchouli'] }] },
+    { id: 'dip', n: 'Diptyque', c: '#c96f8a', scents: [
+      { id: 'doson', n: 'Do Son', pm: 'Do Son', notes: 'tuberose, orange blossom, jasmine, a sea accord', tint: '#c96f8a', pressed: ['tuberose', 'orangeblossom', 'jasmine'] },
+      { id: 'tamdao', n: 'Tam Dao', pm: 'Tam Dao', notes: 'sandalwood, cedar, cypress, coriander', tint: '#a07a52', pressed: ['sandalwood', 'cedar', 'cypress'] },
+      { id: 'philo', n: 'Philosykos', pm: 'Philosykos', notes: 'fig leaves, fig tree sap, fig tree wood, black pepper', tint: '#6f8f5e', pressed: ['figleaf', 'figwood', 'pepper'] }] },
+    { id: 'molton', n: 'Molton Brown', c: '#b03a5b', scents: [
+      { id: 'rbp', n: 'Re-charge Black Pepper', pm: 'Black Pepper', notes: 'black pepper, ginger, basil, vetiver', tint: '#6b6560', pressed: ['pepper', 'ginger', 'basil'] },
+      { id: 'drr', n: 'Delicious Rhubarb & Rose', pm: 'Rhubarb & Rose', notes: 'grapefruit, rhubarb, rose, vanilla', tint: '#c9506a', pressed: ['rhubarb', 'rose', 'grapefruit'] }] },
+    { id: 'lelabo', n: 'Le Labo', c: '#6f8f6a', scents: [
+      { id: 's33', n: 'Santal 33', pm: 'Santal 33', notes: 'sandalwood, cardamom, iris, violet', tint: '#a07a52', pressed: ['cardamom', 'iris', 'violet'] },
+      { id: 'tn29', n: 'Thé Noir 29', pm: 'Thé Noir 29', notes: 'bergamot, fig, bay leaves, cedarwood', tint: '#7d6a52', pressed: ['bergamot', 'fig', 'bay'] }] },
+    { id: 'byredo', n: 'Byredo', c: '#8a80b8', scents: [
+      { id: 'gw', n: 'Gypsy Water', pm: 'Gypsy Water', notes: 'bergamot, incense, sandalwood, vanilla', tint: '#8a80b8', pressed: ['bergamot', 'sandalwood', 'vanilla'] },
+      { id: 'mg', n: 'Mojave Ghost', pm: 'Mojave Ghost', notes: 'magnolia, violet, sandalwood', tint: '#b39ab8', pressed: ['magnolia', 'violet', 'sandalwood'] }] },
+    { id: 'malle', n: 'Frédéric Malle', c: '#5b8f86', scents: [
+      { id: 'pol', n: 'Portrait of a Lady', pm: 'Portrait', notes: 'rose, raspberry, cinnamon, patchouli', tint: '#9e3a52', pressed: ['rose', 'raspberry', 'cinnamon'] },
+      { id: 'cf', n: 'Carnal Flower', pm: 'Carnal Flower', notes: 'tuberose, orange blossom', tint: '#d8a6b4', pressed: ['tuberose', 'orangeblossom'] }] }];
+  function hex(c, a) { const n = parseInt(c.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; }
+  function mkRnd(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+  function gauss(r) { return (r() + r() + r() - 1.5) / 1.5; }
+  // one spritz: a soft tinted bloom, a dried ring where it pooled, and a cone of fine droplets
+  function spritz(c, s, t) {   // t: 0..1 how far the spray has settled
+    const r = mkRnd(s.seed), [ox, oy] = s.origin, cx = 560 + gauss(r) * 70, cy = 560 + gauss(r) * 70;
+    const ang = Math.atan2(cy - oy, cx - ox), dist = Math.hypot(cx - ox, cy - oy);
+    c.save(); c.clip(SHEET);
+    // the bloom, soaked into the paper
+    c.globalCompositeOperation = 'multiply';
+    const g = c.createRadialGradient(cx, cy, 10, cx, cy, 300);
+    g.addColorStop(0, hex(s.tint, .06 * t)); g.addColorStop(.6, hex(s.tint, .025 * t)); g.addColorStop(1, hex(s.tint, 0));
+    c.fillStyle = g; c.beginPath(); c.ellipse(cx, cy, 330, 270, ang, 0, 7); c.fill();
+    // a dried ring: slightly wobbly, darker at its edge
+    if (t > .7) {
+      const k = (t - .7) / .3, R = 150 + r() * 50;
+      c.strokeStyle = hex(s.tint, .07 * k); c.lineWidth = 2.5; c.beginPath();
+      for (let a = 0; a <= 6.3; a += .05) { const rr = R * (1 + Math.sin(a * 3 + s.seed) * .04 + Math.sin(a * 7) * .02); c.lineTo(cx + Math.cos(a) * rr * 1.15, cy + Math.sin(a) * rr * .9); }
+      c.closePath(); c.filter = 'blur(2.5px)'; c.stroke();
+      c.strokeStyle = hex(s.tint, .025 * k); c.lineWidth = 14; c.filter = 'blur(6px)'; c.stroke(); c.filter = 'none';
+    }
+    c.globalCompositeOperation = 'source-over';
+    // droplets along the cone from the nozzle, thickest where the spray lands
+    const N = 650;
+    for (let i = 0; i < N; i++) {
+      const d = dist * (.6 + Math.abs(gauss(r)) * .7), sp = gauss(r) * .3, x = ox + Math.cos(ang + sp) * d, y = oy + Math.sin(ang + sp) * d;
+      const size = Math.pow(r(), 3) * 2.8 + .4, show = r() < t, a = .07 + r() * .18;
+      if (!show) continue;
+      c.fillStyle = hex(s.tint, a); c.beginPath(); c.arc(x, y, size, 0, 7); c.fill();
+      if (size > 2.2) { c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(x - size * .35, y - size * .35, size * .3, 0, 7); c.fill(); }
+    }
+    c.restore();
+  }
+  // ---------- pressed notes: small botanicals for the scent's key ingredients, each centred near (0,0) ----------
+  const NOTE = {
+
+    sage: c => {   // soft grey-green sage leaves on a square stem
+      stem(c, [0, 70, 2, 30, -2, -10, 0, -60], 2.5);
+      [[0, 40, -1.1], [0, 30, 1.1], [0, 0, -1.0], [0, -10, 1.0], [0, -40, -.2]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r); pressedFill(c, ell(0, -22, 11, 24), '#94a68e', .75); c.restore(); });
+    },
+    ambrette: c => {   // a small heap of kidney-shaped seeds
+      [[-18, -8, .4], [0, -14, -.2], [16, -4, .9], [-6, 6, 1.4], [12, 12, .2], [-22, 14, -.6], [26, 18, 1.1], [2, 22, .6]].forEach(([x, y, r]) => {
+        c.save(); c.translate(x, y); c.rotate(r); pressedFill(c, new Path2D('M-8,0 C-8,-6 8,-6 8,0 C8,5 3,4 0,2 C-3,4 -8,5 -8,0Z'), '#7d6a54', .9, '#5a4a38'); c.restore(); });
+    },
+    seasalt: c => {   // a scatter of translucent salt crystals
+      [[-20, -10, 9], [4, -16, 7], [20, 2, 10], [-6, 10, 8], [14, 22, 6], [-26, 18, 6]].forEach(([x, y, r], i) => {
+        const p = new Path2D(); for (let k = 0; k < 5; k++) { const a = k * 1.256 + i; p.lineTo(x + Math.cos(a) * r * (k % 2 ? .8 : 1.1), y + Math.sin(a) * r); } p.closePath();
+        pressedFill(c, p, '#ffffff', .95, '#9aa7ad'); });
+    },
+    pear: c => {   // half a pear, cut through the core
+      c.save(); c.rotate(.15);
+      const p = new Path2D('M0,-52 C10,-52 12,-30 18,-18 C34,6 42,30 26,46 C14,58 -14,58 -26,46 C-42,30 -34,6 -18,-18 C-12,-30 -10,-52 0,-52Z');
+      pressedFill(c, p, '#d9cf7c', .85, '#a59a45');
+      c.fillStyle = 'rgba(253,249,232,.85)'; c.beginPath(); c.ellipse(0, 18, 26, 30, 0, 0, 7); c.fill();
+      c.fillStyle = '#5b4632'; [[-5, 18], [5, 18]].forEach(([x, y]) => { c.beginPath(); c.ellipse(x, y, 2.5, 5, x / 20, 0, 7); c.fill(); });
+      c.strokeStyle = '#6b5a45'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, -52); c.lineTo(4, -66); c.stroke();
+      c.restore();
+    },
+    freesia: c => {   // an arching stem with trumpet flowers along one side
+      c.strokeStyle = STEM; c.lineWidth = 2.5; c.beginPath(); c.moveTo(-50, 60); c.bezierCurveTo(-30, -10, 10, -40, 50, -30); c.stroke();
+      [[-30, 4, 1], [-8, -22, .9], [16, -34, .8], [38, -32, .6]].forEach(([x, y, k]) => { c.save(); c.translate(x, y - 10); c.scale(k, k);
+        for (let i = 0; i < 5; i++) { c.save(); c.rotate(-1.2 + i * .6); pressedFill(c, ell(0, -12, 7, 12), '#f1e3a8', .9, '#c8b46a'); c.restore(); } c.restore(); });
+    },
+    patchouli: c => {   // a broad leaf with a toothed edge
+      c.save(); c.rotate(-.3); const p = new Path2D(); const pts = [];
+      for (let a = 0; a <= Math.PI * 2; a += Math.PI / 14) { const r = (a % (Math.PI / 7) < .01 ? 1.08 : 1); pts.push([Math.sin(a) * 34 * r, -Math.cos(a) * 52 * r - 6]); }
+      pts.forEach(([x, y], i) => i ? p.lineTo(x, y) : p.moveTo(x, y)); p.closePath(); pressedFill(c, p, '#5f7d50', .7);
+      c.globalAlpha = .4; c.strokeStyle = '#3f5634'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, 46); c.lineTo(0, -54); c.stroke();
+      for (let k = 0; k < 4; k++) { const y = 26 - k * 20; c.beginPath(); c.moveTo(0, y); c.lineTo(-22, y - 14); c.moveTo(0, y); c.lineTo(22, y - 14); c.stroke(); }
+      c.globalAlpha = 1; c.strokeStyle = STEM; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 46); c.lineTo(2, 66); c.stroke(); c.restore();
+    },
+    ginger: c => {   // a knobbly piece of root
+      [[-30, 6, 20, 13, -.3], [-4, 0, 22, 15, .1], [22, 8, 17, 12, .4], [6, -20, 10, 15, -.2], [34, -10, 9, 12, .5]].forEach(([x, y, a, b, r]) => pressedFill(c, ell(x, y, a, b, r), '#d9b27a', .9, '#a37f48'));
+      c.globalAlpha = .35; c.strokeStyle = '#8a6a3a'; c.lineWidth = 1; [[-30, 0], [-4, -4], [22, 4]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 8, .3, 2.6); c.stroke(); }); c.globalAlpha = 1;
+    },
+    basil: c => {   // three glossy, cupped basil leaves
+      stem(c, [0, 66, 0, 40, 0, 20, 0, -10], 2.5);
+      [[0, 10, -.9], [0, 10, .9], [0, -10, 0]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r);
+        pressedFill(c, new Path2D('M0,0 C22,-10 22,-44 0,-58 C-22,-44 -22,-10 0,0Z'), '#6f9a52', .78);
+        c.globalAlpha = .4; c.strokeStyle = '#4b6e36'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, -4); c.lineTo(0, -52); c.stroke(); c.restore(); });
+    },
+    rhubarb: c => {   // a pink stalk turning green, with a crinkled leaf
+      c.save(); c.rotate(-.5);
+      const g = c.createLinearGradient(0, 64, 0, -40); g.addColorStop(0, '#c9506a'); g.addColorStop(.75, '#d9708a'); g.addColorStop(1, '#8fa86a');
+      c.save(); c.shadowColor = 'rgba(60,40,30,.13)'; c.shadowBlur = 6; c.fillStyle = g; c.globalAlpha = .9; c.beginPath(); c.roundRect(-8, -40, 16, 104, 7); c.fill(); c.restore();
+      c.globalAlpha = .35; c.strokeStyle = '#8f2f45'; c.lineWidth = 1; [-3, 3].forEach(x => { c.beginPath(); c.moveTo(x, 60); c.lineTo(x, -36); c.stroke(); }); c.globalAlpha = 1;
+      pressedFill(c, new Path2D('M0,-36 C-34,-40 -40,-74 -14,-82 C-6,-92 10,-92 16,-82 C42,-74 34,-40 0,-36Z'), '#7f9a5e', .72);
+      c.restore();
+    },
+    rose: c => {   // a small, flat rose head and one leaf
+      leaf(c, 0, 10, 50, 18, 2.4);
+      for (let k = 0; k < 4; k++) { const r = 34 - k * 8; c.save(); c.rotate(k * .7); ring(c, 5, r * .55, r * .55, ['#e8a0b4', '#dc839e', '#cf6b8a', '#b9516f'][k], .55); c.restore(); }
+    },
+    grapefruit: c => citrus(c, '#f0a08a', '#e9785f'),
+    bergamot: c => citrus(c, '#e6e08a', '#b9c25a'),
+    cardamom: c => {   // three green pods, ribbed
+      [[-22, 4, -.6], [4, -8, .2], [24, 10, .9]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r);
+        pressedFill(c, new Path2D('M0,-26 C12,-18 13,14 0,26 C-13,14 -12,-18 0,-26Z'), '#a3b37a', .88, '#6f7d4a');
+        c.globalAlpha = .35; c.strokeStyle = '#5f6d3c'; c.lineWidth = 1; [-5, 0, 5].forEach(o => { c.beginPath(); c.moveTo(o * .6, -22); c.quadraticCurveTo(o * 1.6, 0, o * .6, 22); c.stroke(); }); c.restore(); });
+    },
+    iris: c => {   // three falls, three standards and a yellow beard
+      stem(c, [0, 70, 2, 40, -2, 20, 0, 6], 3); leaf(c, 0, 70, 60, 8, -.3);
+      [-2.3, 0, 2.3].forEach(r => { c.save(); c.rotate(r + Math.PI); pressedFill(c, new Path2D('M0,0 C18,4 20,30 0,40 C-20,30 -18,4 0,0Z'), '#7f74b8', .75); c.restore(); });
+      [-1, 1, Math.PI].forEach(r => { c.save(); c.rotate(r); pressedFill(c, new Path2D('M0,0 C10,-6 12,-26 0,-32 C-12,-26 -10,-6 0,-6Z'), '#9d93cf', .7); c.restore(); });
+      c.fillStyle = '#e9c95a'; c.beginPath(); c.ellipse(0, 12, 3, 8, 0, 0, 7); c.fill();
+    },
+    violet: c => {   // a single sweet violet
+      stem(c, [0, 66, -4, 40, 4, 20, 0, 4], 2.2); leaf(c, 0, 50, 38, 22, -1.1);
+      [[0, -20, 12, 16, 0], [-18, -6, 12, 14, -1.1], [18, -6, 12, 14, 1.1], [-10, 13, 12, 14, -2.4], [10, 13, 12, 14, 2.4]].forEach(([x, y, a, b, r]) => pressedFill(c, ell(x, y, a, b, r), '#7a59a8', .78));
+      heart(c, 0, 0, 4);
+    },
+    fig: c => {   // a fig cut in half: purple skin, pink flesh, seeds
+      c.save(); c.rotate(.2);
+      const p = new Path2D('M0,-50 C8,-50 8,-38 14,-30 C38,-10 42,30 20,46 C8,54 -8,54 -20,46 C-42,30 -38,-10 -14,-30 C-8,-38 -8,-50 0,-50Z');
+      pressedFill(c, p, '#6e4a63', .9, '#4e3045');
+      c.fillStyle = 'rgba(232,160,170,.9)'; c.beginPath(); c.ellipse(0, 14, 24, 30, 0, 0, 7); c.fill();
+      c.fillStyle = 'rgba(253,240,230,.8)'; c.beginPath(); c.ellipse(0, 14, 12, 18, 0, 0, 7); c.fill();
+      c.fillStyle = '#8a5a3a'; const r = mkRnd(4); for (let i = 0; i < 22; i++) { const a = r() * 6.3, d = 8 + r() * 12; c.beginPath(); c.arc(Math.cos(a) * d * .8, 14 + Math.sin(a) * d, 1.3, 0, 7); c.fill(); }
+      c.restore();
+    },
+    bay: c => {   // two long, glossy bay leaves
+      [[-8, 30, -.45], [8, 30, .35]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r);
+        pressedFill(c, new Path2D('M0,0 C14,-16 14,-60 0,-80 C-14,-60 -14,-16 0,0Z'), '#5f7a4e', .78);
+        c.globalAlpha = .4; c.strokeStyle = '#3f5634'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, -2); c.lineTo(0, -74); c.stroke(); c.restore(); });
+    },
+    vanilla: c => {   // a long, dark, curved vanilla pod
+      c.save(); c.rotate(-.6); c.lineCap = 'round';
+      c.strokeStyle = '#3d2a1f'; c.lineWidth = 9; c.shadowColor = 'rgba(60,40,30,.2)'; c.shadowBlur = 6;
+      c.beginPath(); c.moveTo(-66, 6); c.bezierCurveTo(-20, -10, 20, 12, 66, -4); c.stroke();
+      c.shadowColor = 'transparent'; c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 2; c.beginPath(); c.moveTo(-60, 3); c.bezierCurveTo(-20, -12, 20, 9, 60, -6); c.stroke();
+      c.restore();
+    },
+    magnolia: c => {   // big cupped petals, white flushed pink at the base
+      leaf(c, 0, 14, 56, 20, 2.6);
+      for (let i = 0; i < 6; i++) { c.save(); c.rotate(i * Math.PI / 3 + .3);
+        const g = c.createLinearGradient(0, 0, 0, -40); g.addColorStop(0, 'rgba(214,150,170,1)'); g.addColorStop(.5, 'rgba(246,232,234,1)'); g.addColorStop(1, 'rgba(252,248,246,1)');
+        pressedFill(c, new Path2D('M0,0 C18,-8 20,-34 0,-44 C-20,-34 -18,-8 0,0Z'), g, .9, '#d6a3b2'); c.restore(); }
+      c.fillStyle = '#d9c27a'; c.beginPath(); c.ellipse(0, 0, 5, 9, 0, 0, 7); c.fill();
+    },
+    raspberry: c => {   // two berries made of little drupelets, with a leaf
+      leaf(c, 0, 10, 48, 18, 2.2);
+      [[-14, -6], [18, 8]].forEach(([x, y]) => { for (let i = 0; i < 14; i++) { const a = i * 2.4, d = (i % 7) * 2.4; pressedFill(c, ell(x + Math.cos(a) * d, y + Math.sin(a) * d * 1.2, 5.5, 5.5), '#c2384e', .85, '#8f2238'); } });
+    },
+    cinnamon: c => {   // two rolled sticks of bark
+      [[-8, -.5], [10, -.35]].forEach(([dx, r]) => { c.save(); c.translate(dx, 0); c.rotate(r);
+        pressedFill(c, new Path2D('M-60,-7 L60,-7 L60,7 L-60,7Z'), '#a0643a', .9, '#6e4224');
+        c.strokeStyle = '#6e4224'; c.globalAlpha = .6; c.lineWidth = 1.2; [-60, 60].forEach(x => { c.beginPath(); c.arc(x, 0, 6, -1.6, 3); c.stroke(); });
+        c.globalAlpha = .3; c.beginPath(); c.moveTo(-58, 2); c.lineTo(58, 2); c.stroke(); c.restore(); });
+    },
+    tuberose: c => {   // a short spike with two waxy star flowers
+      stem(c, [0, 70, 2, 40, -2, 10, 0, -20], 2.5); leaf(c, 0, 70, 50, 7, -.5);
+      [[0, -24, 1], [16, 14, .8]].forEach(([x, y, k]) => { c.save(); c.translate(x, y); c.scale(k, k);
+        for (let i = 0; i < 6; i++) { c.save(); c.rotate(i * Math.PI / 3); pressedFill(c, ell(0, -14, 6, 14), '#f7f2ee', .97, '#d9b8c0'); c.restore(); }
+        c.fillStyle = '#e8c9cf'; c.beginPath(); c.arc(0, 0, 4, 0, 7); c.fill(); c.restore(); });
+    },
+    orangeblossom: c => {   // five broad petals, yellow stamens, one glossy leaf
+      leaf(c, 0, 0, 66, 20, 2.3, '#6f8f5a');
+      for (let i = 0; i < 5; i++) { c.save(); c.rotate(i * 2 * Math.PI / 5); pressedFill(c, ell(0, -17, 11, 17), '#fbf8f1', .97, '#d8d0b8'); c.restore(); }
+      c.fillStyle = '#e2b93b'; for (let i = 0; i < 9; i++) { const a = i * .7; c.beginPath(); c.arc(Math.cos(a) * 6, Math.sin(a) * 6, 2, 0, 7); c.fill(); }
+    },
+    jasmine: c => {   // a thin twig with two small pinwheel flowers
+      stem(c, [-50, 50, -20, 20, 10, 0, 40, -30], 2); leaf(c, -20, 22, 34, 11, -1.9); leaf(c, 6, 4, 30, 10, .6);
+      [[40, -30, 1], [-6, -18, .8]].forEach(([x, y, k]) => { c.save(); c.translate(x, y); c.scale(k, k); c.rotate(.3);
+        for (let i = 0; i < 5; i++) { c.save(); c.rotate(i * 2 * Math.PI / 5); pressedFill(c, ell(4, -13, 5, 13, .35), '#fdfbf6', .97, '#cfd3c0'); c.restore(); }
+        c.fillStyle = '#e7d9a8'; c.beginPath(); c.arc(0, 0, 3, 0, 7); c.fill(); c.restore(); });
+    },
+    sandalwood: c => {   // a split chip of pale sandalwood with its grain, and a thin shaving beside it
+      c.save(); c.rotate(-.35);
+      const p = new Path2D('M-58,-16 L44,-22 L58,-8 L56,14 L-54,20 L-62,4 Z');
+      pressedFill(c, p, '#d8b98e', .9, '#a07c4e');
+      c.globalAlpha = .4; c.strokeStyle = '#8f6b3e'; c.lineWidth = 1.1;
+      for (let k = 0; k < 6; k++) { const y = -14 + k * 6.5; c.beginPath(); c.moveTo(-56, y + 2); c.bezierCurveTo(-20, y - 3, 10, y + 4, 54, y - 1); c.stroke(); }
+      c.globalAlpha = .5; c.beginPath(); c.ellipse(-8, 0, 12, 4, 0, 0, 7); c.stroke();
+      c.globalAlpha = 1; pressedFill(c, new Path2D('M-30,40 C-6,30 22,34 40,48 C24,42 0,40 -30,46 Z'), '#e3c9a2', .9, '#b08c5c');
+      c.restore();
+    },
+    cedar: c => {   // a flat, scaly frond
+      c.save(); c.rotate(-.5); c.strokeStyle = '#6b5a45'; c.lineWidth = 2.2; c.beginPath(); c.moveTo(0, 70); c.lineTo(0, -70); c.stroke();
+      for (let i = 0; i < 7; i++) { const y = 50 - i * 18, side = i % 2 ? 1 : -1, L = 42 - i * 4;
+        c.save(); c.translate(0, y); c.rotate(side * .9);
+        for (let j = 0; j < 5; j++) pressedFill(c, ell(0, -6 - j * (L / 5), 4.5, L / 9), '#6f8a5c', .7);
+        c.restore(); }
+      c.restore();
+    },
+    cypress: c => {   // a branching sprig of rope-like foliage and a round, segmented cone
+      c.save(); c.rotate(.3);
+      const twig = (x1, y1, x2, y2, w) => { const n = Math.hypot(x2 - x1, y2 - y1) / 6;
+        for (let i = 0; i <= n; i++) { const t = i / n; pressedFill(c, ell(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, w * (1 - t * .4), 4.2, Math.atan2(y2 - y1, x2 - x1)), '#5a7a55', .6); } };
+      c.strokeStyle = '#6b5a45'; c.lineWidth = 2; c.beginPath(); c.moveTo(0, 74); c.lineTo(0, 30); c.stroke();
+      twig(0, 34, 0, -66, 5); twig(0, 10, -34, -30, 4); twig(0, -14, 30, -50, 4); twig(0, 22, 30, -6, 3.6); twig(-16, -6, -40, 2, 3.2);
+      c.restore();
+      c.save(); c.translate(52, 50);
+      const cone = new Path2D(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; cone.lineTo(Math.cos(a) * 16, Math.sin(a) * 16); } cone.closePath();
+      pressedFill(c, cone, '#8a6a4a', .88, '#5e4630');
+      c.strokeStyle = '#5e4630'; c.globalAlpha = .55; c.lineWidth = 1.2; c.beginPath(); c.moveTo(-16, 0); c.lineTo(16, 0); c.moveTo(-8, -14); c.lineTo(8, 14); c.moveTo(8, -14); c.lineTo(-8, 14); c.stroke();
+      c.restore();
+    },
+    figleaf: c => {   // a big lobed fig leaf with veins
+      c.save(); c.rotate(-.25);
+      const p = new Path2D('M0,62 C-8,40 -30,44 -52,30 C-40,16 -62,-2 -50,-20 C-34,-14 -30,-30 -22,-46 C-10,-34 -6,-62 0,-70 C6,-62 10,-34 22,-46 C30,-30 34,-14 50,-20 C62,-2 40,16 52,30 C30,44 8,40 0,62Z');
+      pressedFill(c, p, '#6f8f5e', .68);
+      c.globalAlpha = .4; c.strokeStyle = '#4e6a42'; c.lineWidth = 1.4;
+      [[0, -64], [-44, -14], [44, -14], [-44, 28], [44, 28]].forEach(([x, y]) => { c.beginPath(); c.moveTo(0, 56); c.quadraticCurveTo(x * .3, y * .3 + 20, x, y); c.stroke(); });
+      c.globalAlpha = 1; c.strokeStyle = STEM; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 60); c.lineTo(4, 84); c.stroke();
+      c.restore();
+    },
+    figwood: c => {   // a short twig with a knot and cut ends
+      c.save(); c.rotate(-.7);
+      const p = new Path2D('M-64,-6 C-30,-10 10,-8 64,-5 L64,6 C10,8 -30,10 -64,7 Z');
+      pressedFill(c, p, '#9a8a78', .9, '#6e604f');
+      c.fillStyle = '#c9b9a2'; [-64, 64].forEach(x => { c.beginPath(); c.ellipse(x, 0, 3, 6.5, 0, 0, 7); c.fill(); });
+      c.strokeStyle = '#6e604f'; c.globalAlpha = .6; c.lineWidth = 1.2; c.beginPath(); c.ellipse(-4, 0, 6, 3, 0, 0, 7); c.stroke();
+      c.beginPath(); c.moveTo(24, -6); c.lineTo(36, -26); c.lineWidth = 4; c.strokeStyle = '#9a8a78'; c.globalAlpha = .9; c.stroke();
+      c.restore();
+    },
+    pepper: c => {   // a little scatter of black peppercorns
+      [[-20, -10], [0, -18], [18, -6], [-8, 8], [12, 14], [-26, 16], [30, 10]].forEach(([x, y], i) => {
+        c.save(); c.shadowColor = 'rgba(60,40,30,.18)'; c.shadowBlur = 4; c.shadowOffsetY = 2; c.fillStyle = '#3b3430'; c.beginPath(); c.arc(x, y, 7.5, 0, 7); c.fill(); c.restore();
+        c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, 4.5, i, i + 2); c.stroke();
+      });
+    }
+  };
+  function citrus(c, rind, flesh) {   // a round slice with segments
+    pressedFill(c, ell(0, 0, 40, 40), rind, .9);
+    c.fillStyle = 'rgba(253,250,240,.95)'; c.beginPath(); c.arc(0, 0, 34, 0, 7); c.fill();
+    for (let i = 0; i < 10; i++) { c.save(); c.rotate(i * Math.PI / 5); c.fillStyle = flesh; c.globalAlpha = .75; c.beginPath(); c.moveTo(0, -3); c.quadraticCurveTo(10, -16, 0, -31); c.quadraticCurveTo(-10, -16, 0, -3); c.fill(); c.restore(); }
+  }
+  const NAME = { sage: 'sage', ambrette: 'ambrette seeds', seasalt: 'sea salt', pear: 'pear', freesia: 'freesia', patchouli: 'patchouli', ginger: 'ginger', basil: 'basil', rhubarb: 'rhubarb', rose: 'rose', grapefruit: 'grapefruit', bergamot: 'bergamot', cardamom: 'cardamom', iris: 'iris', violet: 'violet', fig: 'fig', bay: 'bay leaf', vanilla: 'vanilla', magnolia: 'magnolia', raspberry: 'raspberry', cinnamon: 'cinnamon', tuberose: 'tuberose', orangeblossom: 'orange blossom', jasmine: 'jasmine', sandalwood: 'sandalwood', cedar: 'cedar', cypress: 'cypress', figleaf: 'fig leaf', figwood: 'fig wood', pepper: 'black pepper' };
+  const BIG = { ambrette: 1.5, seasalt: 1.6, cardamom: 1.35, pepper: 1.35, raspberry: 1.2 };   // small things drawn larger so they read
+  const SPOTS = [[225, 410, -.12], [240, 690, .1], [855, 575, .08]];   // left high, left low, right; clear of the flower and the writing
+  function pressNotes(c, sc, t) {
+    sc.pressed.forEach((id, i) => {
+      const [x, y, rot] = SPOTS[sc.pressed.length === 2 ? [0, 2][i] : i];
+      c.save(); c.globalAlpha = t; const k = 1.5 * (BIG[id] || 1); c.translate(x, y); c.rotate(rot); c.scale(k, k); NOTE[id](c); c.restore();
+      c.save(); c.globalAlpha = t; c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `italic 500 26px ${CSERIF}`; c.fillText(NAME[id], x, y + 132); c.restore();
+    });
+  }
+  const ORIGINS = [[1180, -40], [-80, 160], [1160, 1000]];
+  let sprays = [];
+  const scentsFor = id => SCENTS.find(h => h.id === id).scents;
+  const curScent = () => scentsFor($('tHouse').value).find(x => x.id === $('tScent').value);
+  const CSERIF = "'Cormorant Garamond', Georgia, serif", CSANS = "'Zen Kaku Gothic New', system-ui, sans-serif", CHAND = "'Pinyon Script', cursive";
+  let PAPER = null, SHEET = null;
+  function paper() {   // the table and a sheet of handmade paper, drawn once
+    if (PAPER) return PAPER;
+    const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350; const c = cv.getContext('2d'), W = 1080, HT = 1350;
     let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    // the table, then a sheet of handmade paper with a deckled edge
     c.fillStyle = '#f1ede8'; c.fillRect(0, 0, W, HT);
-    const sheet = deckle(c, 30, 30, W - 60, HT - 60, rnd);
-    c.save(); c.shadowColor = 'rgba(60,40,30,.16)'; c.shadowBlur = 24; c.shadowOffsetY = 6; c.fillStyle = '#fdfbf8'; c.fill(sheet); c.restore();
-    c.save(); c.clip(sheet);
+    SHEET = deckle(c, 30, 30, W - 60, HT - 60, rnd);
+    c.save(); c.shadowColor = 'rgba(60,40,30,.16)'; c.shadowBlur = 24; c.shadowOffsetY = 6; c.fillStyle = '#fdfbf8'; c.fill(SHEET); c.restore();
+    c.save(); c.clip(SHEET);
     for (let i = 0; i < 1400; i++) { c.strokeStyle = `rgba(150,130,110,${rnd() * .08})`; c.lineWidth = .8; const x = rnd() * W, y = rnd() * HT, a = rnd() * 6.3, l = 4 + rnd() * 14; c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); c.stroke(); }
     for (let i = 0; i < 6000; i++) { c.fillStyle = `rgba(120,100,80,${rnd() * .03})`; c.fillRect(rnd() * W, rnd() * HT, 1.3, 1.3); }
-    c.restore();
-    // postmark: the month and the house
-    postmark(c, W - 190, 190, M[mon], h.s.length > 12 ? h.s.split(' ').pop() : h.s, h.c);
-    // "For Mum" in handwriting
-    c.textAlign = 'left'; c.fillStyle = '#2b2622';
-    if (who) { c.font = `400 92px ${hand}`; c.fillText('For ' + who, 120, 205); }
-    // the month flower, pressed and taped down
-    const k = mon === 6 ? 1.55 : 1.85, ty = 950 - 300 * k;   // the larkspur is tall, so it is drawn a little smaller
-    c.save(); c.translate(545, ty); c.rotate(.06); c.scale(k, k); DRAW[mon](c); c.restore();
-    washi(c, 560, ty + 262 * k, 190, 42, -.12, '#c9952c', rnd);
-    c.textAlign = 'center'; c.fillStyle = '#736b63'; c.font = `italic 500 28px ${serif}`;
-    c.fillText(cap(M[mon]) + ' · ' + MF[mon].toLowerCase(), 575, 1000);
-    // the message
-    let y = 1085;
-    if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 50 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50) - 6; }
-    if (from) { c.textAlign = 'right'; c.fillStyle = '#2b2622'; c.font = `400 74px ${hand}`; c.fillText('from ' + from, W - 130, Math.max(y + 56, 1170)); }
-    c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `500 17px ${sans}`;
-    c.fillText('GIFTING-INDEX.VERCEL.APP  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 70);
-    return cv;
+    c.restore(); return (PAPER = cv);
   }
+  function drawCard(cv, t) {   // t: how far the latest spray has settled (0..1)
+    const W = 1080, HT = 1350, c = cv.getContext('2d');
+    const h = H.find(x => x.id === $('tHouse').value), sc = curScent(), sprayed = sprays.length > 0;
+    const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
+    c.drawImage(paper(), 0, 0);
+    sprays.forEach((s, i) => spritz(c, s, i === sprays.length - 1 ? t : 1));   // the mist soaks into the paper, under everything else
+    // postmark: the month, and the scent once it has been sprayed
+    postmark(c, W - 190, 190, M[mon], sprayed ? sc.pm : h.s.length > 12 ? h.s.split(' ').pop() : h.s, h.c);
+    c.textAlign = 'left'; c.fillStyle = '#2b2622';
+    if (who) { c.font = `400 92px ${CHAND}`; c.fillText('For ' + who, 120, 205); }
+    // the month flower, pressed and taped down; its stem ends at y = 850
+    const k = mon === 6 ? 1.5 : 1.6, ty = 850 - 300 * k;   // the larkspur is tall, so it is drawn a little smaller
+    c.save(); c.translate(545, ty); c.rotate(.06); c.scale(k, k); DRAW[mon](c); c.restore();
+    if (sprayed) pressNotes(c, sc, sprays.length > 1 ? 1 : t);
+    let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    washi(c, 560, ty + 262 * k, 190, 42, -.12, '#c9952c', rnd);
+    // the writing, laid out from the bottom up so a longer message never runs into the footer
+    c.font = `italic 500 42px ${CSERIF}`;
+    const lines = mem ? splitLines(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', 820).slice(0, 3) : [];
+    const fromY = 1228, memY = fromY - 116 - Math.max(0, lines.length - 1) * 54, sprayY = (lines.length ? memY : fromY - 40) - 84;
+    const labelY = Math.min(sprayed ? sprayY - 80 : (lines.length ? memY : fromY - 40) - 80, 980);
+    c.textAlign = 'center'; c.fillStyle = '#736b63'; c.font = `italic 500 28px ${CSERIF}`;
+    c.fillText(cap(M[mon]) + ' · ' + MF[mon].toLowerCase(), 575, labelY);
+    if (sprayed) { c.fillStyle = hex(sc.tint, .95); c.font = `400 50px ${CHAND}`; c.fillText('sprayed with ' + sc.n, W / 2, sprayY); }
+    c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${CSERIF}`; lines.forEach((l, i) => c.fillText(l, W / 2, memY + i * 54));
+    if (from) { c.textAlign = 'right'; c.font = `400 74px ${CHAND}`; c.fillText('from ' + from, W - 130, fromY); }
+    c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `500 17px ${CSANS}`;
+    c.fillText('GIFTING-INDEX.VERCEL.APP  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 52);
+  }
+  function splitLines(c, text, maxW) {
+    const words = text.split(' '); let line = '', out = [];
+    words.forEach(w => { const t = line ? line + ' ' + w : w; if (c.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; });
+    out.push(line); return out;
+  }
+  async function pressCard() {
+    await document.fonts.ready; await document.fonts.load("400 80px 'Pinyon Script'");
+    const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350; drawCard(cv, 1); return cv;
+  }
+  function fillScents() {
+    $('tScent').innerHTML = scentsFor($('tHouse').value).map(x => `<option value="${x.id}">${x.n}</option>`).join('');
+    sprays = []; showNotes();
+  }
+  const showNotes = () => { $('tNotes').textContent = curScent().notes; };
+  function spray() {
+    if (sprays.length >= 3) return;
+    sprays.push({ seed: 1000 + sprays.length * 7919 + Math.floor(Math.random() * 500), tint: curScent().tint, origin: ORIGINS[sprays.length] });
+    $('sprayB').textContent = sprays.length >= 3 ? 'That is plenty' : 'Spray again'; $('sprayB').disabled = sprays.length >= 3;
+    if (!MOTION) { redraw().then(() => $('card').scrollIntoView({ block: 'nearest' })); return; }
+    const lc = $('cardLive'), t0 = performance.now();
+    lc.hidden = false; $('card').hidden = true; lc.scrollIntoView({ block: 'nearest', behavior: 'smooth' });   // on a phone the card sits above the button
+    const go = now => { const t = Math.min(1, (now - t0) / 900); drawCard(lc, 1 - Math.pow(1 - t, 3)); if (t < 1) requestAnimationFrame(go); else redraw().then(() => { $('card').hidden = false; lc.hidden = true; }); };
+    requestAnimationFrame(go);
+  }
+  const resetSpray = () => { $('sprayB').textContent = 'Spray'; $('sprayB').disabled = false; };
   let fileForShare = null;
   async function redraw() {
     const cv = await pressCard(), url = cv.toDataURL('image/png'), h = H.find(x => x.id === $('tHouse').value), who = val('tFor');
-    $('card').src = url; $('card').alt = 'A pressed ' + MF[+$('tMon').value].toLowerCase() + (who ? ' for ' + who : '');
+    $('card').src = url; $('card').alt = 'A pressed ' + MF[+$('tMon').value].toLowerCase() + (who ? ' for ' + who : '') + (sprays.length ? ', sprayed with ' + curScent().n : '');
     const name = 'pressed-' + h.id + (who ? '-for-' + who.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '') + '.png';
     $('dl').href = url; $('dl').download = name;
     cv.toBlob(b => { fileForShare = new File([b], name, { type: 'image/png' }); $('share').hidden = !(navigator.canShare && navigator.canShare({ files: [fileForShare] })); });
   }
   let t = 0; const soon = () => { clearTimeout(t); t = setTimeout(redraw, 180); };   // live preview while typing
   ['tFor', 'tFrom', 'tMem'].forEach(id => $(id).addEventListener('input', soon));
-  $('tMon').addEventListener('change', redraw); $('tHouse').addEventListener('change', redraw);
+  $('tMon').addEventListener('change', redraw);
+  $('tHouse').addEventListener('change', () => { fillScents(); resetSpray(); redraw(); });
+  $('tScent').addEventListener('change', () => { showNotes(); sprays = sprays.map(p => ({ ...p, tint: curScent().tint })); redraw(); });
+  $('sprayB').onclick = spray;
   $('tag').addEventListener('submit', e => e.preventDefault());
   $('share').onclick = () => { if (fileForShare) navigator.share({ files: [fileForShare], title: 'A pressed flower', text: 'gifting-index.vercel.app' }).catch(() => {}); };
   let opener = null;
@@ -626,6 +931,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
       const occ = new Date(NEXT.next).getUTCMonth();
       $('tHouse').innerHTML = H.map(h => `<option value="${h.id}"${h.id === (picked || 'jo') ? ' selected' : ''}>${h.n}</option>`).join('');
       $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)} · ${MF[i].toLowerCase()}${i === occ ? ' (' + NEXT.n + ')' : ''}</option>`).join('');
+      fillScents(); resetSpray();
       $('pressBox').hidden = false; redraw(); (picked ? $('tFor') : $('tHouse')).focus();
     });
   }
