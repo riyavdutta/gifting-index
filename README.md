@@ -4,7 +4,7 @@ What gets bought as a gift? Six luxury fragrance houses, three classic gift name
 
 The page tells one point, perfume is a winter gift, as a garden: each house is a flower whose 12 petals are the months, petal length = how much more it's searched than usual. Soft white page, Cormorant Garamond and Zen Kaku Gothic New, warm flowers for the gift names (plum, rose, raspberry) and cool ones for the cult houses (sage, wisteria, eucalyptus), with antique gold for anything that's yours (your pick, your date, the hand):
 
-1. **Call it:** the next gifting moment is named, and you tap the flower you think it makes biggest; the buds (all the same size until then) bloom, and a month bar lets you drag through the year. Quiet occasions become a trick question.
+1. **Call it:** the next gifting moment is named, and you tap the flower you think it makes biggest; the buds (all the same size until then) bloom, and a month bar lets you drag through the year. Quiet occasions become a trick question. Then **Press it for someone** turns the flower into a gift tag: add who it is for, what the scent reminds you of, a month that matters and your name, and download or share the card (made in the browser; nothing typed is saved or sent).
 2. **Every December:** a meadow, one pair of stems per year, gift names against cult houses; stem height is the December lift.
 3. **The gifting year:** the typical year (2022 onwards) as one flower with a petal for each week. Drag the gold hand or pick your own date; the six houses re-rank live.
 4. **Next up, live:** days to the next gifting moment, where each house stands this week, and how the last moment went.

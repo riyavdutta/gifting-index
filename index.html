@@ -138,6 +138,21 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .motion .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .motion .rv.on{opacity:1;transform:none}
 
+/* the pressed-flower card */
+.press{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:#fdfcfbf2;backdrop-filter:blur(6px);animation:fade .35s var(--ease)}
+.press[hidden]{display:none}
+.pbox{display:grid;grid-template-columns:auto 320px;gap:36px;align-items:center;max-height:100%;overflow:auto;padding:4px}
+.pbox img{height:min(82svh,660px);width:auto;max-width:100%;border-radius:6px;box-shadow:0 0 0 1px #ece8e3,0 24px 50px -24px #0000004d;animation:pressin .7s var(--ease)}
+.tag{display:flex;flex-direction:column;gap:14px}
+.tlab{font:500 italic 30px var(--serif)}
+.tag label{display:flex;flex-direction:column;gap:6px;font:500 11.5px var(--sans);letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.tag input,.tag textarea,.tag select{font:500 italic 21px var(--serif);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;resize:none;text-transform:none;letter-spacing:0}
+.tag select{font:500 15px var(--sans)}
+.tag input:focus,.tag textarea:focus,.tag select:focus{outline:2px solid #c9952c66;border-color:#c9952c}
+.tnote{font:400 12px/1.5 var(--sans);color:var(--mute)}
+@media (max-width:760px){.press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img{height:auto;width:min(100%,330px)}.tag{width:100%}}
+@keyframes fade{from{opacity:0}}
+@keyframes pressin{from{transform:scale(1.06) rotate(-1.5deg);opacity:0}}
 @media (max-width:760px){
   .top{padding:16px}.scene{padding:56px 14px 40px}
   .garden{gap:4px}.fl svg{height:clamp(84px,calc((100svh - 470px) / 2),104px)}.fl .kind{font-size:8.5px;letter-spacing:.1em}.fl .nm{font-size:16px}.fl .val{font-size:18px}
@@ -159,7 +174,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   <div class="garden" id="garden"></div>
   <div class="months idle" id="months"><div class="rail" id="rail" role="group" aria-label="Pick a month"></div></div>
   <p class="say" id="say" aria-live="polite"></p>
-  <div class="row"><a class="pill" id="next1" href="#years" hidden>Is it every year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Pick again</button></div>
+  <div class="row"><button class="pill" id="press" type="button" hidden>Press it for someone</button><a class="pill pill--line" id="next1" href="#years" hidden>Is it every year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Pick again</button></div>
 </div></section>
 
 <section class="scene" id="years"><div class="in rv">
@@ -207,6 +222,20 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   <p class="foot" id="foot">Google Trends (worldwide) via SerpApi, refreshed every morning.</p>
 </div></section>
 </main>
+<div class="press" id="pressBox" hidden role="dialog" aria-modal="true" aria-label="Press a flower for someone">
+  <div class="pbox">
+    <img id="card" alt="">
+    <form class="tag" id="tag" autocomplete="off">
+      <p class="tlab">Press it for someone</p>
+      <label>For<input id="tFor" maxlength="24" placeholder="Mum"></label>
+      <label>It reminds me of<textarea id="tMem" maxlength="80" rows="2" placeholder="summers at my grandmother’s house"></textarea></label>
+      <label>A month that matters<select id="tMon"></select></label>
+      <label>From<input id="tFrom" maxlength="24" placeholder="your name"></label>
+      <div class="row" style="justify-content:flex-start"><a class="pill" id="dl" download="pressed-flower.png">Download card</a><button class="pill pill--line" id="share" type="button" hidden>Share</button><button class="pill pill--line" id="closeP" type="button">Close</button></div>
+      <p class="tnote">Everything stays on your device. Nothing you type is saved or sent anywhere.</p>
+    </form>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -385,7 +414,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
       right ? `You called it: <b>${p.n} blooms biggest before ${N}.</b>` : `<b>${best.n} blooms biggest before ${N}.</b> Yours reached ×${NEXT.typ[p.id].toFixed(1)}.`;
     $('say').innerHTML = (flat ? 'Every house stays near its usual size.' : best.g === 'classic' ? 'The gift names lead.' : 'A cult house leads this time.') +
       `<small>The week before ${N} against a typical week, ${NEXT.years.length} years of data. Each petal is a month: drag through the year.</small>`;
-    $('next1').hidden = false; $('again').hidden = false;
+    $('next1').hidden = false; $('again').hidden = false; $('press').hidden = false;
   }
   // dragging the rail: each month against a typical month
   function showMonth(m) {
@@ -404,13 +433,104 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     mo.addEventListener('pointerup', () => { drag = false; });
     mo.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { showMonth(Math.min(11, month + 1)); e.preventDefault(); } if (e.key === 'ArrowLeft') { showMonth(Math.max(0, month - 1)); e.preventDefault(); } });
   })();
-  $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').classList.add('idle'); document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', false)); $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; setPrompt(); };
+  $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').classList.add('idle'); document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', false)); $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; $('press').hidden = true; setPrompt(); };
   function setPrompt() {
     const days = Math.round((NEXT.next - TODAY) / DAY);
     $('prompt').innerHTML = `Next gifting moment: <b>${NEXT.n}</b>, ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}. Tap the flower you think it makes biggest.`;
   }
   plant();
   ready.then(() => { grow(); setPrompt(); });
+
+  /* ---------- the pressed-flower card: a keepsake of your pick ---------- */
+  // one quiet line of insight at the foot of the card
+  const TAKE = {
+    classic: 'The name people reach for when they are buying for someone else.',
+    cult: 'The one people keep for themselves, which makes it a personal gift.'
+  };
+  function wrap(ctx, text, x, y, maxW, lh) {
+    const words = text.split(' '); let line = '', lines = [];
+    words.forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+    lines.push(line); lines.forEach((l, i) => ctx.fillText(l, x, y + i * lh)); return lines.length;
+  }
+  const val = id => $(id).value.trim();
+  async function pressCard() {
+    await document.fonts.ready;
+    const h = H.find(x => x.id === picked), N = NEXT.n, occ = new Date(NEXT.next).getUTCMonth();
+    const best = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id])[0];
+    const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
+    const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
+    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif";
+    // paper: soft white, faint grain, pressed-paper border (same grain every redraw)
+    c.fillStyle = '#fdfcfb'; c.fillRect(0, 0, W, HT);
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 9000; i++) { c.fillStyle = `rgba(120,100,80,${rnd() * .035})`; c.fillRect(rnd() * W, rnd() * HT, 1.4, 1.4); }
+    c.strokeStyle = '#e7e2db'; c.lineWidth = 2; c.strokeRect(44, 44, W - 88, HT - 88);
+    c.textAlign = 'center';
+    // "For Mum", like a hand-written tag
+    if (who) { c.fillStyle = '#2b2622'; c.font = `italic 500 64px ${serif}`; c.fillText('For ' + who, W / 2, 168); }
+    else { c.fillStyle = '#736b63'; c.font = `500 22px ${sans}`; c.fillText('THE GIFTING INDEX', W / 2, 120); }
+    // the flower, pressed flat, with the month that matters picked out
+    const cx = W / 2, cy = who ? 520 : 480, k = 2.75;
+    c.save(); c.translate(cx, cy);
+    c.strokeStyle = '#8a9a78'; c.lineWidth = 6; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(0, 30); c.bezierCurveTo(14, 130, -16, 200, 4, 310); c.stroke();
+    c.fillStyle = 'rgba(157,176,138,.75)'; c.beginPath(); c.moveTo(2, 210); c.bezierCurveTo(50, 165, 98, 172, 120, 196); c.bezierCurveTo(84, 226, 40, 232, 2, 210); c.fill();
+    c.strokeStyle = 'rgba(110,130,95,.5)'; c.lineWidth = 2; c.beginPath(); c.moveTo(4, 210); c.quadraticCurveTo(60, 196, 116, 197); c.stroke();
+    h.months.forEach((v, i) => {
+      const L = len(v) * k, w = (11 + len(v) * .12) * k, on = i === mon;
+      c.save(); c.rotate(i * Math.PI / 6);
+      const P = new Path2D(petal(L, w));
+      c.shadowColor = 'rgba(60,40,30,.12)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
+      c.globalAlpha = on ? .8 : v > 1.3 ? .48 : .32; c.fillStyle = h.c; c.fill(P);
+      c.shadowColor = 'transparent'; c.globalAlpha = on ? 1 : .68; c.strokeStyle = h.c; c.lineWidth = on ? 3 : 2; c.stroke(P);
+      c.globalAlpha = .35; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, -6); c.lineTo(0, -L * .86); c.stroke();
+      c.globalAlpha = 1; c.restore();
+      if (on) { const a = i * Math.PI / 6, r = L + 34; c.fillStyle = '#2b2622'; c.font = `700 22px ${sans}`; c.fillText(M[i], Math.sin(a) * r, -Math.cos(a) * r + 8); }
+    });
+    c.fillStyle = h.c; c.beginPath(); c.arc(0, 0, 22, 0, 7); c.fill();
+    c.fillStyle = '#fdfcfb'; c.globalAlpha = .7; c.beginPath(); c.arc(0, 0, 10, 0, 7); c.fill(); c.globalAlpha = 1;
+    c.save(); c.translate(6, 262); c.rotate(-.12); c.fillStyle = 'rgba(201,149,44,.22)'; c.fillRect(-70, -18, 140, 36); c.restore();
+    c.restore();
+    // the house
+    let y = cy + 395;
+    c.fillStyle = h.c; c.font = `600 54px ${serif}`; c.fillText(h.n, W / 2, y);
+    c.fillStyle = '#736b63'; c.font = `500 19px ${sans}`; c.fillText(h.g === 'classic' ? 'CLASSIC GIFT NAME' : 'CULT NICHE HOUSE', W / 2, y + 36);
+    // the message: their memory, or their result if they wrote nothing
+    y += 112;
+    if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 48 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50); }
+    else {
+      const right = NEXT.typ[h.id].toFixed(1) === NEXT.typ[best.id].toFixed(1);
+      c.fillStyle = '#2b2622'; c.font = `500 27px ${sans}`;
+      c.fillText(right ? `Called it: it bloomed biggest before ${N}.` : `Picked at ×${NEXT.typ[h.id].toFixed(1)}. ${best.s} bloomed biggest before ${N}.`, W / 2, y); y += 46;
+    }
+    if (from) { c.fillStyle = '#4a433e'; c.font = `italic 500 40px ${serif}`; c.fillText('from ' + from, W / 2, y + 26); }
+    // the insight, quietly, and who made it
+    c.fillStyle = '#8a8178'; c.font = `italic 500 25px ${serif}`; c.fillText(h.s + ': ' + TAKE[h.g].charAt(0).toLowerCase() + TAKE[h.g].slice(1), W / 2, HT - 118);
+    c.fillStyle = '#736b63'; c.font = `500 18px ${sans}`;
+    c.fillText('GIFTING-INDEX.VERCEL.APP  ·  CREATED BY RIYA DUTTA  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 74);
+    return cv;
+  }
+  let fileForShare = null;
+  async function redraw() {
+    const cv = await pressCard(), url = cv.toDataURL('image/png'), h = H.find(x => x.id === picked), who = val('tFor');
+    $('card').src = url; $('card').alt = 'A pressed ' + h.n + ' flower' + (who ? ' for ' + who : '');
+    const name = 'pressed-' + h.id + (who ? '-for-' + who.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '') + '.png';
+    $('dl').href = url; $('dl').download = name;
+    cv.toBlob(b => { fileForShare = new File([b], name, { type: 'image/png' }); $('share').hidden = !(navigator.canShare && navigator.canShare({ files: [fileForShare] })); });
+  }
+  let t = 0; const soon = () => { clearTimeout(t); t = setTimeout(redraw, 180); };   // live preview while typing
+  ['tFor', 'tFrom', 'tMem'].forEach(id => $(id).addEventListener('input', soon));
+  $('tMon').addEventListener('change', redraw);
+  $('tag').addEventListener('submit', e => e.preventDefault());
+  $('share').onclick = () => { if (fileForShare) navigator.share({ files: [fileForShare], title: 'A pressed flower', text: 'gifting-index.vercel.app' }).catch(() => {}); };
+  $('press').onclick = () => {
+    const occ = new Date(NEXT.next).getUTCMonth();
+    $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)}${i === occ ? ' · ' + NEXT.n : ''}</option>`).join('');
+    $('pressBox').hidden = false; redraw(); $('tFor').focus();
+  };
+  $('closeP').onclick = () => { $('pressBox').hidden = true; $('press').focus(); };
+  $('pressBox').addEventListener('click', e => { if (e.target.id === 'pressBox') $('pressBox').hidden = true; });
+  addEventListener('keydown', e => { if (e.key === 'Escape') $('pressBox').hidden = true; });
 
   /* ---------- 2 · every December: a meadow ---------- */
   let meadowReady = false, wantGrow = !MOTION;
