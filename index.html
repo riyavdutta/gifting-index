@@ -442,11 +442,6 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   ready.then(() => { grow(); setPrompt(); });
 
   /* ---------- the pressed-flower card: a keepsake of your pick ---------- */
-  // one quiet line of insight at the foot of the card
-  const TAKE = {
-    classic: 'The name people reach for when they are buying for someone else.',
-    cult: 'The one people keep for themselves, which makes it a personal gift.'
-  };
   function wrap(ctx, text, x, y, maxW, lh) {
     const words = text.split(' '); let line = '', lines = [];
     words.forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
@@ -455,8 +450,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   const val = id => $(id).value.trim();
   async function pressCard() {
     await document.fonts.ready;
-    const h = H.find(x => x.id === picked), N = NEXT.n, occ = new Date(NEXT.next).getUTCMonth();
-    const best = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id])[0];
+    const h = H.find(x => x.id === picked);
     const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
     const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
     const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif";
@@ -494,18 +488,11 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     // the house
     let y = cy + 395;
     c.fillStyle = h.c; c.font = `600 54px ${serif}`; c.fillText(h.n, W / 2, y);
-    c.fillStyle = '#736b63'; c.font = `500 19px ${sans}`; c.fillText(h.g === 'classic' ? 'CLASSIC GIFT NAME' : 'CULT NICHE HOUSE', W / 2, y + 36);
     // the message: their memory, or their result if they wrote nothing
-    y += 112;
+    y += 100;
     if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 48 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50); }
-    else {
-      const right = NEXT.typ[h.id].toFixed(1) === NEXT.typ[best.id].toFixed(1);
-      c.fillStyle = '#2b2622'; c.font = `500 27px ${sans}`;
-      c.fillText(right ? `Called it: it bloomed biggest before ${N}.` : `Picked at ×${NEXT.typ[h.id].toFixed(1)}. ${best.s} bloomed biggest before ${N}.`, W / 2, y); y += 46;
-    }
     if (from) { c.fillStyle = '#4a433e'; c.font = `italic 500 40px ${serif}`; c.fillText('from ' + from, W / 2, y + 26); }
-    // the insight, quietly, and who made it
-    c.fillStyle = '#8a8178'; c.font = `italic 500 25px ${serif}`; c.fillText(h.s + ': ' + TAKE[h.g].charAt(0).toLowerCase() + TAKE[h.g].slice(1), W / 2, HT - 118);
+    // who made it, quietly
     c.fillStyle = '#736b63'; c.font = `500 18px ${sans}`;
     c.fillText('GIFTING-INDEX.VERCEL.APP  ·  CREATED BY RIYA DUTTA  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 74);
     return cv;
