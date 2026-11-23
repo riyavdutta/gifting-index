@@ -233,7 +233,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     <img id="card" alt="">
     <form class="tag" id="tag" autocomplete="off">
       <p class="tlab">Press it for someone</p>
-      <label>Flower<select id="tHouse"></select></label>
+      <label>Perfume<select id="tHouse"></select></label>
       <label>For<input id="tFor" maxlength="24" placeholder="Mum"></label>
       <label>It reminds me of<textarea id="tMem" maxlength="80" rows="2" placeholder="summers at my grandmother’s house"></textarea></label>
       <label>A month that matters<select id="tMon"></select></label>
@@ -592,31 +592,14 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     // "For Mum" in handwriting
     c.textAlign = 'left'; c.fillStyle = '#2b2622';
     if (who) { c.font = `400 92px ${hand}`; c.fillText('For ' + who, 120, 205); }
-    // the perfume flower, pressed
-    const cx = 420, cy = 520, k = 2.5;
-    c.save(); c.translate(cx, cy);
-    c.strokeStyle = '#8a9a78'; c.lineWidth = 6; c.lineCap = 'round'; c.beginPath(); c.moveTo(0, 30); c.bezierCurveTo(14, 130, -16, 200, 4, 330); c.stroke();
-    leaf(c, 2, 230, 120, 34, 1.2);
-    h.months.forEach((v, i) => {
-      const L = len(v) * k, w = (11 + len(v) * .12) * k, on = i === mon;
-      c.save(); c.rotate(i * Math.PI / 6); const P = new Path2D(petal(L, w));
-      c.shadowColor = 'rgba(60,40,30,.12)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
-      c.globalAlpha = on ? .8 : v > 1.3 ? .48 : .32; c.fillStyle = h.c; c.fill(P);
-      c.shadowColor = 'transparent'; c.globalAlpha = on ? 1 : .68; c.strokeStyle = h.c; c.lineWidth = on ? 3 : 2; c.stroke(P);
-      c.globalAlpha = .35; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, -6); c.lineTo(0, -L * .86); c.stroke(); c.restore();
-    });
-    c.fillStyle = h.c; c.beginPath(); c.arc(0, 0, 20, 0, 7); c.fill(); c.fillStyle = '#fdfbf8'; c.globalAlpha = .7; c.beginPath(); c.arc(0, 0, 9, 0, 7); c.fill(); c.globalAlpha = 1;
-    c.restore();
-    // the month flower, tucked in beside it
-    c.save(); c.translate(720, 560); c.rotate(.16); c.scale(1.25, 1.25); DRAW[mon](c); c.restore();
-    // tape holding both stems down
-    washi(c, 430, 830, 170, 40, -.14, '#c9952c', rnd);
-    washi(c, 770, 900, 150, 38, .2, h.c, rnd);
-    // little labels, like a herbarium note
-    c.textAlign = 'center'; c.fillStyle = '#736b63'; c.font = `italic 500 26px ${serif}`;
-    c.fillText(h.n, cx, 940); c.fillText(cap(M[mon]) + ' · ' + MF[mon].toLowerCase(), 770, 980);
+    // the month flower, pressed and taped down
+    const k = mon === 6 ? 1.55 : 1.85, ty = 950 - 300 * k;   // the larkspur is tall, so it is drawn a little smaller
+    c.save(); c.translate(545, ty); c.rotate(.06); c.scale(k, k); DRAW[mon](c); c.restore();
+    washi(c, 560, ty + 262 * k, 190, 42, -.12, '#c9952c', rnd);
+    c.textAlign = 'center'; c.fillStyle = '#736b63'; c.font = `italic 500 28px ${serif}`;
+    c.fillText(cap(M[mon]) + ' · ' + MF[mon].toLowerCase(), 575, 1000);
     // the message
-    let y = 1078;
+    let y = 1085;
     if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 50 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50) - 6; }
     if (from) { c.textAlign = 'right'; c.fillStyle = '#2b2622'; c.font = `400 74px ${hand}`; c.fillText('from ' + from, W - 130, Math.max(y + 56, 1170)); }
     c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `500 17px ${sans}`;
@@ -626,7 +609,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   let fileForShare = null;
   async function redraw() {
     const cv = await pressCard(), url = cv.toDataURL('image/png'), h = H.find(x => x.id === $('tHouse').value), who = val('tFor');
-    $('card').src = url; $('card').alt = 'A pressed ' + h.n + ' flower' + (who ? ' for ' + who : '');
+    $('card').src = url; $('card').alt = 'A pressed ' + MF[+$('tMon').value].toLowerCase() + (who ? ' for ' + who : '');
     const name = 'pressed-' + h.id + (who ? '-for-' + who.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '') + '.png';
     $('dl').href = url; $('dl').download = name;
     cv.toBlob(b => { fileForShare = new File([b], name, { type: 'image/png' }); $('share').hidden = !(navigator.canShare && navigator.canShare({ files: [fileForShare] })); });
