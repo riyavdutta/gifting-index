@@ -43,6 +43,10 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .pill{display:inline-block;font:500 13px var(--sans);letter-spacing:.06em;padding:11px 20px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none}
 .pill--line{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .pill[hidden]{display:none}
+.fab{position:fixed;right:28px;bottom:28px;z-index:15;display:flex;align-items:center;gap:9px;font:500 13.5px var(--sans);letter-spacing:.04em;padding:12px 20px 12px 16px;border-radius:999px;background:var(--ink);color:#fdfcfb;box-shadow:0 12px 28px -12px #0000006b;transition:transform .3s var(--ease),opacity .3s}
+.fab:hover{transform:translateY(-2px)}
+.fab[hidden]{display:none}
+@media (max-width:760px){.fab{display:none}}
 .linkish{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-color:#c9952c;text-underline-offset:3px;text-decoration-thickness:1.5px;padding:0}
 
 /* 1 · the garden */
@@ -223,6 +227,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   <p class="foot" id="foot">Google Trends (worldwide) via SerpApi, refreshed every morning.</p>
 </div></section>
 </main>
+<button class="fab" id="pressFab" type="button" hidden><svg viewBox="-12 -12 24 24" width="18" height="18" aria-hidden="true"><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(0)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(72)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(144)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(216)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(288)"/><circle r="2.4" fill="#f7e2a0"/></svg>Press a flower for someone</button>
 <div class="press" id="pressBox" hidden role="dialog" aria-modal="true" aria-label="Press a flower for someone">
   <div class="pbox">
     <img id="card" alt="">
@@ -412,8 +417,8 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     H.forEach(h => { const v = document.querySelector(`.fl[data-id="${h.id}"] .val`); v.textContent = '×' + NEXT.typ[h.id].toFixed(1); v.style.color = h.c; });
     const order = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id]), best = order[0], p = H.find(h => h.id === picked);
     const flat = NEXT.typ[best.id] < 1.1, right = NEXT.typ[p.id].toFixed(1) === NEXT.typ[best.id].toFixed(1);
-    $('prompt').innerHTML = flat ? `Trick question: <b>${N} barely moves any of them.</b>` :
-      right ? `You called it: <b>${p.n} blooms biggest before ${N}.</b>` : `<b>${best.n} blooms biggest before ${N}.</b> Yours reached ×${NEXT.typ[p.id].toFixed(1)}.`;
+    $('prompt').innerHTML = (flat ? `Trick question: <b>${N} barely moves any of them.</b>` :
+      right ? `You called it: <b>${p.n} blooms biggest before ${N}.</b>` : `<b>${best.n} blooms biggest before ${N}.</b> Yours reached ×${NEXT.typ[p.id].toFixed(1)}.`) + ` <button type="button" class="linkish" id="pressAny">Press it for someone</button>`;
     $('say').innerHTML = (flat ? 'Every house stays near its usual size.' : best.g === 'classic' ? 'The gift names lead.' : 'A cult house leads this time.') +
       `<small>The week before ${N} against a typical week, ${NEXT.years.length} years of data. Each petal is a month: drag through the year.</small>`;
     $('next1').hidden = false; $('again').hidden = false; $('press').hidden = false;
@@ -643,6 +648,8 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   }
   $('press').onclick = () => openPress($('press'));
   $('pressEnd').onclick = () => openPress($('pressEnd'));
+  $('pressFab').onclick = () => openPress($('pressFab'));
+  ready.then(() => { $('pressFab').hidden = false; });
   document.addEventListener('click', e => { if (e.target.id === 'pressAny') openPress(e.target); });
   $('closeP').onclick = () => { $('pressBox').hidden = true; if (opener) opener.focus(); };
   $('pressBox').addEventListener('click', e => { if (e.target.id === 'pressBox') $('pressBox').hidden = true; });
