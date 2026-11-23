@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://gifting-index.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-16 -16 32 32%27%3E%3Cg fill=%27%238e3b5f%27 fill-opacity=%27.75%27%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(72)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(144)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(216)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(288)%27/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#fdfcfb;--paper2:#f4f2ef;--ink:#2b2622;--mute:#736b63;--line:#e7e3de;--you:#c9952c;
   --gift:#8e3b5f;--cult:#6f8f6a;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Zen Kaku Gothic New',system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.2,1)}
@@ -573,11 +573,11 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   }
 
   async function pressCard() {
-    await document.fonts.ready; await document.fonts.load("600 80px 'Caveat'");
+    await document.fonts.ready; await document.fonts.load("400 80px 'Pinyon Script'");
     const h = H.find(x => x.id === $('tHouse').value);
     const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
     const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
-    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif", hand = "'Caveat', cursive";
+    const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif", hand = "'Pinyon Script', cursive";
     let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     // the table, then a sheet of handmade paper with a deckled edge
     c.fillStyle = '#f1ede8'; c.fillRect(0, 0, W, HT);
@@ -591,7 +591,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     postmark(c, W - 190, 190, M[mon], h.s.length > 12 ? h.s.split(' ').pop() : h.s, h.c);
     // "For Mum" in handwriting
     c.textAlign = 'left'; c.fillStyle = '#2b2622';
-    if (who) { c.font = `600 84px ${hand}`; c.fillText('For ' + who, 120, 200); }
+    if (who) { c.font = `400 92px ${hand}`; c.fillText('For ' + who, 120, 205); }
     // the perfume flower, pressed
     const cx = 420, cy = 520, k = 2.5;
     c.save(); c.translate(cx, cy);
@@ -618,7 +618,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     // the message
     let y = 1078;
     if (mem) { c.fillStyle = '#2b2622'; c.font = `italic 500 42px ${serif}`; y += 50 * wrap(c, 'It reminds me of ' + mem.replace(/[.\s]+$/, '') + '.', W / 2, y, 820, 50) - 6; }
-    if (from) { c.textAlign = 'right'; c.fillStyle = '#2b2622'; c.font = `600 64px ${hand}`; c.fillText('from ' + from, W - 130, Math.max(y + 34, 1150)); }
+    if (from) { c.textAlign = 'right'; c.fillStyle = '#2b2622'; c.font = `400 74px ${hand}`; c.fillText('from ' + from, W - 130, Math.max(y + 56, 1170)); }
     c.textAlign = 'center'; c.fillStyle = '#8a8178'; c.font = `500 17px ${sans}`;
     c.fillText('GIFTING-INDEX.VERCEL.APP  ·  ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(), W / 2, HT - 70);
     return cv;
