@@ -43,13 +43,14 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 .pill{display:inline-block;font:500 13px var(--sans);letter-spacing:.06em;padding:11px 20px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none}
 .pill--line{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .pill[hidden]{display:none}
+.linkish{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-color:#c9952c;text-underline-offset:3px;text-decoration-thickness:1.5px;padding:0}
 
 /* 1 · the garden */
 .garden{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;margin:12px auto 0;max-width:900px}
 .fl{display:flex;flex-direction:column;align-items:center;border-radius:20px;padding:2px 0 8px;transition:background .4s}
 .fl:hover:not(:disabled){background:#00000006}
 .fl:disabled{cursor:default}
-.fl svg{width:auto;height:clamp(84px,calc((100svh - 420px) / 2),178px);max-width:100%;overflow:visible}
+.fl svg{width:auto;height:clamp(84px,calc((100svh - 450px) / 2),178px);max-width:100%;overflow:visible}
 #call{padding-top:52px;padding-bottom:28px}
 .petal{transition:transform 1.1s var(--ease),opacity .35s;transform-box:fill-box;transform-origin:50% 100%}
 .fl .nm{font:600 clamp(18px,1.9vw,24px)/1.1 var(--serif)}
@@ -217,7 +218,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     <details><summary>Ten moments, honestly dated</summary><p>Moon-based holidays (Lunar New Year, Eid, Raksha Bandhan, Diwali) can shift by a day. Google is blocked in mainland China, so Lunar New Year and Singles’ Day are under-counted. Diwali sits at the start of the winter run-up, so part of its lift is the season itself. The year flower is the typical year across 2022–2025.</p></details>
     <details><summary>The data writes the headline</summary><p>Every number on this page is calculated in your browser from the latest data, fetched every morning. If a cult house out-gifts the classics this year, the page will say so.</p></details>
   </div>
-  <div class="row"><a class="pill" href="#call">Play again ↑</a></div>
+  <div class="row"><button class="pill" id="pressEnd" type="button">Press a flower for someone</button><a class="pill pill--line" href="#call">Play again ↑</a></div>
   <p class="foot">Independent analysis by Riya Dutta. Not affiliated with or endorsed by Jo Malone London, Diptyque, Molton Brown, Le Labo, Byredo or Frédéric Malle; names are used only to identify each house.</p>
   <p class="foot" id="foot">Google Trends (worldwide) via SerpApi, refreshed every morning.</p>
 </div></section>
@@ -227,6 +228,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     <img id="card" alt="">
     <form class="tag" id="tag" autocomplete="off">
       <p class="tlab">Press it for someone</p>
+      <label>Flower<select id="tHouse"></select></label>
       <label>For<input id="tFor" maxlength="24" placeholder="Mum"></label>
       <label>It reminds me of<textarea id="tMem" maxlength="80" rows="2" placeholder="summers at my grandmother’s house"></textarea></label>
       <label>A month that matters<select id="tMon"></select></label>
@@ -436,7 +438,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').classList.add('idle'); document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', false)); $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; $('press').hidden = true; setPrompt(); };
   function setPrompt() {
     const days = Math.round((NEXT.next - TODAY) / DAY);
-    $('prompt').innerHTML = `Next gifting moment: <b>${NEXT.n}</b>, ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}. Tap the flower you think it makes biggest.`;
+    $('prompt').innerHTML = `Next gifting moment: <b>${NEXT.n}</b>, ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}. Tap the flower you think it makes biggest, or <button type="button" class="linkish" id="pressAny">just press one for someone</button>.`;
   }
   plant();
   ready.then(() => { grow(); setPrompt(); });
@@ -567,7 +569,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
 
   async function pressCard() {
     await document.fonts.ready; await document.fonts.load("600 80px 'Caveat'");
-    const h = H.find(x => x.id === picked);
+    const h = H.find(x => x.id === $('tHouse').value);
     const who = val('tFor'), from = val('tFrom'), mem = val('tMem'), mon = +$('tMon').value;
     const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT;
     const c = cv.getContext('2d'), serif = "'Cormorant Garamond', Georgia, serif", sans = "'Zen Kaku Gothic New', system-ui, sans-serif", hand = "'Caveat', cursive";
@@ -618,7 +620,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   }
   let fileForShare = null;
   async function redraw() {
-    const cv = await pressCard(), url = cv.toDataURL('image/png'), h = H.find(x => x.id === picked), who = val('tFor');
+    const cv = await pressCard(), url = cv.toDataURL('image/png'), h = H.find(x => x.id === $('tHouse').value), who = val('tFor');
     $('card').src = url; $('card').alt = 'A pressed ' + h.n + ' flower' + (who ? ' for ' + who : '');
     const name = 'pressed-' + h.id + (who ? '-for-' + who.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '') + '.png';
     $('dl').href = url; $('dl').download = name;
@@ -626,15 +628,23 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   }
   let t = 0; const soon = () => { clearTimeout(t); t = setTimeout(redraw, 180); };   // live preview while typing
   ['tFor', 'tFrom', 'tMem'].forEach(id => $(id).addEventListener('input', soon));
-  $('tMon').addEventListener('change', redraw);
+  $('tMon').addEventListener('change', redraw); $('tHouse').addEventListener('change', redraw);
   $('tag').addEventListener('submit', e => e.preventDefault());
   $('share').onclick = () => { if (fileForShare) navigator.share({ files: [fileForShare], title: 'A pressed flower', text: 'gifting-index.vercel.app' }).catch(() => {}); };
-  $('press').onclick = () => {
-    const occ = new Date(NEXT.next).getUTCMonth();
-    $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)} · ${MF[i].toLowerCase()}${i === occ ? ' (' + NEXT.n + ')' : ''}</option>`).join('');
-    $('pressBox').hidden = false; redraw(); $('tFor').focus();
-  };
-  $('closeP').onclick = () => { $('pressBox').hidden = true; $('press').focus(); };
+  let opener = null;
+  function openPress(from) {
+    opener = from || null;
+    ready.then(() => {
+      const occ = new Date(NEXT.next).getUTCMonth();
+      $('tHouse').innerHTML = H.map(h => `<option value="${h.id}"${h.id === (picked || 'jo') ? ' selected' : ''}>${h.n}</option>`).join('');
+      $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)} · ${MF[i].toLowerCase()}${i === occ ? ' (' + NEXT.n + ')' : ''}</option>`).join('');
+      $('pressBox').hidden = false; redraw(); (picked ? $('tFor') : $('tHouse')).focus();
+    });
+  }
+  $('press').onclick = () => openPress($('press'));
+  $('pressEnd').onclick = () => openPress($('pressEnd'));
+  document.addEventListener('click', e => { if (e.target.id === 'pressAny') openPress(e.target); });
+  $('closeP').onclick = () => { $('pressBox').hidden = true; if (opener) opener.focus(); };
   $('pressBox').addEventListener('click', e => { if (e.target.id === 'pressBox') $('pressBox').hidden = true; });
   addEventListener('keydown', e => { if (e.key === 'Escape') $('pressBox').hidden = true; });
 
