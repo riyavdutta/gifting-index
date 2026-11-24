@@ -41,6 +41,13 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 .stem{transition:d 1.4s var(--ease)}
 .mv{transition:transform 1.4s var(--ease)}
 .hd{cursor:pointer}.hd:focus{outline:none}.hd:focus-visible circle.ring{opacity:1}
+.legend{grid-column:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:14px 0 10px;text-align:center}
+.legend button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 2px}
+.legend .nm{display:flex;align-items:center;gap:7px;font-size:15px;color:#4b4642;padding-bottom:3px;border-bottom:2px solid transparent;white-space:nowrap}
+.legend .nm i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.legend b{font-size:24px;font-weight:600;line-height:1.2;min-height:1.2em;color:var(--ink)}
+@media (max-width:1180px){.legend{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}}
+.legend .mine .nm{border-bottom-color:var(--you);color:var(--ink)}
 .months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding-bottom:26px;font-size:13px;transition:opacity .4s}
 .months.idle{opacity:.2;pointer-events:none}
 .months button,.hs button{padding:8px 0;color:#7a746d}
@@ -85,6 +92,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
   .top{padding:16px 20px}.q{padding-top:70px}.q p{font-size:14px;margin-top:12px}
   .stage{min-height:56svh}
   .months{font-size:11px;padding-bottom:16px}
+  .legend{grid-column:1;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}.legend .nm{font-size:14px}.legend b{font-size:20px}
   #notes{padding-top:60px;padding-bottom:60px}
   .yl{font-size:30px}.ml{font-size:30px}#dec,#year{min-height:auto;padding-bottom:40px}#dec .stage,#year .stage{min-height:300px}
   .press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}
@@ -102,6 +110,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     <p id="say">Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.</p>
     <p><button type="button" class="link" id="again" hidden>Pick again</button></p></div>
   <div class="stage"><svg id="vase" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax meet" role="group" aria-label="Six stems in a vase, one for each perfume house"></svg></div>
+  <div class="legend" id="legend" role="group" aria-label="The six houses, in the same order as the stems"></div>
   <div class="months idle" id="months" role="group" aria-label="Month"></div>
 </section>
 
@@ -296,32 +305,32 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 
   /* ---------- 1 · the vase: guess which house grows most before the next gifting moment ---------- */
   let picked = null, open = false, month = 11;
-  const ANG = [-40, -24, -8, 8, 25, 42], vase = $('vase'), VX = 400, VY = 500;
+  const ANG = [-46, -28, -10, 10, 28, 46], vase = $('vase'), VX = 400, VY = 500;
   bowl(vase, VX, VY, 300, 62);
   const stems = H.map((h, i) => {
     const s = svgEl(vase, 'path', { class: 'stem', fill: 'none', stroke: '#6b7d5a', 'stroke-width': 3, 'stroke-linecap': 'round' });
     const g = svgEl(vase, 'g', { class: 'mv hd', tabindex: 0, role: 'button', 'aria-label': h.n });
     svgEl(g, 'circle', { r: 34, fill: 'transparent' });
     bloomAt(g, 0, 0, 15, COL[h.id]);
-    txt(g, { y: -40, 'font-size': 15, fill: '#4b4642' }, h.s);
-    const x = txt(g, { y: -60, 'font-size': 14, fill: '#2a2724', 'font-weight': 600 }, '');
+    $('legend').insertAdjacentHTML('beforeend', `<button type="button" id="lg-${h.id}" style="--c:${COL[h.id]}"><span class="nm"><i></i>${h.s}</span><b></b></button>`);
+    const x = $('lg-' + h.id).querySelector('b');
     const ring = svgEl(g, 'circle', { class: 'ring', r: 30, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
     const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };
-    g.addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    g.addEventListener('click', go); $('lg-' + h.id).addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     return { h, s, g, x, ring, i };
   });
   // vals: one number per house (null = still buds, all the same height)
   let shown = null;
   function arrange(vals) {
     shown = vals;
-    vase.setAttribute('viewBox', innerWidth < 760 ? '150 40 480 580' : '0 0 800 600');   // closer in on a phone
+    vase.setAttribute('viewBox', innerWidth < 760 ? '110 90 580 520' : '0 0 800 600');   // closer in on a phone
     stems.forEach(({ h, s, g, x, ring, i }) => {
-      const v = vals ? vals[h.id] : null, L = v == null ? [226, 252, 234, 262, 240, 254][i] : 140 + (Math.max(.7, Math.min(2.8, v)) - .8) * 150, a = ANG[i] * Math.PI / 180;
+      const v = vals ? vals[h.id] : null, L = v == null ? [214, 236, 222, 244, 228, 238][i] : 120 + (Math.max(.7, Math.min(2.8, v)) - .8) * 128, a = ANG[i] * Math.PI / 180;
       const sx = VX + (i - 2.5) * 16, ex = sx + Math.sin(a) * L, ey = VY - Math.cos(a) * L;
       s.setAttribute('d', `M${sx},${VY} Q${sx + Math.sin(a) * L * .35},${VY - L * .55} ${ex},${ey}`);
       g.style.transform = `translate(${ex}px,${ey}px)`;
       x.textContent = v == null ? '' : '×' + v.toFixed(1);
-      ring.setAttribute('opacity', picked === h.id ? 1 : 0);
+      ring.setAttribute('opacity', picked === h.id ? 1 : 0); $('lg-' + h.id).classList.toggle('mine', picked === h.id);
       g.setAttribute('aria-label', h.n + (v == null ? '' : ', ' + v.toFixed(1) + ' times a usual week'));
     });
   }
