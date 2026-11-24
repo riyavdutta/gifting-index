@@ -2,15 +2,14 @@
 
 What gets bought as a gift? Six luxury fragrance houses, three classic gift names (Jo Malone London, Diptyque, Molton Brown) and three cult niche houses (Le Labo, Byredo, Frédéric Malle), tracked every day. An independent project by Riya Dutta, live at [gifting-index.vercel.app](https://gifting-index.vercel.app/).
 
-The page tells one point, perfume is a winter gift, as a garden: each house is a flower whose 12 petals are the months, petal length = how much more it's searched than usual. Soft white page, Cormorant Garamond and Zen Kaku Gothic New, warm flowers for the gift names (plum, rose, raspberry) and cool ones for the cult houses (sage, wisteria, eucalyptus), with antique gold for anything that's yours (your pick, your date, the hand):
+The page is an ikebana arrangement: calm seasonal walls, Shippori Mincho, and each house drawn as a flower on a stem, plum and pink for the gift names and green, lilac and teal for the cult houses, with antique gold for anything that's yours. Four sections:
 
-1. **Call it:** the next gifting moment is named, and you tap the flower you think it makes biggest; the buds (all the same size until then) bloom, and a month bar lets you drag through the year. Quiet occasions become a trick question. Then **Press it for someone** turns the flower into a gift tag: add who it is for, what the scent reminds you of, a month that matters and your name, and download or share the card (made in the browser; nothing typed is saved or sent).
-2. **Every December:** a meadow, one pair of stems per year, gift names against cult houses; stem height is the December lift.
-3. **The gifting year:** the typical year (2022 onwards) as one flower with a petal for each week. Drag the gold hand or pick your own date; the six houses re-rank live.
-4. **Next up, live:** days to the next gifting moment, where each house stands this week, and how the last moment went.
-5. **How I know:** the checks behind the claim, including the test of nine more houses (`scripts/screen_houses.py`, results in `data/screen.json`) that chose Molton Brown and Frédéric Malle.
+1. **The vase:** the next gifting moment is named, and you tap the flower you think it makes tallest. Until then every stem is the same height; after the pick each stem grows to that house's lift the week before the moment, and a month bar shows each month against a usual one (the wall colour follows the season). **Press a flower for someone** opens the gift card: a pressed month flower, an optional spray of a scent from the chosen house with its notes pressed beside it, who it is for, what it reminds you of, and your name; download or share it (made in the browser; nothing typed is saved or sent).
+2. **Every December:** a long tray with a pair of stems for each year, gift names against cult houses; stem height is the December lift.
+3. **One house, the whole year:** a branch with a blossom for each month, sized by that month's lift; pick any of the six houses.
+4. **Things I'm still not sure about:** the honest gaps, including the test of nine more houses (`scripts/screen_houses.py`, results in `data/screen.json`) that chose Molton Brown and Frédéric Malle.
 
-Every number is calculated in the page from the latest saved data, including the year count, the occasion lifts and the "how it went" card.
+Every number is calculated in the page from the latest saved data, including the year count and the occasion lifts.
 
 ## Keeping the holidays up to date
 
@@ -18,7 +17,7 @@ Ten gifting moments are measured: Lunar New Year, Valentine's Day, Eid al-Fitr, 
 
 ## Where the data comes from
 
-- **Google searches (main signal):** Google Trends interest, worldwide, through [SerpApi](https://serpapi.com/google-trends-api). Monthly since 2016 for the December lift; weekly for the dial, the occasions and "this week".
+- **Google searches (main signal):** Google Trends interest, worldwide, through [SerpApi](https://serpapi.com/google-trends-api). Monthly since 2016 for the December lift; weekly for the gifting moments.
 - **Wikipedia pageviews (second signal):** daily, from the [Wikimedia Pageviews API](https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews). Collected as a cross-check.
 
 Every morning (scheduled for 06:20 UTC; GitHub often starts it a few hours late) a GitHub Action (`.github/workflows/data.yml`) runs `scripts/fetch_data.py`, saves `data/trends.json` and `data/wiki.json`, and commits them; Vercel redeploys. Visitors only load these saved files, so the site never waits on an outside service. If a fetch fails, the last good copy stays. SerpApi use is about 70 requests a month (two requests a pull: the four big names together, and the two smaller houses together, so the small ones keep detail on Google's 0–100 scale) (the free plan allows 100). The key is stored as the repository secret `SERPAPI_KEY`.

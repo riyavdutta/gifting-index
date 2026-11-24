@@ -7,7 +7,7 @@
 <meta name="description" content="What gets bought as a gift? Six luxury fragrance houses, Jo Malone London, Diptyque, Molton Brown, Le Labo, Byredo and Frédéric Malle, tracked every day in Google searches. By Riya Dutta.">
 <link rel="canonical" href="https://gifting-index.vercel.app/">
 <meta property="og:title" content="The Gifting Index · Riya Dutta">
-<meta property="og:description" content="Classics get gifted. Cult houses get chosen. Pick the flower December makes biggest, then see the data.">
+<meta property="og:description" content="Six perfume houses as stems in one vase. Guess which grows most before the next gifting moment, then press a flower for someone.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gifting-index.vercel.app/">
 <meta property="og:image" content="https://gifting-index.vercel.app/og.png">
@@ -18,216 +18,122 @@
 <meta name="twitter:image" content="https://gifting-index.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-16 -16 32 32%27%3E%3Cg fill=%27%238e3b5f%27 fill-opacity=%27.75%27%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(72)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(144)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(216)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(288)%27/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#fdfcfb;--paper2:#f4f2ef;--ink:#2b2622;--mute:#736b63;--line:#e7e3de;--you:#c9952c;
-  --gift:#8e3b5f;--cult:#6f8f6a;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Zen Kaku Gothic New',system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.2,1)}
+:root{--ink:#2a2724;--soft:#5f5a54;--mute:#8a847c;--line:#ddd6cd;--you:#c9952c;--wall:#efeae4;
+  --mincho:'Shippori Mincho',Georgia,serif;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Zen Kaku Gothic New',system-ui,sans-serif;--ease:cubic-bezier(.5,0,.2,1)}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
-html,body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+html,body{background:var(--wall);color:var(--ink);font-family:var(--mincho);-webkit-font-smoothing:antialiased;overflow-x:clip}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.top{position:absolute;inset:0 0 auto;display:flex;justify-content:space-between;padding:22px 32px;font:500 12px var(--sans);letter-spacing:.18em;color:var(--mute);text-transform:uppercase;z-index:2}
-.scene{min-height:100svh;display:flex;align-items:center;padding:64px 32px}
-.in{max-width:1100px;margin:0 auto;width:100%}
-.lab{text-align:center;font:500 11.5px var(--sans);letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin-bottom:12px}
-h1,h2{font:500 clamp(40px,5.4vw,72px)/1.02 var(--serif);text-align:center;letter-spacing:-.01em}
-h2{font-size:clamp(34px,4.4vw,58px)}
-h1 em,h2 em{font-style:italic;color:var(--gift)}
-#kin .l{display:inline-block;transition:color .5s,transform .4s var(--ease)}
-.prompt{text-align:center;font:500 15px/1.6 var(--sans);color:var(--mute);margin:14px auto 0;max-width:620px;min-height:24px;letter-spacing:.02em}
-.prompt b{color:var(--ink);font-weight:500}
-.say{text-align:center;font:500 italic clamp(21px,2.3vw,29px)/1.25 var(--serif);margin:14px auto 0;max-width:760px;min-height:1.3em}
-.say small{display:block;font:500 13px/1.5 var(--sans);font-style:normal;color:var(--mute);margin-top:6px}
-.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-.pill{display:inline-block;font:500 13px var(--sans);letter-spacing:.06em;padding:11px 20px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none}
-.pill--line{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-.pill[hidden]{display:none}
-.fab{position:fixed;right:28px;bottom:28px;z-index:15;display:flex;align-items:center;gap:9px;font:500 13.5px var(--sans);letter-spacing:.04em;padding:12px 20px 12px 16px;border-radius:999px;background:var(--ink);color:#fdfcfb;box-shadow:0 12px 28px -12px #0000006b;transition:transform .3s var(--ease),opacity .3s}
+.top{position:absolute;inset:0 0 auto;display:flex;justify-content:space-between;padding:24px 40px;font-size:13px;letter-spacing:.04em;color:#6f6a64;z-index:2}
+section{min-height:100svh;display:grid;grid-template-columns:minmax(240px,340px) 1fr;column-gap:40px;padding:0 40px;transition:background 1.2s}
+.q{padding-top:120px;align-self:start}
+h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
+#kin .l{display:inline-block;transition:color .5s,transform .4s}
+.q p{font-size:15px;line-height:1.85;margin-top:22px;color:var(--soft);max-width:30ch}
+.q p b{font-weight:600;color:var(--ink)}
+.link{color:var(--ink);border-bottom:1px solid var(--you);padding:0 0 1px;text-decoration:none;font:inherit;line-height:inherit}
+.link[hidden]{display:none}
+.stage{position:relative;min-height:560px;align-self:stretch}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.stem{transition:d 1.4s var(--ease)}
+.mv{transition:transform 1.4s var(--ease)}
+.hd{cursor:pointer}.hd:focus{outline:none}.hd:focus-visible circle.ring{opacity:1}
+.months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding-bottom:26px;font-size:13px;transition:opacity .4s}
+.months.idle{opacity:.2;pointer-events:none}
+.months button,.hs button{padding:8px 0;color:#7a746d}
+.months button[aria-pressed=true],.hs button[aria-pressed=true]{color:var(--ink);font-weight:600}
+#dec{background:#ecdfe6}
+#year{background:#eef0e4}
+.hs{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:22px;font-size:15px}
+.hs button{display:flex;align-items:center;gap:7px;padding:4px 0}
+.hs i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+#notes{min-height:auto;padding-top:110px;padding-bottom:110px}
+.cols{columns:2 280px;column-gap:48px;font-size:15px;line-height:1.85;color:var(--soft);max-width:760px}
+.cols p{break-inside:avoid;margin-bottom:18px}
+.end{margin-top:40px;font-size:19px}
+.foot{grid-column:1/-1;margin-top:70px;font-size:12.5px;line-height:1.8;color:var(--mute);max-width:760px}
+.fab{position:fixed;right:30px;bottom:28px;z-index:15;display:flex;align-items:center;gap:9px;font-size:14px;padding:11px 18px 11px 14px;border-radius:3px;background:#2f2b29;color:#f3efe9;box-shadow:0 10px 24px -12px #0000006b;transition:transform .3s}
 .fab:hover{transform:translateY(-2px)}
-.fab[hidden]{display:none}
+.fab[hidden]{display:none}.fab.away{opacity:0;pointer-events:none;transform:translateY(8px)}
 @media (max-width:760px){.fab{display:none}}
-.linkish{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-color:#c9952c;text-underline-offset:3px;text-decoration-thickness:1.5px;padding:0}
-
-/* 1 · the garden */
-.garden{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;margin:12px auto 0;max-width:900px}
-.fl{display:flex;flex-direction:column;align-items:center;border-radius:20px;padding:2px 0 8px;transition:background .4s}
-.fl:hover:not(:disabled){background:#00000006}
-.fl:disabled{cursor:default}
-.fl svg{width:auto;height:clamp(84px,calc((100svh - 450px) / 2),178px);max-width:100%;overflow:visible}
-#call{padding-top:52px;padding-bottom:28px}
-.petal{transition:transform 1.1s var(--ease),opacity .35s;transform-box:fill-box;transform-origin:50% 100%}
-.fl .nm{font:600 clamp(18px,1.9vw,24px)/1.1 var(--serif)}
-.fl .kind{font:500 10px var(--sans);letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin-top:3px}
-.fl .val{font:600 22px var(--serif);margin-top:2px;min-height:26px}
-.fl.mine{background:#c9952c14;box-shadow:inset 0 0 0 1px #c9952c55}
-.fl.mine .nm::after{content:' ✦';color:var(--you)}
-.months{max-width:760px;margin:12px auto 0;user-select:none;touch-action:none}
-.months.idle{opacity:.4;pointer-events:none}
-.months{transition:opacity .5s}
-.months .rail{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
-.months button{font:500 12px var(--sans);letter-spacing:.08em;color:var(--mute);padding:10px 0;border-radius:999px;transition:all .25s}
-.months button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-
-/* 2 · every December, a meadow */
-.meadow{max-width:820px;margin:26px auto 0}
-.meadow svg{width:100%;height:auto;overflow:visible;touch-action:pan-y}
-.stalk{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:320;stroke-dashoffset:320;transition:stroke-dashoffset 1.1s var(--ease)}
-.bud{transform-box:fill-box;transform-origin:center;transform:scale(0);transition:transform .6s cubic-bezier(.2,.9,.3,1.3)}
-.grown .stalk{stroke-dashoffset:0}.grown .bud{transform:scale(1)}
-.yr text{font:500 13px var(--sans);fill:var(--mute);letter-spacing:.06em}
-.yr .v{font:600 15px var(--serif);opacity:0;transition:opacity .3s}
-.yr.on .v{opacity:1}.yr.on text.y{fill:var(--ink);font-weight:700}
-.yr .hit{fill:transparent;cursor:pointer}
-.yr.on .hit{fill:#0000000a}
-.key{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;font:500 12px var(--sans);letter-spacing:.08em;color:var(--mute);margin-top:12px;text-transform:uppercase}
-.key i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:-1px}
-
-/* 3 · the year flower */
-.yearwrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:30px;align-items:center;margin-top:20px}
-.dial{position:relative;touch-action:none;user-select:none;cursor:grab}
-.dial.drag{cursor:grabbing}
-.dial svg{width:100%;height:auto;overflow:visible;display:block}
-.dial:focus-visible{outline:2px solid var(--you);outline-offset:6px;border-radius:50%}
-.dial .mo{font:500 12px var(--sans);fill:var(--mute);letter-spacing:.1em}
-.dial .hol{font:600 15px var(--serif);fill:var(--gift);cursor:pointer}
-.dial .hol.quiet{font:500 12px var(--sans);fill:#a49a90}
-.wp{transition:opacity .25s}
-.readout small{font:500 11.5px var(--sans);letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
-.readout b{display:block;font:500 clamp(30px,3vw,40px)/1.05 var(--serif);margin-top:4px}
-.readout p{font:500 14px var(--sans);color:var(--mute);margin-top:4px;min-height:20px}
-.pickdate{display:flex;align-items:center;gap:10px;margin-top:16px;font:500 12px var(--sans);letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
-.pickdate input{font:500 14px var(--sans);color:var(--ink);background:#ffffff;border:1px solid var(--line);border-radius:10px;padding:7px 10px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.chips button{font:500 12.5px var(--sans);padding:7px 12px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);background:#ffffff}
-.chips button.today{box-shadow:inset 0 0 0 1.5px var(--you)}
-.rank{position:relative;margin-top:16px}
-.rank .r{display:grid;grid-template-columns:118px 1fr 44px;align-items:center;gap:10px;height:32px;transition:transform .45s var(--ease)}
-.rank .r span{font:600 16px var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank .r i{display:block;height:8px;border-radius:999px;transition:width .45s var(--ease)}
-.rank .r output{font:600 17px var(--serif);text-align:right}
-
-/* 4 · this week */
-.count{display:flex;align-items:baseline;justify-content:center;gap:14px}
-.count b{font:500 clamp(84px,11vw,150px)/1 var(--serif);color:var(--gift)}
-.count span{font:500 14px/1.5 var(--sans);letter-spacing:.06em;color:var(--mute)}
-.count span em{display:block;font:500 italic 26px var(--serif);color:var(--ink);letter-spacing:0}
-.now{max-width:680px;margin:26px auto 0}
-.th{display:grid;grid-template-columns:150px 1fr 54px;align-items:center;gap:14px;padding:7px 0}
-.th span{font:600 18px var(--serif)}
-.th .stem{position:relative;height:30px}
-.th .stem::before{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#e4e0da;border-radius:2px}
-.th .stem::after{content:'';position:absolute;left:50%;top:2px;bottom:2px;border-left:1.5px dashed #bfb9b1}
-.th .bloom{position:absolute;top:50%;left:50%;width:22px;height:22px;margin:-11px 0 0 -11px;transition:left 1.2s var(--ease)}
-.th output{font:600 19px var(--serif);text-align:right}
-.scale{display:grid;grid-template-columns:150px 1fr 54px;gap:14px;font:500 10.5px var(--sans);letter-spacing:.14em;color:var(--mute)}
-.scale div{display:flex;justify-content:space-between}
-.went{max-width:680px;margin:26px auto 0;padding:20px 22px;border-radius:18px;background:#ffffff;box-shadow:0 0 0 1px #ece8e3,0 12px 30px -18px #00000033}
-.went small{font:500 11px var(--sans);letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
-.went b{display:block;font:500 26px var(--serif);margin-top:4px}
-.went p{font:400 14px/1.6 var(--sans);color:var(--mute);margin-top:4px}
-.went[hidden]{display:none}
-
-/* 5 · how I know */
-.how{max-width:680px;margin:24px auto 0}
-.how details{border-top:1px solid var(--line);padding:14px 2px}
-.how details:last-child{border-bottom:1px solid var(--line)}
-.how summary{cursor:pointer;list-style:none;font:600 22px var(--serif);display:flex;justify-content:space-between;align-items:center}
-.how summary::-webkit-details-marker{display:none}
-.how summary::after{content:'+';font:400 22px var(--sans);color:var(--mute)}
-.how details[open] summary::after{content:'–'}
-.how p{font:400 14.5px/1.7 var(--sans);color:#5d554e;margin-top:8px}
-.foot{max-width:680px;margin:16px auto 0;text-align:center;font:400 12.5px/1.6 var(--sans);color:var(--mute)}
-
-.rv{opacity:1}
-.motion .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-.motion .rv.on{opacity:1;transform:none}
 
 /* the pressed-flower card */
-.press{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:#fdfcfbf2;backdrop-filter:blur(6px);animation:fade .35s var(--ease)}
+.press{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:#efeae4f2;backdrop-filter:blur(6px);animation:fade .35s}
 .press[hidden]{display:none}
-.pbox{display:grid;grid-template-columns:auto 320px;gap:36px;align-items:center;max-height:100%;overflow:auto;padding:4px}
-.pbox img,.pbox canvas{height:min(82svh,660px);width:auto;max-width:100%;border-radius:6px;box-shadow:0 0 0 1px #ece8e3,0 24px 50px -24px #0000004d}.pbox img{animation:pressin .7s var(--ease)}.pbox [hidden]{display:none}
-.spray{display:flex;gap:10px;align-items:flex-end}.spray label{flex:1}.spray .pill{padding-block:11px}
-.snotes{font:500 italic 17px/1.3 var(--serif);color:var(--mute);margin-top:-6px}.snotes:empty{display:none}
+.pbox{display:grid;grid-template-columns:auto 320px;gap:40px;align-items:center;max-height:100%;overflow:auto;padding:4px}
+.pbox img,.pbox canvas{height:min(82svh,660px);width:auto;max-width:100%;border-radius:2px;box-shadow:0 24px 50px -24px #0000004d}.pbox img{animation:pressin .7s cubic-bezier(.2,.7,.2,1)}.pbox [hidden]{display:none}
 .tag{display:flex;flex-direction:column;gap:14px}
-.tlab{font:500 italic 30px var(--serif)}
-.tag label{display:flex;flex-direction:column;gap:6px;font:500 11.5px var(--sans);letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
-.tag input,.tag textarea,.tag select{font:500 italic 21px var(--serif);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;resize:none;text-transform:none;letter-spacing:0}
-.tag select{font:500 15px var(--sans)}
+.tlab{font-size:26px}
+.tag label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute)}
+.tag input,.tag textarea,.tag select{font:400 18px var(--mincho);color:var(--ink);background:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px;resize:none}
+.tag select{font-size:15px}
 .tag input:focus,.tag textarea:focus,.tag select:focus{outline:2px solid #c9952c66;border-color:#c9952c}
-.tnote{font:400 12px/1.5 var(--sans);color:var(--mute)}
-@media (max-width:760px){.press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}}
+.spray{display:flex;gap:10px;align-items:flex-end}.spray label{flex:1}
+.snotes{font-size:14px;line-height:1.5;color:var(--mute);margin-top:-6px}.snotes:empty{display:none}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.btn{display:inline-block;font-size:14px;padding:10px 18px;border-radius:2px;background:#2f2b29;color:#f3efe9;text-decoration:none}
+.btn--line{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn[hidden]{display:none}.btn:disabled{opacity:.5;cursor:default}
+.tnote{font-size:12px;line-height:1.6;color:var(--mute)}
 @keyframes fade{from{opacity:0}}
-@keyframes pressin{from{transform:scale(1.06) rotate(-1.5deg);opacity:0}}
+@keyframes pressin{from{transform:scale(1.04);opacity:0}}
 @media (max-width:760px){
-  .top{padding:16px}.scene{padding:56px 14px 40px}
-  .garden{gap:4px}.fl svg{height:clamp(84px,calc((100svh - 470px) / 2),104px)}.fl .kind{font-size:8.5px;letter-spacing:.1em}.fl .nm{font-size:16px}.fl .val{font-size:18px}
-  .months button{font-size:9.5px;padding:8px 0}
-  .yearwrap{grid-template-columns:1fr;gap:14px}.dial .hol{font-size:24px}.dial .hol.quiet{display:none}.dial .mo{font-size:18px}
-  .rank .r{grid-template-columns:104px 1fr 40px}.rank .r span{font-size:15px}
-  .th,.scale{grid-template-columns:104px 1fr 44px;gap:10px}.th span{font-size:16px}
+  section{grid-template-columns:1fr;padding:0 20px}
+  .top{padding:16px 20px}.q{padding-top:70px}.q p{font-size:14px;margin-top:12px}
+  .stage{min-height:56svh}
+  .months{font-size:11px;padding-bottom:16px}
+  #notes{padding-top:60px;padding-bottom:60px}
+  .yl{font-size:30px}.ml{font-size:30px}#dec,#year{min-height:auto;padding-bottom:40px}#dec .stage,#year .stage{min-height:300px}
+  .press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
 </style>
 </head>
 <body>
-<div class="top"><span>The Gifting Index</span><span>by Riya Dutta</span></div>
+<div class="top"><span>The Gifting Index</span><span>Riya Dutta</span></div>
 <main>
+<!-- 1 · the vase: guess which house grows most before the next gifting moment -->
+<section id="pick">
+  <div class="q"><h1 id="kin">Which stem rises highest before the next gifting moment?</h1>
+    <p id="say">Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.</p>
+    <p><button type="button" class="link" id="again" hidden>Pick again</button></p></div>
+  <div class="stage"><svg id="vase" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax meet" role="group" aria-label="Six stems in a vase, one for each perfume house"></svg></div>
+  <div class="months idle" id="months" role="group" aria-label="Month"></div>
+</section>
 
-<section class="scene" id="call"><div class="in">
-  <h1 id="kin">What gets bought as a gift?</h1>
-  <p class="prompt" id="prompt">Tap the flower you think the next gifting moment makes biggest.</p>
-  <div class="garden" id="garden"></div>
-  <div class="months idle" id="months"><div class="rail" id="rail" role="group" aria-label="Pick a month"></div></div>
-  <p class="say" id="say" aria-live="polite"></p>
-  <div class="row"><button class="pill" id="press" type="button" hidden>Press it for someone</button><a class="pill pill--line" id="next1" href="#years" hidden>Is it every year? ↓</a><button class="pill pill--line" id="again" type="button" hidden>Pick again</button></div>
-</div></section>
+<!-- 2 · every December: a pair of stems per year in a long tray -->
+<section id="dec">
+  <div class="q"><h2>Every December, the names people recognise stand taller.</h2>
+    <p id="decsay">Each pair is one December. The plum stem is Jo Malone, Diptyque and Molton Brown; the green one is Le Labo, Byredo and Frédéric Malle.</p></div>
+  <div class="stage"><svg id="tray" viewBox="0 0 900 560" preserveAspectRatio="xMidYMax meet" role="img" aria-label="December searches each year against a usual month, gift names and niche houses"></svg></div>
+</section>
 
-<section class="scene" id="years"><div class="in rv">
-  <p class="lab">Every December</p>
-  <h2>Classics get gifted. <em>Cult houses get chosen.</em></h2>
-  <div class="meadow" id="meadow"></div>
-  <div class="key"><span><i style="background:var(--gift)"></i>Classic gift names</span><span><i style="background:var(--cult)"></i>Cult niche houses</span><span>- - - a typical month</span></div>
-  <p class="say" id="tally"></p>
-</div></section>
+<!-- 3 · one house, the whole year: a branch with a blossom per month -->
+<section id="year">
+  <div class="q"><h2>One house, the whole year.</h2>
+    <p>Each blossom is a month, and its size is how much people search that month against a usual one.</p>
+    <div class="hs" id="hs" role="group" aria-label="House"></div></div>
+  <div class="stage"><svg id="branch" viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A branch with twelve blossoms, one for each month"></svg></div>
+</section>
 
-<section class="scene" id="cal"><div class="in rv">
-  <p class="lab">The gifting year</p>
-  <h2>Perfume is a <em>winter</em> gift.</h2>
-  <div class="yearwrap">
-    <div class="dial" id="dial"><svg id="dialSvg" viewBox="-362 -352 724 704" role="img" aria-label="A year of searches as one flower, a petal for each week"></svg></div>
-    <div class="side">
-      <div class="readout" id="readout" aria-live="polite"></div>
-      <div class="pickdate"><label for="pick">Your date</label><input type="date" id="pick"></div>
-      <div class="chips" id="chips"></div>
-      <div class="rank" id="rank"></div>
+<!-- 4 · what I'm not sure about, then the card -->
+<section id="notes">
+  <div class="q" style="padding-top:0"><h2>Things I'm still not sure about.</h2></div>
+  <div>
+    <div class="cols">
+      <p>Google is blocked in mainland China, so Lunar New Year and Singles' Day are probably bigger than they look here.</p>
+      <p>Before settling on these six, I tested nine other houses. Penhaligon's and Acqua di Parma behave like the niche houses, so "classic" here means the name people reach for as a present, not the oldest.</p>
+      <p>I compare each house with its own usual month and take the middle value across the years, so one strange week can't make a pattern.</p>
+      <p>Every number is worked out again each morning. If a niche house out-gifts the classics one year, this page will show it.</p>
     </div>
+    <p class="end">If one of these reminds you of someone, <button type="button" class="link" id="pressEnd">press a flower for them</button>.</p>
   </div>
-</div></section>
-
-<section class="scene" id="now"><div class="in rv">
-  <p class="lab">Next up, live</p>
-  <div class="count"><b id="days">–</b><span>days to<em id="nextName">the next moment</em></span></div>
-  <div class="now" id="therm"></div>
-  <div class="now scale" style="margin-top:2px"><span></span><div><span>QUIETER</span><span>USUAL</span><span>BUSIER</span></div><span></span></div>
-  <p class="say" id="nowNote"></p>
-  <div class="went" id="went" hidden></div>
-</div></section>
-
-<section class="scene" id="how"><div class="in rv">
-  <p class="lab">How I know</p>
-  <h2>Four checks behind the claim.</h2>
-  <div class="how">
-    <details><summary>Six houses, chosen by test</summary><p>I tested nine more houses before choosing these six. Old heritage houses like Penhaligon’s, Acqua di Parma and Floris spike like cult houses, so “classic” here means the name people reach for as a present, not the oldest. Molton Brown and Frédéric Malle joined because their patterns are clean and ten years long.</p></details>
-    <details><summary>Medians, not averages</summary><p>Each month or week is compared with that house’s own typical month or week, then the median is taken across years. A first pass found a March bump for Jo Malone; medians showed it was a few one-off spikes, so it was cut. One loud week can’t make a pattern here.</p></details>
-    <details><summary>Ten moments, honestly dated</summary><p>Moon-based holidays (Lunar New Year, Eid, Raksha Bandhan, Diwali) can shift by a day. Google is blocked in mainland China, so Lunar New Year and Singles’ Day are under-counted. Diwali sits at the start of the winter run-up, so part of its lift is the season itself. The year flower is the typical year across 2022–2025.</p></details>
-    <details><summary>The data writes the headline</summary><p>Every number on this page is calculated in your browser from the latest data, fetched every morning. If a cult house out-gifts the classics this year, the page will say so.</p></details>
-  </div>
-  <div class="row"><button class="pill" id="pressEnd" type="button">Press a flower for someone</button><a class="pill pill--line" href="#call">Play again ↑</a></div>
-  <p class="foot">Independent analysis by Riya Dutta. Not affiliated with or endorsed by Jo Malone London, Diptyque, Molton Brown, Le Labo, Byredo or Frédéric Malle; names are used only to identify each house.</p>
-  <p class="foot" id="foot">Google Trends (worldwide) via SerpApi, refreshed every morning.</p>
-</div></section>
+  <p class="foot">Google Trends, worldwide, via SerpApi, fetched every morning. I'm not connected to Jo Malone London, Diptyque, Molton Brown, Le Labo, Byredo or Frédéric Malle; their names are only here to say which is which.</p>
+</section>
 </main>
 <button class="fab" id="pressFab" type="button" hidden><svg viewBox="-12 -12 24 24" width="18" height="18" aria-hidden="true"><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(0)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(72)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(144)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(216)"/><ellipse cy="-5" rx="3.4" ry="5.8" fill="#e7a9c0" transform="rotate(288)"/><circle r="2.4" fill="#f7e2a0"/></svg>Press a flower for someone</button>
 <div class="press" id="pressBox" hidden role="dialog" aria-modal="true" aria-label="Press a flower for someone">
@@ -236,13 +142,13 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     <form class="tag" id="tag" autocomplete="off">
       <p class="tlab">Press it for someone</p>
       <label>Perfume<select id="tHouse"></select></label>
-      <div class="spray"><label>Scent<select id="tScent"></select></label><button class="pill pill--line" id="sprayB" type="button">Spray</button></div>
+      <div class="spray"><label>Scent<select id="tScent"></select></label><button class="btn btn--line" id="sprayB" type="button">Spray</button></div>
       <p class="snotes" id="tNotes"></p>
       <label>For<input id="tFor" maxlength="24" placeholder="Mum"></label>
       <label>It reminds me of<textarea id="tMem" maxlength="80" rows="2" placeholder="summers at my grandmother’s house"></textarea></label>
       <label>A month that matters<select id="tMon"></select></label>
       <label>From<input id="tFrom" maxlength="24" placeholder="your name"></label>
-      <div class="row" style="justify-content:flex-start"><a class="pill" id="dl" download="pressed-flower.png">Download card</a><button class="pill pill--line" id="share" type="button" hidden>Share</button><button class="pill pill--line" id="closeP" type="button">Close</button></div>
+      <div class="btns"><a class="btn" id="dl" download="pressed-flower.png">Download card</a><button class="btn btn--line" id="share" type="button" hidden>Share</button><button class="btn btn--line" id="closeP" type="button">Close</button></div>
       <p class="tnote">Everything stays on your device. Nothing you type is saved or sent anywhere.</p>
     </form>
   </div>
@@ -276,30 +182,18 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   const petal = (L, w) => `M0,0 C${-w},${-L * .35} ${-w * .7},${-L * .85} 0,${-L} C${w * .7},${-L * .85} ${w},${-L * .35} 0,0Z`;
 
   /* headline: letters near the cursor lift and catch one of the ten colours */
-  (function () {
+  let kinBound = false;
+  function kin() {
     const k = $('kin'), text = k.textContent;
     k.innerHTML = text.split(' ').map((w, i, a) => '<span aria-hidden="true" style="white-space:nowrap">' + w.split('').map(c => '<span class="l">' + c + '</span>').join('') + '</span>' + (i < a.length - 1 ? ' ' : '')).join('') + '<span class="sr-only">' + text + '</span>';
-    k.querySelectorAll('.l').forEach(l => { if (/gift/.test(l.parentNode.textContent)) { l.style.fontStyle = 'italic'; l.style.color = 'var(--gift)'; } });
-    if (!MOTION) return;
-    const L = [...k.querySelectorAll('.l')];
-    function hot(s) { if (s._h) return; s._h = 1; const was = s.style.color; s.style.color = FUN[Math.floor(Math.random() * FUN.length)]; setTimeout(() => { s.style.color = was; s._h = 0; }, 1100); }
-    $('call').addEventListener('mousemove', e => {
-      L.forEach(s => { const b = s.getBoundingClientRect(), f = Math.max(0, 1 - Math.hypot(b.left + b.width / 2 - e.clientX, b.top + b.height / 2 - e.clientY) / 220);
+    if (!MOTION || kinBound) return; kinBound = true;
+    function hot(s) { if (s._h) return; s._h = 1; s.style.color = FUN[Math.floor(Math.random() * FUN.length)]; setTimeout(() => { s.style.color = ''; s._h = 0; }, 1100); }
+    $('pick').addEventListener('mousemove', e => {
+      $('kin').querySelectorAll('.l').forEach(s => { const b = s.getBoundingClientRect(), f = Math.max(0, 1 - Math.hypot(b.left + b.width / 2 - e.clientX, b.top + b.height / 2 - e.clientY) / 220);
         s.style.transform = 'translateY(' + (-f * 7) + 'px)'; if (f > .72) hot(s); });
     });
-  })();
-
-  /* reveals */
-  if ('IntersectionObserver' in window && MOTION) {
-    document.documentElement.classList.add('motion');
-    const rio = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; e.target.classList.add('on'); rio.unobserve(e.target);
-      const id = e.target.parentNode.id; if (id === 'years') growMeadow(); if (id === 'now') placeBlooms(); }), { threshold: .2 });
-    document.querySelectorAll('.rv').forEach(el => rio.observe(el));
-    // backup: a plain scroll check, so nothing can stay hidden if the observer is slow
-    const check = () => document.querySelectorAll('.rv:not(.on)').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight * .8 && r.bottom > 0) { el.classList.add('on'); rio.unobserve(el);
-      const id = el.parentNode.id; if (id === 'years') growMeadow(); if (id === 'now') placeBlooms(); } });
-    addEventListener('scroll', check, { passive: true }); addEventListener('load', check);
   }
+  kin();
 
   /* ---------- data ---------- */
   // the live site reads data/ next to it; this notes copy reads the repo's data folder
@@ -325,7 +219,7 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     // a December counts when at least two houses in each group have it
     YEARS = [...new Set(H.flatMap(h => Object.keys(h.dec)))].filter(y => ['classic', 'cult'].every(g => GROUP[g].filter(h => h.dec[y] !== undefined).length >= 2)).map(Number).sort();
     buildOccasions(t.weekly);
-  }).catch(err => { $('prompt').textContent = 'The data didn’t load. Refresh in a minute.'; throw err; });
+  }).catch(err => { $('say').textContent = 'The data didn’t load. Refresh in a minute.'; throw err; });
 
   /* ---------- the gifting calendar ---------- */
   const DAY = 864e5;
@@ -385,72 +279,122 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
     const raw = []; for (let k = 0; k < 52; k++) { const rows = bucket[k] || bucket[k - 1]; raw.push(Object.fromEntries(H.map(h => [h.id, median(rows.map(r => r[h.id]))]))); }
     YEAR = raw.map((o, k) => { const n = Object.fromEntries(H.map(h => [h.id, (raw[(k + 51) % 52][h.id] + o[h.id] * 2 + raw[(k + 1) % 52][h.id]) / 4])); n.c = grp(n, 'classic'); n.k = grp(n, 'cult'); return n; });
   }
-
-  /* ---------- 1 · call it: the garden ---------- */
-  const len = v => 22 + Math.max(0, v - .75) * 54;   // ×1.0 ≈ 36, ×2.45 ≈ 114
-  let picked = null, open = false, month = 11;
-  function plant() {
-    $('garden').innerHTML = H.map(h => `<button type="button" class="fl" data-id="${h.id}" aria-label="${h.n}"><svg viewBox="-125 -125 250 245" aria-hidden="true">
-      <path d="M0,22 C4,60 -6,95 1,118" fill="none" stroke="#7d8f6c" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="M1,80 C18,68 32,70 40,77 C27,85 13,87 1,80Z" fill="#9db08a" opacity=".8"/>
-      <g class="petals"></g><circle r="9" fill="${h.c}"/><circle r="4" fill="#fdfcfb" opacity=".7"/></svg>
-      <span class="nm">${h.s}</span><span class="kind">${h.g === 'classic' ? 'Classic gift name' : 'Cult niche house'}</span><span class="val"></span></button>`).join('');
-    document.querySelectorAll('.fl').forEach(f => f.addEventListener('click', () => { if (open) return; picked = f.dataset.id; f.classList.add('mine'); $('prompt').textContent = 'Blooming…'; ready.then(bloom); }));
+  /* ---------- drawing helpers for the three scenes ---------- */
+  const COL = { jo: '#9b3a62', dip: '#e48aa6', molton: '#c73b55', lelabo: '#6f9a62', byredo: '#8f84cf', malle: '#4f978a' };
+  const WALL = ['#ebe9ee', '#ece8ee', '#eceee6', '#edf0e5', '#eef0e4', '#f3efe2', '#f5eee0', '#f4ebe0', '#f2e7df', '#f0e3dd', '#eee0e2', '#ecdfe6'];   // the wall follows the season
+  function bloomAt(p, x, y, r, col, op) {   // a five-petal flower with a pale centre
+    const g = svgEl(p, 'g', { transform: `translate(${x},${y})` });
+    for (let i = 0; i < 5; i++) svgEl(g, 'ellipse', { cx: 0, cy: -r * .9, rx: r * .6, ry: r, transform: `rotate(${i * 72})`, fill: col, opacity: op ?? .85 });
+    svgEl(g, 'circle', { r: r * .33, fill: '#f3e3a3' }); return g;
   }
-  function grow() {   // petals once the data is in, still as buds
-    H.forEach(h => {
-      const g = document.querySelector(`.fl[data-id="${h.id}"] .petals`);
-      g.innerHTML = (h.months || M.map(() => 1)).map((v, i) => `<g transform="rotate(${i * 30})"><path class="petal" data-i="${i}" d="${petal(len(v), 11 + len(v) * .12)}" fill="${h.c}" fill-opacity="${v > 1.3 ? .42 : .28}" stroke="${h.c}" stroke-width="1.2" style="transform:scale(${(.62 * len(1) / len(v)).toFixed(3)})"/></g>`).join('');   // every bud the same size until the pick
+  function bowl(p, x, y, w, h) {   // a low, dark ikebana bowl
+    svgEl(p, 'ellipse', { cx: x, cy: y + h + 6, rx: w * .57, ry: 10, fill: '#000', opacity: .07 });
+    svgEl(p, 'path', { d: `M${x - w / 2},${y} C${x - w / 2},${y + h} ${x - w * .37},${y + h} ${x - w * .3},${y + h} L${x + w * .3},${y + h} C${x + w * .37},${y + h} ${x + w / 2},${y + h} ${x + w / 2},${y}Z`, fill: '#2f2b29' });
+    svgEl(p, 'ellipse', { cx: x, cy: y, rx: w / 2, ry: 10, fill: '#433d3a' });
+  }
+  const txt = (p, at, s) => { const t = svgEl(p, 'text', { 'text-anchor': 'middle', 'font-family': "'Shippori Mincho', serif", ...at }); t.textContent = s; return t; };
+
+  /* ---------- 1 · the vase: guess which house grows most before the next gifting moment ---------- */
+  let picked = null, open = false, month = 11;
+  const ANG = [-40, -24, -8, 8, 25, 42], vase = $('vase'), VX = 400, VY = 500;
+  bowl(vase, VX, VY, 300, 62);
+  const stems = H.map((h, i) => {
+    const s = svgEl(vase, 'path', { class: 'stem', fill: 'none', stroke: '#6b7d5a', 'stroke-width': 3, 'stroke-linecap': 'round' });
+    const g = svgEl(vase, 'g', { class: 'mv hd', tabindex: 0, role: 'button', 'aria-label': h.n });
+    svgEl(g, 'circle', { r: 34, fill: 'transparent' });
+    bloomAt(g, 0, 0, 15, COL[h.id]);
+    txt(g, { y: -40, 'font-size': 15, fill: '#4b4642' }, h.s);
+    const x = txt(g, { y: -60, 'font-size': 14, fill: '#2a2724', 'font-weight': 600 }, '');
+    const ring = svgEl(g, 'circle', { class: 'ring', r: 30, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
+    const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };
+    g.addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    return { h, s, g, x, ring, i };
+  });
+  // vals: one number per house (null = still buds, all the same height)
+  let shown = null;
+  function arrange(vals) {
+    shown = vals;
+    vase.setAttribute('viewBox', innerWidth < 760 ? '150 40 480 580' : '0 0 800 600');   // closer in on a phone
+    stems.forEach(({ h, s, g, x, ring, i }) => {
+      const v = vals ? vals[h.id] : null, L = v == null ? [226, 252, 234, 262, 240, 254][i] : 140 + (Math.max(.7, Math.min(2.8, v)) - .8) * 150, a = ANG[i] * Math.PI / 180;
+      const sx = VX + (i - 2.5) * 16, ex = sx + Math.sin(a) * L, ey = VY - Math.cos(a) * L;
+      s.setAttribute('d', `M${sx},${VY} Q${sx + Math.sin(a) * L * .35},${VY - L * .55} ${ex},${ey}`);
+      g.style.transform = `translate(${ex}px,${ey}px)`;
+      x.textContent = v == null ? '' : '×' + v.toFixed(1);
+      ring.setAttribute('opacity', picked === h.id ? 1 : 0);
+      g.setAttribute('aria-label', h.n + (v == null ? '' : ', ' + v.toFixed(1) + ' times a usual week'));
     });
   }
-  function bloom() {
-    open = true;
-    document.querySelectorAll('.fl').forEach(f => f.disabled = true);
-    document.querySelectorAll('.petal').forEach(p => { p.style.transitionDelay = MOTION ? (+p.dataset.i * .06) + 's' : '0s'; p.style.transform = 'scale(1)'; });
-    setTimeout(() => { $('months').classList.remove('idle'); showNext(); }, MOTION ? 1300 : 0);
-  }
-  function highlight(m) {
-    month = m;
-    document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.m === m));
-    document.querySelectorAll('.petal').forEach(p => { p.style.opacity = +p.dataset.i === m ? 1 : .3; });
-  }
-  // after the pick: the week before the next gifting moment
-  function showNext() {
-    const N = NEXT.n, nm = new Date(NEXT.next).getUTCMonth();
-    highlight(nm);
-    H.forEach(h => { const v = document.querySelector(`.fl[data-id="${h.id}"] .val`); v.textContent = '×' + NEXT.typ[h.id].toFixed(1); v.style.color = h.c; });
-    const order = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id]), best = order[0], p = H.find(h => h.id === picked);
+  const setWall = m => { $('pick').style.background = m == null ? '' : WALL[m]; };
+  function reveal() {   // after the pick: the week before the next gifting moment
+    open = true; month = new Date(NEXT.next).getUTCMonth();
+    arrange(Object.fromEntries(H.map(h => [h.id, NEXT.typ[h.id]]))); setWall(month); rail();
+    const N = NEXT.n, best = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id])[0], p = H.find(h => h.id === picked);
     const flat = NEXT.typ[best.id] < 1.1, right = NEXT.typ[p.id].toFixed(1) === NEXT.typ[best.id].toFixed(1);
-    $('prompt').innerHTML = (flat ? `Trick question: <b>${N} barely moves any of them.</b>` :
-      right ? `You called it: <b>${p.n} blooms biggest before ${N}.</b>` : `<b>${best.n} blooms biggest before ${N}.</b> Yours reached ×${NEXT.typ[p.id].toFixed(1)}.`) + ` <button type="button" class="linkish" id="pressAny">Press it for someone</button>`;
-    $('say').innerHTML = (flat ? 'Every house stays near its usual size.' : best.g === 'classic' ? 'The gift names lead.' : 'A cult house leads this time.') +
-      `<small>The week before ${N} against a typical week, ${NEXT.years.length} years of data. Each petal is a month: drag through the year.</small>`;
-    $('next1').hidden = false; $('again').hidden = false; $('press').hidden = false;
+    $('say').innerHTML = (flat ? `A trick question: ${N} barely moves any of them.` :
+      right ? `<b>You called it.</b> ${p.s} grows the most the week before ${N}, to ${NEXT.typ[p.id].toFixed(1)} times a usual week.` :
+      `${p.s} reaches ×${NEXT.typ[p.id].toFixed(1)}, but <b>${best.s}</b> grows the most the week before ${N}, to ×${NEXT.typ[best.id].toFixed(1)}.`) +
+      ` Try the months below, or <button type="button" class="link" id="pressAny">press one for someone</button>.`;
+    $('again').hidden = false;
   }
-  // dragging the rail: each month against a typical month
-  function showMonth(m) {
-    highlight(m);
-    H.forEach(h => { const v = document.querySelector(`.fl[data-id="${h.id}"] .val`); v.textContent = '×' + h.months[m].toFixed(1); v.style.color = h.c; });
-    const top = H.slice().sort((a, b) => b.months[m] - a.months[m])[0];
-    $('say').innerHTML = (top.months[m] < 1.12 ? `${cap(M[m])}: every flower stays small. Nobody gifts perfume now.` :
-      m === 11 ? 'December: the gift names bloom twice their size.' : `${cap(M[m])}: ${top.n} leads at ×${top.months[m].toFixed(1)}.`) + '<small>That month against a typical month, every year since 2016.</small>';
+  function rail() {
+    $('months').classList.toggle('idle', !open);
+    $('months').innerHTML = M.map((m, i) => `<button type="button" aria-pressed="${open && i === month}">${cap(m)}</button>`).join('');
+    [...$('months').children].forEach((b, i) => b.onclick = () => { month = i; arrange(Object.fromEntries(H.map(h => [h.id, h.months[i]]))); setWall(i); rail(); });
   }
-  $('rail').innerHTML = M.map((m, i) => `<button type="button" data-m="${i}">${m}</button>`).join('');
-  (function () {
-    const mo = $('months'); let drag = false;
-    const fromX = e => { const r = $('rail').getBoundingClientRect(); showMonth(Math.max(0, Math.min(11, Math.floor((e.clientX - r.left) / r.width * 12)))); };
-    mo.addEventListener('pointerdown', e => { drag = true; mo.setPointerCapture(e.pointerId); fromX(e); });
-    mo.addEventListener('pointermove', e => { if (drag) fromX(e); });
-    mo.addEventListener('pointerup', () => { drag = false; });
-    mo.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { showMonth(Math.min(11, month + 1)); e.preventDefault(); } if (e.key === 'ArrowLeft') { showMonth(Math.max(0, month - 1)); e.preventDefault(); } });
-  })();
-  $('again').onclick = () => { open = false; picked = null; plant(); grow(); $('months').classList.add('idle'); document.querySelectorAll('#rail button').forEach(b => b.setAttribute('aria-pressed', false)); $('say').innerHTML = ''; $('next1').hidden = true; $('again').hidden = true; $('press').hidden = true; setPrompt(); };
   function setPrompt() {
-    const days = Math.round((NEXT.next - TODAY) / DAY);
-    $('prompt').innerHTML = `Next gifting moment: <b>${NEXT.n}</b>, ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}. Tap the flower you think it makes biggest, or <button type="button" class="linkish" id="pressAny">just press one for someone</button>.`;
+    const days = Math.round((NEXT.next - TODAY) / DAY), when = days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days';
+    const k = $('kin'); k.textContent = `Which stem rises highest before ${NEXT.n}?`; kin();
+    $('say').innerHTML = `${NEXT.n} is ${when}. Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.`;
   }
-  plant();
-  ready.then(() => { grow(); setPrompt(); });
+  $('again').onclick = () => { open = false; picked = null; arrange(null); setWall(null); rail(); setPrompt(); $('again').hidden = true; };
+  arrange(null); rail();
+  addEventListener('resize', () => arrange(shown));
+  ready.then(setPrompt);
+  // the floating card button stays out of the way while the vase (which has its own link) is on screen
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => $('pressFab').classList.toggle('away', e.isIntersecting), { threshold: .35 }).observe($('pick'));
+
+  /* ---------- 2 · every December: a long low tray, a pair of stems for each year ---------- */
+  ready.then(() => {
+    const sv = $('tray'), TY = 470, n = YEARS.length, step = 820 / n;
+    svgEl(sv, 'ellipse', { cx: 450, cy: TY + 42, rx: 440, ry: 10, fill: '#000', opacity: .07 });
+    svgEl(sv, 'path', { d: `M20,${TY} L880,${TY} L862,${TY + 34} L38,${TY + 34}Z`, fill: '#2f2b29' });
+    svgEl(sv, 'rect', { x: 20, y: TY - 6, width: 860, height: 8, rx: 3, fill: '#433d3a' });
+    let wins = 0;
+    YEARS.forEach((yr, i) => {
+      const cx = 40 + step * (i + .5), c = decAvg('classic', yr), k = decAvg('cult', yr); if (c > k) wins++;
+      [[c, '#9b3a62', -10, -.05], [k, '#6f9a62', 10, .06]].forEach(([v, col, dx, lean]) => {
+        const L = 60 + (Math.min(3, v) - 1) * 190, ex = cx + dx + lean * L, ey = TY - L;
+        svgEl(sv, 'path', { d: `M${cx + dx},${TY - 4} Q${cx + dx + lean * L * .4},${TY - L * .5} ${ex},${ey}`, fill: 'none', stroke: '#6b7d5a', 'stroke-width': 2.4, 'stroke-linecap': 'round' });
+        bloomAt(sv, ex, ey, 9, col);
+      });
+      txt(sv, { x: cx, y: TY + 64, 'font-size': 15, fill: '#6f6a64', class: 'yl' }, i % 2 && innerWidth < 760 ? '' : yr);   // every other year on a phone, so they fit
+    });
+    $('decsay').textContent += wins === n ? ` The gift names were taller all ${n} years.` : ` The gift names were taller in ${wins} of ${n} years.`;
+  });
+
+  /* ---------- 3 · one house, the whole year: a branch with a blossom per month ---------- */
+  ready.then(() => {
+    const sv = $('branch'), hs = $('hs'), P = [[20, 370], [220, 170], [560, 150], [880, 380]];
+    const at = t => [0, 1].map(k => (1 - t) ** 3 * P[0][k] + 3 * (1 - t) ** 2 * t * P[1][k] + 3 * (1 - t) * t * t * P[2][k] + t ** 3 * P[3][k]);
+    svgEl(sv, 'path', { d: 'M20,370 C220,170 560,150 880,380', fill: 'none', stroke: '#5a4a3c', 'stroke-width': 7, 'stroke-linecap': 'round' });
+    const g = svgEl(sv, 'g', {});
+    function draw(id) {
+      g.innerHTML = ''; const h = H.find(x => x.id === id), top = h.months.indexOf(Math.max(...h.months));
+      h.months.forEach((v, i) => {
+        const [x, y] = at(.05 + i * .082), up = i % 2 ? 1 : -1, r = 7 + Math.max(0, v - .6) * 12;   // blossoms on short twigs, alternating sides
+        svgEl(g, 'path', { d: `M${x},${y} L${x + up * 8},${y - 22}`, stroke: '#5a4a3c', 'stroke-width': 3, 'stroke-linecap': 'round' });
+        bloomAt(g, x + up * 8, y - 22 - r * .6, r, COL[id], .82);
+        txt(g, { x, y: y + 36, 'font-size': 14, fill: i === top ? '#2a2724' : '#8a847c', 'font-weight': i === top ? 600 : 400, class: 'ml' }, innerWidth < 760 ? (i === top ? cap(M[i]) + ' ×' + v.toFixed(1) : i % 3 ? '' : cap(M[i])) : cap(M[i]) + (i === top ? ' ×' + v.toFixed(1) : ''));
+      });
+      sv.setAttribute('aria-label', `${h.n} through the year; busiest in ${cap(M[top])}, at ${h.months[top].toFixed(1)} times a usual month`);
+      [...hs.children].forEach(b => b.setAttribute('aria-pressed', b.dataset.id === id));
+    }
+    hs.innerHTML = H.map(h => `<button type="button" data-id="${h.id}" style="--c:${COL[h.id]}"><i></i>${h.s}</button>`).join('');
+    [...hs.children].forEach(b => b.onclick = () => draw(b.dataset.id));
+    draw('jo');
+  });
+
 
   /* ---------- the pressed-flower card: a keepsake of your pick ---------- */
   function wrap(ctx, text, x, y, maxW, lh) {
@@ -935,7 +879,6 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
       $('pressBox').hidden = false; redraw(); (picked ? $('tFor') : $('tHouse')).focus();
     });
   }
-  $('press').onclick = () => openPress($('press'));
   $('pressEnd').onclick = () => openPress($('pressEnd'));
   $('pressFab').onclick = () => openPress($('pressFab'));
   ready.then(() => { $('pressFab').hidden = false; });
@@ -944,143 +887,9 @@ h1 em,h2 em{font-style:italic;color:var(--gift)}
   $('pressBox').addEventListener('click', e => { if (e.target.id === 'pressBox') $('pressBox').hidden = true; });
   addEventListener('keydown', e => { if (e.key === 'Escape') $('pressBox').hidden = true; });
 
-  /* ---------- 2 · every December: a meadow ---------- */
-  let meadowReady = false, wantGrow = !MOTION;
-  ready.then(() => {
-    const W = 820, HT = 300, B = 262, PX = 150, col = W / YEARS.length, y = v => B - (Math.max(.8, Math.min(2.6, v)) - .8) * PX;
-    const svg = svgEl($('meadow'), 'svg', { viewBox: `0 0 ${W} ${HT + 30}`, role: 'img', 'aria-label': 'Each December, how much more people searched for the gift names and the cult houses than in a typical month' });
-    svgEl(svg, 'line', { x1: 0, x2: W, y1: y(1), y2: y(1), stroke: '#bfb9b1', 'stroke-dasharray': '3 5', 'stroke-width': 1.2 });
-    svgEl(svg, 'line', { x1: 0, x2: W, y1: B, y2: B, stroke: '#d9d4cd', 'stroke-width': 1.5 });
-    let wins = 0;
-    YEARS.forEach((yr, i) => {
-      const cx = col * i + col / 2, c = decAvg('classic', yr), k = decAvg('cult', yr);
-      if (c > k) wins++;
-      const g = svgEl(svg, 'g', { class: 'yr', 'data-y': yr });
-      svgEl(g, 'rect', { class: 'hit', x: cx - col / 2 + 3, y: 6, width: col - 6, height: HT + 18, rx: 14 });
-      [[c, -13, '#8e3b5f', 'classic'], [k, 13, '#6f8f6a', 'cult']].forEach(([v, dx, colr], j) => {
-        const x = cx + dx, top = y(v), d = `M${x},${B} C${x + (j ? 6 : -6)},${(B + top) / 2 + 20} ${x + (j ? -4 : 4)},${(B + top) / 2 - 10} ${x},${top}`;
-        const st = svgEl(g, 'path', { class: 'stalk', d, stroke: '#7d8f6c' }); st.style.transitionDelay = (i * .09 + j * .05) + 's';
-        const bud = svgEl(g, 'g', { class: 'bud' }); bud.style.transitionDelay = (i * .09 + j * .05 + .7) + 's';
-        for (let p = 0; p < 5; p++) svgEl(bud, 'ellipse', { cx: x, cy: top - 6, rx: 4.6, ry: 8, fill: colr, 'fill-opacity': j ? .5 : .62, transform: `rotate(${p * 72} ${x} ${top})` });
-        svgEl(bud, 'circle', { cx: x, cy: top, r: 3, fill: colr });
-        const t = svgEl(g, 'text', { class: 'v', x, y: top - 22, 'text-anchor': 'middle', fill: colr }); t.textContent = '×' + v.toFixed(1);
-      });
-      const t = svgEl(g, 'text', { class: 'y', x: cx, y: B + 24, 'text-anchor': 'middle' }); t.textContent = yr;
-      g.addEventListener('click', () => pickYear(yr));
-      g.addEventListener('pointerenter', () => pickYear(yr));
-    });
-    function pickYear(yr) {
-      svg.querySelectorAll('.yr').forEach(g => g.classList.toggle('on', +g.dataset.y === yr));
-      const c = decAvg('classic', yr), k = decAvg('cult', yr);
-      $('tally').innerHTML = `Gift names ahead in ${wins} of ${YEARS.length} Decembers.${wins === YEARS.length ? ' Every single one.' : ''}<small>${yr}: gift names ×${c.toFixed(1)}, cult houses ×${k.toFixed(1)}, against a typical month. Tap or hover a year.</small>`;
-    }
-    pickYear(YEARS[YEARS.length - 1]);
-    meadowReady = true; if (wantGrow) growMeadow();
-  });
-  function growMeadow() { wantGrow = true; if (!meadowReady) return; requestAnimationFrame(() => $('meadow').classList.add('grown')); }
-  if (!MOTION) wantGrow = true;
-
-  /* ---------- 3 · the year flower ---------- */
-  ready.then(() => {
-    const svg = $('dialSvg'), Y = new Date(TODAY).getUTCFullYear(), Y0 = U(Y, 1, 1), RD = 84;
-    const L = v => 22 + (Math.max(.7, Math.min(2.7, v)) - .7) * 104;   // petal length; ×1.0 ≈ 53, ×2.5 ≈ 209
-    const ang = doy => doy / 365 * 360;
-    const pt = (deg, r) => [Math.sin(deg * Math.PI / 180) * r, -Math.cos(deg * Math.PI / 180) * r];
-    // months on an outer ring
-    M.forEach((m, i) => { const a = ang((U(Y, i + 1, 1) - Y0) / DAY + 15), p = pt(a, 338); const t = svgEl(svg, 'text', { x: p[0], y: p[1] + 4, 'text-anchor': 'middle', class: 'mo' }); t.textContent = m; });
-    svgEl(svg, 'circle', { r: RD + L(1), fill: 'none', stroke: '#bfb9b1', 'stroke-dasharray': '3 6', 'stroke-width': 1.2 });
-    // 52 weeks: a cult petal (cool, outline) under a gift petal (warm, filled)
-    const petals = svgEl(svg, 'g', {});
-    YEAR.forEach((o, k) => {
-      const a = (k + .5) / 52 * 360;
-      const g = svgEl(petals, 'g', { class: 'wp', 'data-k': k, transform: `rotate(${a}) translate(0,${-RD})` });
-      svgEl(g, 'path', { d: petal(L(o.k), 10), fill: '#6f8f6a', 'fill-opacity': .14, stroke: '#6f8f6a', 'stroke-width': 1.2 });
-      svgEl(g, 'path', { d: petal(L(o.c), 9), fill: '#8e3b5f', 'fill-opacity': o.c > 1.3 ? .5 : .3, stroke: '#8e3b5f', 'stroke-width': 1 });
-    });
-    svgEl(svg, 'circle', { r: RD - 6, fill: '#fdfcfb', stroke: '#ebe7e2', 'stroke-width': 1.5 });
-    // the ten moments: big ones in plum serif, quiet ones small and grey
-    const doyOf = o => { const d = o.f(Y) || o.next; return (d - U(new Date(d).getUTCFullYear(), 1, 1)) / DAY; };
-    // holidays within 12 days of each other share one label, stacked line by line, so names never overlap
-    const groups = [];
-    OCC.filter(o => o.years.length).sort((x, y) => doyOf(x) - doyOf(y)).forEach(o => {
-      const last = groups[groups.length - 1];
-      if (last && doyOf(o) - doyOf(last[last.length - 1]) <= 12) last.push(o); else groups.push([o]);
-    });
-    groups.forEach(gr => {
-      gr.forEach(o => { const d = pt(ang(doyOf(o)), RD - 6), big = o.tier !== 'none'; svgEl(svg, 'circle', { cx: d[0], cy: d[1], r: big ? 3.5 : 2.5, fill: big ? '#8e3b5f' : '#a49a90' }); });
-      const doy = mean(gr.map(doyOf)), a = ang(doy), s = Math.sin(a * Math.PI / 180), c = Math.cos(a * Math.PI / 180);
-      const reach = Math.max(...gr.map(o => { const w = YEAR[Math.min(51, Math.floor(doyOf(o) / 7))]; return Math.max(L(w.c), L(w.k)); }));
-      const p = pt(a, RD + reach + 18), lh = 19, y0 = p[1] + 5 - (c < -.2 ? 0 : c > .2 ? (gr.length - 1) * lh : (gr.length - 1) * lh / 2);
-      const t = svgEl(svg, 'text', { x: p[0], y: y0, 'text-anchor': s > .2 ? 'start' : s < -.2 ? 'end' : 'middle' });
-      gr.forEach((o, i) => {
-        const ts = svgEl(t, 'tspan', { x: p[0], dy: i ? lh : 0, class: 'hol' + (o.tier !== 'none' ? '' : ' quiet') });
-        ts.textContent = o.n; ts.addEventListener('click', () => set(doyOf(o) - 1));
-      });
-    });
-    // today and the hand
-    const td = (TODAY - Y0) / DAY;
-    const hand = svgEl(svg, 'g', {}), line = svgEl(hand, 'line', { x1: 0, y1: 0, stroke: '#c9952c', 'stroke-width': 2.5, 'stroke-linecap': 'round' }), knob = svgEl(hand, 'circle', { r: 11, fill: '#c9952c', stroke: '#fdfcfb', 'stroke-width': 3 });
-    const label = svgEl(svg, 'text', { x: 0, y: 6, 'text-anchor': 'middle', style: 'font:600 22px var(--serif);fill:var(--ink)' });
-    const label2 = svgEl(svg, 'text', { x: 0, y: 30, 'text-anchor': 'middle', style: 'font:500 11px var(--sans);letter-spacing:.14em;fill:var(--mute)' });
-    // the six houses, re-ranked for the week under the hand
-    $('rank').innerHTML = H.map(h => `<div class="r" data-id="${h.id}"><span>${h.s}</span><i style="background:${h.c}"></i><output style="color:${h.c}"></output></div>`).join('');
-    const rows = {}; $('rank').querySelectorAll('.r').forEach(e => { rows[e.dataset.id] = e; });
-    $('chips').innerHTML = `<button type="button" class="today" data-d="${td}">Today</button>` + OCC.filter(o => o.tier !== 'none' && o.years.length).map(o => `<button type="button" data-d="${doyOf(o) - 1}">${o.n}</button>`).join('');
-    $('chips').querySelectorAll('button').forEach(b => { b.onclick = () => set(+b.dataset.d); });
-    let cur = td;
-    function set(doy) {
-      doy = ((doy % 365) + 365) % 365; cur = doy;
-      const k = Math.min(51, Math.floor(doy / 7)), o = YEAR[k], a = ang(doy), p = pt(a, RD + Math.max(L(o.c), L(o.k)) + 2);
-      const p0 = pt(a, RD - 4); line.setAttribute('x1', p0[0]); line.setAttribute('y1', p0[1]); line.setAttribute('x2', p[0]); line.setAttribute('y2', p[1]); knob.setAttribute('cx', p[0]); knob.setAttribute('cy', p[1]);
-      petals.querySelectorAll('.wp').forEach(g => { const d = Math.abs(+g.dataset.k - k); g.style.opacity = Math.min(d, 52 - d) <= 1 ? 1 : .55; });
-      const day = Y0 + doy * DAY; let near = null;
-      OCC.forEach(oc => { if (!oc.years.length) return; const dd = doyOf(oc) - doy; if (dd >= -3 && dd <= 24 && (!near || dd < near.dd)) near = { o: oc, dd: Math.round(dd) }; });
-      const top = Math.max(o.c, o.k), mood = top >= 1.5 ? 'Peak gifting' : top >= 1.15 ? 'Rising' : 'A quiet week';
-      label.textContent = fmt(day); label2.textContent = 'WEEK OF';
-      $('readout').innerHTML = `<small>Week of ${fmt(day)}</small><b>${mood}</b><p>${near ? (near.dd <= 0 ? near.o.n + ' week' : near.dd + (near.dd === 1 ? ' day' : ' days') + ' before ' + near.o.n) : 'No gifting moment nearby'} · gift names ×${o.c.toFixed(1)}, cult ×${o.k.toFixed(1)}</p>`;
-      const step = 32;
-      H.slice().sort((x, y) => o[y.id] - o[x.id]).forEach((h, i) => { const e = rows[h.id]; e.style.transform = `translateY(${(i - H.indexOf(h)) * step}px)`; e.querySelector('i').style.width = Math.max(4, Math.min(100, (o[h.id] - .6) / 2 * 100)) + '%'; e.querySelector('output').textContent = '×' + o[h.id].toFixed(1); });
-      $('pick').value = new Date(day).toISOString().slice(0, 10);
-    }
-    const dial = $('dial'); let dragging = false;
-    function fromEvent(e) { const b = svg.getBoundingClientRect(), sx = 724 / b.width, x = (e.clientX - b.left) * sx - 362, y = (e.clientY - b.top) * sx - 352; let a = Math.atan2(x, -y); if (a < 0) a += 2 * Math.PI; set(a / (2 * Math.PI) * 365); }
-    dial.addEventListener('pointerdown', e => { if (e.target.classList && e.target.classList.contains('hol')) return; dragging = true; dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); fromEvent(e); });
-    dial.addEventListener('pointermove', e => { if (dragging) fromEvent(e); });
-    dial.addEventListener('pointerup', () => { dragging = false; dial.classList.remove('drag'); });
-    dial.tabIndex = 0; dial.setAttribute('aria-label', 'Year flower: use the arrow keys to move a week');
-    dial.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { set(cur + 7); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { set(cur - 7); e.preventDefault(); } });
-    $('pick').addEventListener('change', function () { const v = Date.parse(this.value); if (!isNaN(v)) { const d = new Date(v); set((U(Y, d.getUTCMonth() + 1, d.getUTCDate()) - Y0) / DAY); } });
-    set(td);
-  });
-
-  /* ---------- 4 · next up, live ---------- */
-  const tiny = c => `<svg viewBox="-12 -12 24 24" width="22" height="22">${[0, 72, 144, 216, 288].map(r => `<ellipse cy="-5" rx="3.6" ry="6" fill="${c}" fill-opacity=".6" transform="rotate(${r})"/>`).join('')}<circle r="2.6" fill="${c}"/></svg>`;
-  ready.then(() => {
-    const days = Math.round((NEXT.next - TODAY) / DAY);
-    $('days').textContent = days; $('nextName').textContent = NEXT.n;
-    if (PREV) {
-      const r = PREV.r, o = PREV.o;
-      $('went').innerHTML = `<small>How it went · ${o.n} ${PREV.y}</small><b>${o.tier === 'none' ? 'Quiet, as usual.' : r.c > r.k ? 'The gift names led again.' : 'The cult houses led this time.'}</b>` +
-        `<p>In the week before ${o.n}, gift names ×${r.c.toFixed(1)} and cult houses ×${r.k.toFixed(1)}, against a typical ×${o.typ.c.toFixed(1)} and ×${o.typ.k.toFixed(1)}.</p>`;
-      $('went').hidden = false;
-    }
-    const rows = H.slice().sort((a, b) => b.now - a.now);
-    $('therm').innerHTML = rows.map(h => `<div class="th" data-id="${h.id}"><span>${h.s}</span><div class="stem"><span class="bloom">${tiny(h.c)}</span></div><output style="color:${h.c}">×${h.now.toFixed(1)}</output></div>`).join('');
-    const hot = rows[0];
-    $('nowNote').innerHTML = (NEXT.tier === 'none' ? `${hot.n} leads this week. ${NEXT.n} usually leaves these searches flat.` :
-      hot.g === 'cult' ? `${hot.n} is running hottest right now. If a cult house keeps that up through ${NEXT.n}, it would break the pattern.` :
-      `${hot.n} leads this week. So far, ${NEXT.n} is following the usual script.`) + '<small>This week’s Google searches for each house, against its usual week.</small>';
-    $('foot').textContent = 'Google Trends (worldwide) via SerpApi, latest full week starting ' + new Date(hot.week).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '. Refreshed every morning.';
-    if (!MOTION) placeBlooms();
-  });
-  let placed = false;
-  function placeBlooms() {
-    ready.then(() => { if (placed) return; placed = true;
-      setTimeout(() => H.forEach(h => { const d = document.querySelector(`.th[data-id="${h.id}"] .bloom`); if (d) d.style.left = Math.max(3, Math.min(97, 50 + (h.now - 1) * 250)) + '%'; }), 200); });
-  }
 })();
 </script>
-<!-- Vercel Web Analytics: counts visits once switched on in the Vercel project (no cookies) -->
+
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
