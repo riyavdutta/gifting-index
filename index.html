@@ -51,7 +51,6 @@ h1,h2{font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.3;letter-spac
 @media (max-width:1180px){.legend{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}}
 .legend .mine .nm{border-bottom-color:var(--you);color:var(--ink)}
 .acts{display:flex;flex-wrap:wrap;gap:10px 28px}
-.dots{display:flex;gap:7px;margin-top:18px}.dots i{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px #b7aea4}.dots i.r{background:#9b3a62;box-shadow:none}.dots i.w{background:#d9d1c7;box-shadow:none}.dots i.now{box-shadow:inset 0 0 0 2px var(--you)}
 .months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding:18px 0 40px;font-size:13px;letter-spacing:.02em;transition:opacity .4s}
 .months.idle{opacity:.2;pointer-events:none}
 .months button,.hs button{padding:8px 0;color:#7a746d}
@@ -161,6 +160,9 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
 .hd .fl{opacity:0;transform:scale(.12) rotate(-50deg);transition:opacity .6s,transform 1.15s cubic-bezier(.3,1.35,.45,1)}
 .hd.opened .bud{opacity:0;transform:scale(.5)}
 .hd.opened .fl{opacity:1;transform:none}
+
+/* the vase, its names and figures, and the months always fit one screen */
+@media (min-width:761px){#pick{min-height:100svh}#pick .stage{min-height:clamp(300px,calc(100svh - 215px),640px)}}
 </style>
 </head>
 <body>
@@ -170,8 +172,7 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
 <section id="pick">
   <div class="q"><h1 id="kin">Which stem rises highest before the next gifting moment?</h1>
     <p id="say">Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.</p>
-    <p class="acts"><button type="button" class="link" id="none" hidden>None of them</button> <button type="button" class="link" id="nextB" hidden>Next moment</button> <button type="button" class="link" id="again" hidden>Pick again</button> <button type="button" class="link" id="roundGo" hidden>Call all ten moments</button></p>
-    <p class="dots" id="dots" aria-hidden="true"></p></div>
+    <p class="acts"><button type="button" class="link" id="again" hidden>Pick again</button></p></div>
   <div class="stage"><svg id="vase" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax meet" role="group" aria-label="Six stems in a vase, one for each perfume house"></svg></div>
   <div class="legend" id="legend" role="group" aria-label="The six houses, in the same order as the stems"></div>
   <div class="months idle" id="months" role="group" aria-label="Month"></div>
@@ -420,7 +421,7 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
     $('legend').insertAdjacentHTML('beforeend', `<button type="button" id="lg-${h.id}" style="--c:${COL[h.id]}"><span class="nm"><i></i>${h.s}</span><b></b></button>`);
     const x = $('lg-' + h.id).querySelector('b');
     const ring = svgEl(g, 'circle', { class: 'ring', r: 44, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
-    const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };   // works the same inside the round
+    const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };
     g.addEventListener('click', go); $('lg-' + h.id).addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     return { h, s, g, x, ring, i, fl };
   });
@@ -443,59 +444,24 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
     });
   }
   const setWall = m => { $('pick').style.backgroundColor = m == null ? '' : WALL[m]; };
-  // the round: every gifting moment with data, in calendar order
-  let round = null;   // { list, k, res: [true/false] }
   const occMonth = o => new Date(o.next || o.f(new Date(TODAY).getUTCFullYear())).getUTCMonth();
-  function verdict(o, id) {   // was the pick right? a quiet moment is right only for "none of them"
-    const best = H.slice().sort((a, b) => o.typ[b.id] - o.typ[a.id])[0], flat = o.typ[best.id] < 1.1;
-    return { best, flat, right: flat ? id === 'none' : id !== 'none' && o.typ[id].toFixed(1) === o.typ[best.id].toFixed(1) };
-  }
-  function reveal() {   // after the pick: the week before the moment
-    const o = round ? round.list[round.k] : NEXT, N = o.n;
+  function reveal() {   // after the pick: the week before the next gifting moment
+    const o = NEXT, N = o.n;
     open = true; month = occMonth(o);
     arrange(Object.fromEntries(H.map(h => [h.id, o.typ[h.id]]))); setWall(month); rail();
-    const { best, flat, right } = verdict(o, picked), p = H.find(h => h.id === picked);
-    const line = flat ? (right ? `<b>You saw through it.</b> ${N} barely moves any of them.` : `A trick question: ${N} barely moves any of them.`) :
-      picked === 'none' ? `Not this one: <b>${best.s}</b> grows to ×${o.typ[best.id].toFixed(1)} the week before ${N}.` :
+    const best = H.slice().sort((a, b) => o.typ[b.id] - o.typ[a.id])[0], p = H.find(h => h.id === picked);
+    const flat = o.typ[best.id] < 1.1, right = o.typ[p.id].toFixed(1) === o.typ[best.id].toFixed(1);
+    const line = flat ? `A trick question: ${N} barely moves any of them.` :
       right ? `<b>You called it.</b> ${p.s} grows the most the week before ${N}, to ${o.typ[p.id].toFixed(1)} times a usual week.` :
       `${p.s} reaches ×${o.typ[p.id].toFixed(1)}, but <b>${best.s}</b> grows the most the week before ${N}, to ×${o.typ[best.id].toFixed(1)}.`;
-    $('none').hidden = true;
-    if (round) {
-      round.res[round.k] = right; dots();
-      const last = round.k === round.list.length - 1;
-      $('say').innerHTML = line;
-      $('nextB').textContent = last ? 'See my score' : 'Next moment'; $('nextB').hidden = false;
-      $('months').classList.add('idle');
-    } else {
-      $('say').innerHTML = line + ` Try the months below, or <button type="button" class="link" id="pressAny">press one for someone</button>.`;
-      $('again').hidden = false; $('roundGo').hidden = false;
-    }
+    $('say').innerHTML = line + ` Try the months below, or <button type="button" class="link" id="pressAny">press one for someone</button>.`;
+    $('again').hidden = false;
+    showFigures();
   }
-  function dots() { $('dots').innerHTML = round ? round.list.map((_, i) => `<i class="${round.res[i] === true ? 'r' : round.res[i] === false ? 'w' : ''}${i === round.k ? ' now' : ''}"></i>`).join('') : ''; }
-  function ask() {   // the next moment in the round
-    const o = round.list[round.k];
-    open = false; picked = null; arrange(null); setWall(occMonth(o)); rail();
-    $('kin').textContent = `Which stem rises highest before ${o.n}?`; kin();
-    $('say').innerHTML = `Moment ${round.k + 1} of ${round.list.length}. Tap the flower you think grows tallest, or <b>none of them</b> if you think nothing moves.`;
-    $('none').hidden = false; $('nextB').hidden = true; $('again').hidden = true; $('roundGo').hidden = true; dots();
+  // if the figures under the bowl are below the fold (short screens, phones), bring them into view once the stems have grown
+  function showFigures() {
+    setTimeout(() => { const r = $('legend').getBoundingClientRect(); if (r.bottom > innerHeight - 8 || r.top < 0) $('legend').scrollIntoView({ block: 'end', behavior: MOTION ? 'smooth' : 'auto' }); }, MOTION ? 700 : 0);
   }
-  function startRound() {
-    const y = new Date(TODAY).getUTCFullYear();
-    round = { list: OCC.filter(o => o.years.length).sort((a, b) => occMonth(a) - occMonth(b) || a.f(y) - b.f(y)), k: 0, res: [] };
-    ask(); $('pick').scrollIntoView({ behavior: MOTION ? 'smooth' : 'auto' });
-  }
-  function finish() {
-    const n = round.res.filter(Boolean).length, of = round.list.length;
-    $('kin').textContent = `You called ${n} of ${of}.`; kin();
-    $('say').innerHTML = (n >= of - 2 ? 'You know your gifting calendar.' : n >= of / 2 ? 'Not bad at all.' : 'Gifting is harder to call than it looks.') +
-      ` <button type="button" class="link" id="scoreDl">Save your score</button>, or <button type="button" class="link" id="pressAny">press a flower for someone</button>.`;
-    $('nextB').hidden = true; $('again').hidden = false; $('again').textContent = 'Play again';
-    $('scoreDl').onclick = () => saveScore(n, of);
-    round.done = true;
-  }
-  $('roundGo').onclick = startRound;
-  $('none').onclick = () => { if (!open) { picked = 'none'; reveal(); } };
-  $('nextB').onclick = () => { if (round.k < round.list.length - 1) { round.k++; ask(); } else finish(); };
   function rail() {
     $('months').classList.toggle('idle', !open);
     $('months').innerHTML = M.map((m, i) => `<button type="button" aria-pressed="${open && i === month}">${cap(m)}</button>`).join('');
@@ -506,7 +472,7 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
     const k = $('kin'); k.textContent = `Which stem rises highest before ${NEXT.n}?`; kin();
     $('say').innerHTML = `${NEXT.n} is ${when}. Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.`;
   }
-  $('again').onclick = () => { const was = round && round.done; round = null; dots(); $('again').textContent = 'Pick again'; open = false; picked = null; arrange(null); setWall(null); rail(); setPrompt(); $('again').hidden = true; $('roundGo').hidden = true; $('nextB').hidden = true; $('none').hidden = true; if (was) startRound(); };
+  $('again').onclick = () => { open = false; picked = null; arrange(null); setWall(null); rail(); setPrompt(); $('again').hidden = true; };
   vase.classList.add('init'); arrange(null); rail();
   requestAnimationFrame(() => requestAnimationFrame(() => vase.classList.remove('init')));   // place the flowers at once on load; animate only later changes
   addEventListener('resize', () => arrange(shown));
@@ -1207,33 +1173,7 @@ h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
     finder();
   });
 
-  /* ---------- the round's score, as a picture to keep ---------- */
-  async function saveScore(n, of) {
-    await document.fonts.load("400 60px 'Shippori Mincho'");
-    const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT; const c = cv.getContext('2d');
-    c.fillStyle = '#efeae4'; c.fillRect(0, 0, W, HT);
-    c.fillStyle = '#2a2724'; c.textAlign = 'center'; c.font = "400 84px 'Shippori Mincho', serif"; c.fillText(`I called ${n} of ${of}`, W / 2, 250);
-    c.font = "400 34px 'Shippori Mincho', serif"; c.fillStyle = '#5f5a54'; c.fillText('gifting moments on the Gifting Index', W / 2, 320);
-    // a branch with a blossom per moment: plum when called, pale when missed
-    const P = [[110, 840], [320, 470], [760, 450], [970, 820]], at = t => [0, 1].map(k => (1 - t) ** 3 * P[0][k] + 3 * (1 - t) ** 2 * t * P[1][k] + 3 * (1 - t) * t * t * P[2][k] + t ** 3 * P[3][k]);
-    c.strokeStyle = '#5a4a3c'; c.lineWidth = 10; c.lineCap = 'round'; c.beginPath(); c.moveTo(...P[0]); c.bezierCurveTo(...P[1], ...P[2], ...P[3]); c.stroke();
-    round.list.forEach((o, i) => {
-      const [x, y] = at(.06 + i * (.88 / (of - 1))), up = i % 2 ? 1 : -1, bx = x + up * 14, by = y - 52, ok = round.res[i];
-      c.lineWidth = 5; c.beginPath(); c.moveTo(x, y); c.lineTo(bx, by + 20); c.stroke();
-      for (let p = 0; p < 5; p++) { c.save(); c.translate(bx, by); c.rotate(p * Math.PI * 2 / 5); c.beginPath(); c.ellipse(0, -20, 13, 22, 0, 0, 7); c.fillStyle = ok ? 'rgba(155,58,98,.85)' : 'rgba(190,180,170,.55)'; c.fill(); c.restore(); }
-      c.fillStyle = '#f3e3a3'; c.beginPath(); c.arc(bx, by, 7, 0, 7); c.fill();
-      // the moments listed underneath in two columns, each with a small dot: plum when called
-      const col = i < 5 ? 0 : 1, row = i % 5, lx = 230 + col * 360, ly = 1000 + row * 48;
-      c.fillStyle = ok ? '#9b3a62' : '#cfc6bb'; c.beginPath(); c.arc(lx, ly - 9, 9, 0, 7); c.fill();
-      c.textAlign = 'left'; c.fillStyle = ok ? '#2a2724' : '#8a847c'; c.font = "400 28px 'Shippori Mincho', serif"; c.fillText(o.n.replace(/’/g, "'"), lx + 26, ly);
-    });
-    c.textAlign = 'center'; c.fillStyle = '#8a847c'; c.font = "400 26px 'Shippori Mincho', serif"; c.fillText('Can you beat it?  gifting-index.vercel.app', W / 2, HT - 90);
-    cv.toBlob(b => {
-      const f = new File([b], `gifting-index-${n}-of-${of}.png`, { type: 'image/png' });
-      if (navigator.canShare && navigator.canShare({ files: [f] }) && matchMedia('(max-width:760px)').matches) { navigator.share({ files: [f], text: 'gifting-index.vercel.app' }).catch(() => {}); return; }
-      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    });
-  }
+
 })();
 </script>
 
