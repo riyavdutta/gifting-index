@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://gifting-index.vercel.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Gifting Index: six perfume houses drawn as flowers; in December the classic gift names bloom twice their size.">
+<meta property="og:image:alt" content="The Gifting Index: six perfume houses as stems in one vase, grown to their December searches; Molton Brown, Jo Malone and Diptyque stand tallest.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://gifting-index.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-16 -16 32 32%27%3E%3Cg fill=%27%238e3b5f%27 fill-opacity=%27.75%27%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(72)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(144)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(216)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(288)%27/%3E%3C/g%3E%3C/svg%3E">
@@ -27,12 +27,12 @@ html{scroll-behavior:smooth}
 html,body{background:var(--wall);color:var(--ink);font-family:var(--mincho);-webkit-font-smoothing:antialiased;overflow-x:clip}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.top{position:absolute;inset:0 0 auto;display:flex;justify-content:space-between;padding:24px 40px;font-size:13px;letter-spacing:.04em;color:#6f6a64;z-index:2}
-section{min-height:100svh;display:grid;grid-template-columns:minmax(240px,340px) 1fr;column-gap:40px;padding:0 40px;transition:background 1.2s}
-.q{padding-top:120px;align-self:start}
-h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
+.top{position:absolute;inset:0 0 auto;display:flex;justify-content:space-between;padding:34px max(64px, calc((100vw - 1360px) / 2));font-size:13px;letter-spacing:.04em;color:#6f6a64;z-index:2}
+section{min-height:100svh;display:grid;grid-template-columns:minmax(260px,360px) 1fr;column-gap:88px;padding:0 max(64px, calc((100vw - 1360px) / 2));transition:background 1.2s}
+.q{padding-top:160px;align-self:start}
+h1,h2{font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.3;letter-spacing:-.005em}
 #kin .l{display:inline-block;transition:color .5s,transform .4s}
-.q p{font-size:15px;line-height:1.85;margin-top:22px;color:var(--soft);max-width:30ch}
+.q p{font-size:15.5px;line-height:1.95;margin-top:30px;color:var(--soft);max-width:31ch}
 .q p b{font-weight:600;color:var(--ink)}
 .link{color:var(--ink);border-bottom:1px solid var(--you);padding:0 0 1px;text-decoration:none;font:inherit;line-height:inherit}
 .link[hidden]{display:none}
@@ -42,44 +42,51 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 .mv{transition:transform 1.4s var(--ease)}
 .init .mv,.init .stem{transition:none}
 .hd{cursor:pointer}.hd:focus{outline:none}.hd:focus-visible circle.ring{opacity:1}
-.legend{grid-column:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:14px 0 10px;text-align:center}
+.legend{grid-column:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;padding:26px 0 20px;text-align:center}
 .legend button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 2px}
 .legend .nm{display:flex;align-items:center;gap:7px;font-size:15px;color:#4b4642;padding-bottom:3px;border-bottom:2px solid transparent;white-space:nowrap}
 .legend .nm i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
 .legend b{font-size:24px;font-weight:600;line-height:1.2;min-height:1.2em;color:var(--ink)}
 @media (max-width:1180px){.legend{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}}
 .legend .mine .nm{border-bottom-color:var(--you);color:var(--ink)}
-.acts{display:flex;flex-wrap:wrap;gap:8px 22px}
+.acts{display:flex;flex-wrap:wrap;gap:10px 28px}
 .dots{display:flex;gap:7px;margin-top:18px}.dots i{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px #b7aea4}.dots i.r{background:#9b3a62;box-shadow:none}.dots i.w{background:#d9d1c7;box-shadow:none}.dots i.now{box-shadow:inset 0 0 0 2px var(--you)}
-.months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding-bottom:26px;font-size:13px;transition:opacity .4s}
+.months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding:18px 0 40px;font-size:13px;letter-spacing:.02em;transition:opacity .4s}
 .months.idle{opacity:.2;pointer-events:none}
 .months button,.hs button{padding:8px 0;color:#7a746d}
 .months button[aria-pressed=true],.hs button[aria-pressed=true]{color:var(--ink);font-weight:600}
-#find{background:#f3eee6;min-height:auto;padding-top:20px;padding-bottom:110px}
-#find .q{padding-top:110px}
-.finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;padding-top:110px;align-items:start}
-.lab{font-size:13px;color:var(--mute);margin:22px 0 10px}.lab:first-child{margin-top:0}.lab span{color:#b0a89f}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips button{font-size:14.5px;padding:7px 13px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--line);color:var(--soft);transition:background .3s,color .3s}
+#find{background:#f3eee6;min-height:auto;padding-top:0;padding-bottom:170px}
+#find .q{padding-top:170px;grid-column:1/-1}#find .q p{max-width:52ch}
+.finder{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:110px;padding-top:64px;align-items:start}
+.lab{font-size:13px;letter-spacing:.02em;color:var(--mute);margin:38px 0 14px}.lab:first-child{margin-top:0}.lab span{color:#b0a89f}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips button{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;padding:9px 15px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--line);color:var(--soft);transition:background .3s,color .3s}
 .chips button[aria-pressed=true]{background:#2f2b29;color:#f3efe9;box-shadow:none}
-#fOcc{font:400 15px var(--mincho);color:var(--ink);background:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px;min-width:240px}
-.pickd{min-height:420px;display:flex;flex-direction:column;align-items:flex-start}
-.pickd svg{width:220px;height:240px;overflow:visible}
-.pickd h3{font-weight:400;font-size:30px;line-height:1.2;margin-top:6px}
-.pickd .hs2{font-size:15px;color:var(--mute);margin-top:4px}
-.pickd .nt{font-size:15px;color:var(--soft);margin-top:14px}
-.pickd .why{font-size:15px;line-height:1.85;color:var(--soft);margin-top:14px;max-width:44ch}
-.pickd .acts{margin-top:20px}
+.chips img.ic{width:26px;height:26px;margin:-5px 0 -5px -5px;flex:none}
+.chips button[aria-pressed=true] img.ic{background:#fbf8f2;border-radius:50%}
+.nrow{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.nrow figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;color:var(--mute)}
+.pickd .nrow img{width:110px;height:110px}
+.snotes .nrow{gap:10px;margin-bottom:4px}.snotes .nrow img{width:56px;height:56px}
+#fOcc{font:400 15px var(--mincho);color:var(--ink);background-color:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px}
+select{-webkit-appearance:none;appearance:none;width:auto;max-width:100%;padding-right:34px!important;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235f5a54' stroke-width='1.4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center}
+.pickd{min-height:420px;display:flex;flex-direction:column;align-items:flex-start;position:sticky;top:48px}
+.pickd .nrow{margin-bottom:18px}
+.pickd h3{font-weight:400;font-size:34px;line-height:1.2;margin-top:6px}
+.pickd .hs2{font-size:15px;color:var(--mute);margin-top:8px}
+.pickd .nt{font-size:15px;color:var(--soft);margin-top:22px}
+.pickd .why{font-size:15.5px;line-height:1.95;color:var(--soft);margin-top:18px;max-width:44ch}
+.pickd .acts{margin-top:30px}
 #dec{background:#ecdfe6}
 #year{background:#eef0e4}
 .hs{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:22px;font-size:15px}
 .hs button{display:flex;align-items:center;gap:7px;padding:4px 0}
 .hs i{width:9px;height:9px;border-radius:50%;background:var(--c)}
-#notes{min-height:auto;padding-top:110px;padding-bottom:110px}
-.cols{columns:2 280px;column-gap:48px;font-size:15px;line-height:1.85;color:var(--soft);max-width:760px}
-.cols p{break-inside:avoid;margin-bottom:18px}
-.end{margin-top:40px;font-size:19px}
-.foot{grid-column:1/-1;margin-top:70px;font-size:12.5px;line-height:1.8;color:var(--mute);max-width:760px}
+#notes{min-height:auto;padding-top:170px;padding-bottom:130px}
+.cols{columns:2 280px;column-gap:72px;font-size:15.5px;line-height:1.95;color:var(--soft);max-width:760px}
+.cols p{break-inside:avoid;margin-bottom:24px}
+.end{margin-top:56px;font-size:20px}
+.foot{grid-column:1/-1;margin-top:120px;font-size:12.5px;line-height:1.8;color:var(--mute);max-width:760px}
 .fab{position:fixed;right:30px;bottom:28px;z-index:15;display:flex;align-items:center;gap:9px;font-size:14px;padding:11px 18px 11px 14px;border-radius:3px;background:#2f2b29;color:#f3efe9;box-shadow:0 10px 24px -12px #0000006b;transition:transform .3s}
 .fab:hover{transform:translateY(-2px)}
 .fab[hidden]{display:none}.fab.away{opacity:0;pointer-events:none;transform:translateY(8px)}
@@ -90,13 +97,13 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 .press[hidden]{display:none}
 .pbox{display:grid;grid-template-columns:auto 320px;gap:40px;align-items:center;max-height:100%;overflow:auto;padding:4px}
 .pbox img,.pbox canvas{height:min(82svh,660px);width:auto;max-width:100%;border-radius:2px;box-shadow:0 24px 50px -24px #0000004d}.pbox img{animation:pressin .7s cubic-bezier(.2,.7,.2,1)}.pbox [hidden]{display:none}
-.tag{display:flex;flex-direction:column;gap:14px}
+.tag{display:flex;flex-direction:column;gap:18px}
 .tlab{font-size:26px}
 .tag label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute)}
-.tag input,.tag textarea,.tag select{font:400 18px var(--mincho);color:var(--ink);background:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px;resize:none}
-.tag select{font-size:15px}
+.tag input,.tag textarea,.tag select{font:400 18px var(--mincho);color:var(--ink);background-color:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px;resize:none}
+.tag select{font-size:15px;align-self:flex-start}
 .tag input:focus,.tag textarea:focus,.tag select:focus{outline:2px solid #c9952c66;border-color:#c9952c}
-.spray{display:flex;gap:10px;align-items:flex-end}.spray label{flex:1}
+.spray{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.spray label{flex:0 1 auto;min-width:0}
 .snotes{font-size:14px;line-height:1.5;color:var(--mute);margin-top:-6px}.snotes:empty{display:none}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
 .btn{display:inline-block;font-size:14px;padding:10px 18px;border-radius:2px;background:#2f2b29;color:#f3efe9;text-decoration:none}
@@ -106,13 +113,13 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 @keyframes fade{from{opacity:0}}
 @keyframes pressin{from{transform:scale(1.04);opacity:0}}
 @media (max-width:760px){
-  section{grid-template-columns:1fr;padding:0 20px}
-  .top{padding:16px 20px}.q{padding-top:70px}.q p{font-size:14px;margin-top:12px}
+  section{grid-template-columns:1fr;padding:0 22px}
+  .top{padding:20px 22px}.q{padding-top:84px}.q p{font-size:14px;margin-top:12px}
   .stage{min-height:56svh}
   .months{font-size:11px;padding-bottom:16px}
   .legend{grid-column:1;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}.legend .nm{font-size:14px}.legend b{font-size:20px}
-  #notes{padding-top:60px;padding-bottom:60px}
-  .finder{grid-template-columns:1fr;padding-top:24px;gap:28px}#find .q{padding-top:60px}#find{padding-bottom:50px}.pickd{min-height:0}.pickd svg{width:160px;height:170px}
+  #notes{padding-top:84px;padding-bottom:70px}
+  .finder{grid-template-columns:1fr;padding-top:24px;gap:28px}#find .q{padding-top:84px}#find{padding-bottom:70px}.pickd{min-height:0;position:static}.pickd .nrow img{width:84px;height:84px}
   .yl{font-size:30px}.ml{font-size:30px}#dec,#year{min-height:auto;padding-bottom:40px}#dec .stage,#year .stage{min-height:300px}
   .press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}
 }
@@ -868,6 +875,17 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
         c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, 4.5, i, i + 2); c.stroke();
       });
     },
+  peach: c => {   // a peach with its soft blush and a leaf
+    c.save(); c.rotate(.1);
+    const g = c.createRadialGradient(-12, -10, 4, 0, 0, 46); g.addColorStop(0, '#f6c98a'); g.addColorStop(.6, '#f0a07a'); g.addColorStop(1, '#e27a6a');
+    pressedFill(c, new Path2D('M0,-36 C26,-40 44,-16 42,8 C40,34 20,44 0,40 C-20,44 -40,34 -42,8 C-44,-16 -26,-40 0,-36Z'), g, .92, '#c0645a');
+    c.strokeStyle = 'rgba(190,90,80,.45)'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(0, -36); c.quadraticCurveTo(6, 0, 0, 40); c.stroke(); c.restore();
+    leaf(c, 2, -36, 30, 10, .9);
+  },
+  musk: c => {   // a soft cloud of powder
+    [[-18, 6, 22], [6, -4, 26], [26, 10, 18], [-2, 16, 20]].forEach(([x, y, r]) => { const g = c.createRadialGradient(x, y, 2, x, y, r); g.addColorStop(0, 'rgba(236,226,214,.95)'); g.addColorStop(1, 'rgba(236,226,214,0)'); c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
+    c.fillStyle = 'rgba(200,186,170,.6)'; [[-10, 0], [8, -8], [20, 8], [0, 14], [-22, 10]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 1.6, 0, 7); c.fill(); });
+  },
   lemon: c => citrus(c, '#ecd75a', '#e2c43a'),
   lily: c => {   // a white lily with six curving petals and long stamens
     stem(c, [0, 72, 2, 40, -2, 20, 0, 8], 2.5); leaf(c, 0, 56, 44, 9, -.7);
@@ -948,6 +966,17 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     for (let i = 0; i < 10; i++) { c.save(); c.rotate(i * Math.PI / 5); c.fillStyle = flesh; c.globalAlpha = .75; c.beginPath(); c.moveTo(0, -3); c.quadraticCurveTo(10, -16, 0, -31); c.quadraticCurveTo(-10, -16, 0, -3); c.fill(); c.restore(); }
   }
   const NAME = { sage: 'sage', ambrette: 'ambrette seeds', seasalt: 'sea salt', pear: 'pear', freesia: 'freesia', patchouli: 'patchouli', ginger: 'ginger', basil: 'basil', rhubarb: 'rhubarb', rose: 'rose', grapefruit: 'grapefruit', bergamot: 'bergamot', cardamom: 'cardamom', iris: 'iris', violet: 'violet', fig: 'fig', bay: 'bay leaf', vanilla: 'vanilla', magnolia: 'magnolia', raspberry: 'raspberry', cinnamon: 'cinnamon', tuberose: 'tuberose', orangeblossom: 'orange blossom', jasmine: 'jasmine', sandalwood: 'sandalwood', cedar: 'cedar', cypress: 'cypress', figleaf: 'fig leaf', figwood: 'fig wood', pepper: 'black pepper', lily: 'lily', lemon: 'lemon', pinkpepper: 'pink pepper', lilac: 'lilac', cucumber: 'cucumber', lime: 'lime', mandarin: 'mandarin', apple: 'apple', peony: 'peony', lychee: 'lychee', marigold: 'marigold', lavender: 'lavender', honeysuckle: 'honeysuckle', davana: 'davana', musk: 'musk', peach: 'peach' };
+  // a pressed note as a little picture, for the finder's choices, its suggestion and the card form
+  const ICON = {};
+  function noteIcon(k, small) {
+    const key = k + (small ? 's' : '');
+    if (!ICON[key]) {
+      const px = small ? 64 : 220, cv = document.createElement('canvas'); cv.width = cv.height = px; const c = cv.getContext('2d');
+      c.translate(px / 2, px / 2); const sc = px / (small ? 120 : 170) * (BIG[k] || 1); c.scale(sc, sc); if (NOTE[k]) NOTE[k](c);
+      ICON[key] = cv.toDataURL();
+    }
+    return `<img src="${ICON[key]}" alt="" class="${small ? 'ic' : 'nic'}">`;
+  }
   const BIG = { ambrette: 1.5, seasalt: 1.6, cardamom: 1.35, pepper: 1.35, pinkpepper: 1.35, raspberry: 1.2 };   // small things drawn larger so they read
   const SPOTS = [[225, 410, -.12], [240, 690, .1], [855, 575, .08]];   // left high, left low, right; clear of the flower and the writing
   function pressNotes(c, sc, t) {
@@ -1017,7 +1046,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     $('tScent').innerHTML = scentsFor($('tHouse').value).map(x => `<option value="${x.id}">${x.n}</option>`).join('');
     sprays = []; showNotes();
   }
-  const showNotes = () => { $('tNotes').textContent = curScent().notes; };
+  const showNotes = () => { const sc = curScent(); $('tNotes').innerHTML = `<span class="nrow" aria-hidden="true">${sc.pressed.map(k => noteIcon(k)).join('')}</span>${sc.notes}`; };
   function spray() {
     if (sprays.length >= 3) return;
     sprays.push({ seed: 1000 + sprays.length * 7919 + Math.floor(Math.random() * 500), tint: curScent().tint, origin: ORIGINS[sprays.length] });
@@ -1071,13 +1100,13 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 
 
   /* ---------- the gift finder ---------- */
-  const WHO = [['Mum', 'Mum'], ['Dad', 'Dad'], ['partner', 'my partner'], ['a friend', 'a friend'], ['a colleague', 'a colleague'], ['myself', '']];
+  const WHO = [['Mum', 'Mum'], ['Dad', 'Dad'], ['Partner', 'my partner'], ['A friend', 'a friend'], ['A colleague', 'a colleague'], ['Myself', '']];
   const LOVE = ['rose', 'peony', 'jasmine', 'tuberose', 'orangeblossom', 'magnolia', 'lily', 'honeysuckle', 'lilac', 'violet', 'iris', 'lavender', 'freesia', 'fig', 'pear', 'peach', 'raspberry', 'rhubarb', 'seasalt', 'sage', 'basil', 'bergamot', 'grapefruit', 'mandarin', 'lemon', 'lime', 'sandalwood', 'cedar', 'vanilla', 'musk', 'cinnamon', 'pepper', 'cardamom'];
   const fs = { who: 'Mum', occ: null, love: [] };
   function finder() {
     $('fWho').innerHTML = WHO.map(([w]) => `<button type="button" aria-pressed="${fs.who === w}">${w}</button>`).join('');
     [...$('fWho').children].forEach((b, i) => b.onclick = () => { fs.who = WHO[i][0]; finder(); });
-    $('fLove').innerHTML = LOVE.map(k => `<button type="button" aria-pressed="${fs.love.includes(k)}">${NAME[k]}</button>`).join('');
+    $('fLove').innerHTML = LOVE.map(k => `<button type="button" aria-pressed="${fs.love.includes(k)}">${noteIcon(k, true)}${NAME[k]}</button>`).join('');
     [...$('fLove').children].forEach((b, i) => b.onclick = () => { const k = LOVE[i]; fs.love = fs.love.includes(k) ? fs.love.filter(x => x !== k) : [...fs.love, k].slice(-3); finder(); });
     suggest();
   }
@@ -1088,7 +1117,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     return { m, s: m * 2 + named + fit + (self ? 0 : lift), matched: fs.love.filter(has) };
   }
   function suggest() {
-    const o = OCC.find(x => x.n === fs.occ) || NEXT, self = fs.who === 'myself';
+    const o = OCC.find(x => x.n === fs.occ) || NEXT, self = fs.who === 'Myself';
     const all = SCENTS.flatMap(hh => hh.scents.map(sc => ({ h: H.find(x => x.id === hh.id), sc }))).map(r => ({ ...r, ...score(r.h, r.sc, o, self) })).sort((a, b) => b.s - a.s);
     const best = all[0], alt = all.find(r => r.h.id !== best.h.id), lift = o.typ[best.h.id], whoTxt = (WHO.find(w => w[0] === fs.who) || [])[1];
     const quiet = !(lift >= 1.1), list = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
@@ -1098,7 +1127,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
         best.h.g === 'classic' ? `${best.h.s} is a name people recognise as a present.` : `${best.h.s} is a niche house, so it feels more personal than an obvious gift.`,
       quiet ? `${o.n} is a quiet time for perfume, so there's no rush.` : `Searches for ${best.h.s} rise to ×${lift.toFixed(1)} the week before ${o.n}, so it's worth ordering early.`];
     const c = COL[best.h.id];
-    $('fOut').innerHTML = `<svg viewBox="-110 -120 220 240" aria-hidden="true"><path d="M0,10 C6,60 -6,90 2,108" fill="none" stroke="#6b7d5a" stroke-width="3" stroke-linecap="round"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-26" rx="17" ry="29" transform="rotate(${a})" fill="${c}" opacity=".85"/>`).join('')}<circle r="10" fill="#f3e3a3"/><ellipse cx="0" cy="116" rx="44" ry="6" fill="#2f2b29"/></svg>
+    $('fOut').innerHTML = `<div class="nrow" aria-hidden="true">${best.sc.pressed.map(k => `<figure>${noteIcon(k)}${NAME[k]}</figure>`).join('')}</div>
       <h3>${best.sc.n}</h3><p class="hs2">${best.h.n}</p><p class="nt">${best.sc.notes}</p><p class="why">${why.join(' ')}</p>
       <p class="acts"><button type="button" class="link" id="fPress">${self ? 'Press it for yourself' : 'Press it for ' + (whoTxt || 'them')}</button>${alt ? ` <button type="button" class="link" id="fAlt">Or ${alt.sc.n} by ${alt.h.s}</button>` : ''}</p>`;
     $('fPress').onclick = () => openPress($('fPress'), { house: best.h.id, scent: best.sc.id, who: self ? '' : (whoTxt || '').replace(/^my /, ''), month: occMonth(o) });
