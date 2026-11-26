@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Ikebana look: heavy Shippori Mincho headings, Zen Kaku Gothic New text, window light on the wall, a flower per house, buds that open on the pick. -->
 <title>The Gifting Index · Riya Dutta</title>
 <meta name="description" content="What gets bought as a gift? Six luxury fragrance houses, Jo Malone London, Diptyque, Molton Brown, Le Labo, Byredo and Frédéric Malle, tracked every day in Google searches. By Riya Dutta.">
 <link rel="canonical" href="https://gifting-index.vercel.app/">
@@ -18,7 +19,7 @@
 <meta name="twitter:image" content="https://gifting-index.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-16 -16 32 32%27%3E%3Cg fill=%27%238e3b5f%27 fill-opacity=%27.75%27%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(72)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(144)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(216)%27/%3E%3Cellipse rx=%275%27 ry=%2712%27 cy=%27-4%27 transform=%27rotate(288)%27/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#2a2724;--soft:#5f5a54;--mute:#8a847c;--line:#ddd6cd;--you:#c9952c;--wall:#efeae4;
   --mincho:'Shippori Mincho',Georgia,serif;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Zen Kaku Gothic New',system-ui,sans-serif;--ease:cubic-bezier(.5,0,.2,1)}
@@ -125,6 +126,41 @@ select{-webkit-appearance:none;appearance:none;width:auto;max-width:100%;padding
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 
+
+/* ---- type: a heavy serif for headings, a clean sans for everything else, bold figures ---- */
+:root{--head:#1f1c1a;--body:#6a645d}
+html,body{font-family:var(--sans)}
+h1,h2,.tlab,.pickd h3{font-family:var(--mincho);font-weight:800;color:var(--head);letter-spacing:-.015em}
+h1{font-size:clamp(38px,3.7vw,56px);line-height:1.12}
+section{grid-template-columns:minmax(300px,440px) 1fr}
+#pick .q{padding-top:140px}
+@media (max-width:760px){section{grid-template-columns:1fr}h1{font-size:38px}h2{font-size:32px}}
+h2{font-size:clamp(32px,3.5vw,50px);line-height:1.16}
+.q p{font-size:15.5px;line-height:1.9;color:var(--body);margin-top:28px}
+.q p b{font-weight:700;color:var(--head)}
+.top{font-weight:500;letter-spacing:.01em}
+.link{font-weight:500;color:var(--head);border-bottom-width:1.5px}
+.legend .nm{font-size:14px;font-weight:500}
+.legend b{font-family:var(--mincho);font-weight:800;font-size:32px;line-height:1.1;margin-top:4px}
+.months{font-weight:500}
+.lab{font-weight:500;color:#8a847c}
+.chips button{font-size:14px;font-weight:500}
+#fOcc,.tag input,.tag textarea,.tag select{font-family:var(--sans)}
+.pickd h3{font-size:clamp(34px,3vw,44px);line-height:1.12}
+.pickd .hs2{font-weight:500;color:#8a847c}
+.pickd .nt,.pickd .why,.cols{color:var(--body)}
+.pickd .why b{font-weight:700}
+.end{font-family:var(--mincho);font-weight:800;color:var(--head);font-size:24px}
+.btn{font-weight:500}
+
+/* ---- atmosphere: window light from the top left, a little plaster grain, the arrangement's shadow on the wall ---- */
+#pick{background-color:var(--wall);background-image:radial-gradient(110% 85% at 10% -5%,rgba(255,255,255,.6),rgba(255,255,255,0) 58%),radial-gradient(70% 60% at 92% 108%,rgba(70,35,50,.10),rgba(70,35,50,0) 70%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .3  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
+#vase{filter:drop-shadow(34px 18px 9px rgba(70,40,55,.13))}
+/* ---- buds that open: the pick first, then the rest ---- */
+.hd .bud{transition:opacity .45s,transform .6s}
+.hd .fl{opacity:0;transform:scale(.12) rotate(-50deg);transition:opacity .6s,transform 1.15s cubic-bezier(.3,1.35,.45,1)}
+.hd.opened .bud{opacity:0;transform:scale(.5)}
+.hd.opened .fl{opacity:1;transform:none}
 </style>
 </head>
 <body>
@@ -348,34 +384,65 @@ select{-webkit-appearance:none;appearance:none;width:auto;max-width:100%;padding
   let picked = null, open = false, month = 11;
   const ANG = [-46, -28, -10, 10, 28, 46], vase = $('vase'), VX = 400, VY = 500;
   bowl(vase, VX, VY, 300, 62);
+
+  /* ---------- a real flower for each house, drawn flat with a little light in it ---------- */
+  const mix = (c, w, t) => { const a = parseInt(c.slice(1), 16), b = parseInt(w.slice(1), 16), ch = (x, y, s) => Math.round(((x >> s) & 255) * (1 - t) + ((y >> s) & 255) * t); return `rgb(${ch(a, b, 16)},${ch(a, b, 8)},${ch(a, b, 0)})`; };
+  const defs = svgEl(vase, 'defs', {});
+  H.forEach(h => { const c = COL[h.id], gr = svgEl(defs, 'radialGradient', { id: 'gr-' + h.id, cx: '50%', cy: '85%', r: '90%' });
+    svgEl(gr, 'stop', { offset: '0', 'stop-color': mix(c, '#ffffff', .55) }); svgEl(gr, 'stop', { offset: '.65', 'stop-color': c }); svgEl(gr, 'stop', { offset: '1', 'stop-color': mix(c, '#2a1a20', .25) }); });
+  const rpet = (w, L) => `M0,0 C${w},${-L * .3} ${w * .95},${-L} 0,${-L} C${-w * .95},${-L} ${-w},${-L * .3} 0,0Z`;
+  const ppet = (w, L) => `M0,0 C${w},${-L * .25} ${w * .9},${-L * .75} 0,${-L} C${-w * .9},${-L * .75} ${-w},${-L * .25} 0,0Z`;
+  function petals(p, id, n, d, rot, op, extra) { for (let i = 0; i < n; i++) svgEl(p, 'path', { d, transform: `rotate(${rot + i * 360 / n})`, fill: `url(#gr-${id})`, stroke: mix(COL[id], '#2a1a20', .3), 'stroke-width': .7, 'stroke-opacity': .55, opacity: op, ...(extra || {}) }); }
+  const ringDots = (p, n, r, s, col) => { for (let i = 0; i < n; i++) { const a = i * Math.PI * 2 / n; svgEl(p, 'circle', { cx: Math.cos(a) * r, cy: Math.sin(a) * r, r: s, fill: col }); } };
+  const FLOWER = {
+    jo: (p, id) => { petals(p, id, 9, rpet(14, 23), 0, .8); petals(p, id, 8, rpet(11, 17), 20, .88); petals(p, id, 7, rpet(8, 11), 8, .95); svgEl(p, 'circle', { r: 4, fill: mix(COL[id], '#ffffff', .5) }); },   // peony
+    dip: (p, id) => { petals(p, id, 5, rpet(15, 22), 0, .82); petals(p, id, 5, rpet(11, 15), 36, .9); petals(p, id, 4, rpet(7, 9), 10, .95);   // rose
+      svgEl(p, 'path', { d: 'M-5,1 C-7,-7 6,-9 6,-2 C6,4 -2,5 -2,0 C-2,-3 2,-3 2,-1', fill: 'none', stroke: mix(COL[id], '#2a1a20', .35), 'stroke-width': 1.1, 'stroke-linecap': 'round' }); },
+    molton: (p, id) => { petals(p, id, 8, rpet(14, 23), 0, .84); petals(p, id, 6, rpet(9, 13), 30, .92);   // camellia
+      for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; svgEl(p, 'line', { x1: 0, y1: 0, x2: Math.cos(a) * 6, y2: Math.sin(a) * 6, stroke: '#e7cf7a', 'stroke-width': .8 }); } ringDots(p, 12, 6.5, 1.5, '#e9c95a'); },
+    lelabo: (p, id) => { petals(p, id, 5, rpet(17, 22), 0, .86);   // hellebore
+      for (let i = 0; i < 5; i++) svgEl(p, 'path', { d: 'M0,-3 L0,-18', transform: `rotate(${i * 72})`, stroke: mix(COL[id], '#ffffff', .4), 'stroke-width': .8, opacity: .7 });
+      svgEl(p, 'circle', { r: 5.5, fill: mix(COL[id], '#2a1a20', .2) }); ringDots(p, 14, 8, 1.3, '#e9d98a'); },
+    byredo: (p, id) => { petals(p, id, 3, ppet(12, 26), 180, .82); petals(p, id, 3, ppet(8, 18), 0, .9, { fill: mix(COL[id], '#ffffff', .35) });   // iris
+      for (let i = 0; i < 3; i++) svgEl(p, 'ellipse', { cx: 0, cy: 10, rx: 2, ry: 6, transform: `rotate(${180 + i * 120})`, fill: '#e9c95a' }); },
+    malle: (p, id) => { petals(p, id, 6, rpet(13, 21), 0, .85);   // anemone
+      svgEl(p, 'circle', { r: 6.5, fill: '#2f2a36' }); ringDots(p, 16, 9.5, 1.4, '#3a3442'); svgEl(p, 'circle', { r: 2.5, fill: '#5b5468' }); }
+  };
+  function bud(p, id) {   // a closed bud with two sepals
+    svgEl(p, 'path', { d: 'M0,4 C8,-4 9,-17 0,-28 C-9,-17 -8,-4 0,4Z', fill: `url(#gr-${id})`, stroke: mix(COL[id], '#2a1a20', .3), 'stroke-width': .7 });
+    svgEl(p, 'path', { d: 'M0,4 C-7,0 -10,-8 -6,-15 C-3,-8 -1,-2 0,4Z M0,4 C7,0 10,-8 6,-15 C3,-8 1,-2 0,4Z', fill: '#7f9a6a', opacity: .9 });
+  }
   const stems = H.map((h, i) => {
     const s = svgEl(vase, 'path', { class: 'stem', fill: 'none', stroke: '#6b7d5a', 'stroke-width': 3, 'stroke-linecap': 'round' });
     const g = svgEl(vase, 'g', { class: 'mv hd', tabindex: 0, role: 'button', 'aria-label': h.n });
-    svgEl(g, 'circle', { r: 34, fill: 'transparent' });
-    bloomAt(g, 0, 0, 15, COL[h.id]);
+    svgEl(g, 'circle', { r: 44, fill: 'transparent' });
+    const big = svgEl(g, 'g', { transform: 'scale(1.4)' }), bd = svgEl(big, 'g', { class: 'bud' }), fl = svgEl(big, 'g', { class: 'fl' }); bud(bd, h.id); FLOWER[h.id](fl, h.id);
     $('legend').insertAdjacentHTML('beforeend', `<button type="button" id="lg-${h.id}" style="--c:${COL[h.id]}"><span class="nm"><i></i>${h.s}</span><b></b></button>`);
     const x = $('lg-' + h.id).querySelector('b');
-    const ring = svgEl(g, 'circle', { class: 'ring', r: 30, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
+    const ring = svgEl(g, 'circle', { class: 'ring', r: 44, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
     const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };   // works the same inside the round
     g.addEventListener('click', go); $('lg-' + h.id).addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
-    return { h, s, g, x, ring, i };
+    return { h, s, g, x, ring, i, fl };
   });
   // vals: one number per house (null = still buds, all the same height)
   let shown = null;
   function arrange(vals) {
     shown = vals;
     vase.setAttribute('viewBox', innerWidth < 760 ? '110 90 580 520' : '0 0 800 600');   // closer in on a phone
-    stems.forEach(({ h, s, g, x, ring, i }) => {
+    const order = vals ? H.map(h => h.id).filter(id => id !== picked) : [];
+    stems.forEach(({ h, s, g, x, ring, i, fl }) => {
       const v = vals ? vals[h.id] : null, L = v == null ? [214, 236, 222, 244, 228, 238][i] : 120 + (Math.max(.7, Math.min(2.8, v)) - .8) * 128, a = ANG[i] * Math.PI / 180;
       const sx = VX + (i - 2.5) * 16, ex = sx + Math.sin(a) * L, ey = VY - Math.cos(a) * L;
       s.setAttribute('d', `M${sx},${VY} Q${sx + Math.sin(a) * L * .35},${VY - L * .55} ${ex},${ey}`);
       g.style.transform = `translate(${ex}px,${ey}px)`;
+      g.classList.toggle('opened', v != null);   // buds until the pick, then each one opens, yours first
+      fl.style.transitionDelay = v == null ? '0s' : (h.id === picked ? .35 : .75 + order.indexOf(h.id) * .14) + 's';
       x.textContent = v == null ? '' : '×' + v.toFixed(1);
       ring.setAttribute('opacity', picked === h.id ? 1 : 0); $('lg-' + h.id).classList.toggle('mine', picked === h.id);
       g.setAttribute('aria-label', h.n + (v == null ? '' : ', ' + v.toFixed(1) + ' times a usual week'));
     });
   }
-  const setWall = m => { $('pick').style.background = m == null ? '' : WALL[m]; };
+  const setWall = m => { $('pick').style.backgroundColor = m == null ? '' : WALL[m]; };
   // the round: every gifting moment with data, in calendar order
   let round = null;   // { list, k, res: [true/false] }
   const occMonth = o => new Date(o.next || o.f(new Date(TODAY).getUTCFullYear())).getUTCMonth();
@@ -1125,7 +1192,7 @@ select{-webkit-appearance:none;appearance:none;width:auto;max-width:100%;padding
       best.matched.length ? `It has the ${list(best.matched.map(k => NAME[k]))} ${self ? 'you' : 'they'} love.` : (fs.love.length ? `None of the six has exactly that, so this is the closest in spirit.` : `Pick a few things ${self ? 'you' : 'they'} love and I'll match them.`),
       self ? `${best.h.s} is a niche house, the kind people tend to choose for themselves rather than receive.` :
         best.h.g === 'classic' ? `${best.h.s} is a name people recognise as a present.` : `${best.h.s} is a niche house, so it feels more personal than an obvious gift.`,
-      quiet ? `${o.n} is a quiet time for perfume, so there's no rush.` : `Searches for ${best.h.s} rise to ×${lift.toFixed(1)} the week before ${o.n}, so it's worth ordering early.`];
+      quiet ? `${o.n} is a quiet time for perfume, so there's no rush.` : `Searches for ${best.h.s} rise to <b>×${lift.toFixed(1)}</b> the week before ${o.n}, so it's worth ordering early.`];
     const c = COL[best.h.id];
     $('fOut').innerHTML = `<div class="nrow" aria-hidden="true">${best.sc.pressed.map(k => `<figure>${noteIcon(k)}${NAME[k]}</figure>`).join('')}</div>
       <h3>${best.sc.n}</h3><p class="hs2">${best.h.n}</p><p class="nt">${best.sc.notes}</p><p class="why">${why.join(' ')}</p>
