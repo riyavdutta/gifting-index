@@ -2,12 +2,14 @@
 
 What gets bought as a gift? Six luxury fragrance houses, three classic gift names (Jo Malone London, Diptyque, Molton Brown) and three cult niche houses (Le Labo, Byredo, Frédéric Malle), tracked every day. An independent project by Riya Dutta, live at [gifting-index.vercel.app](https://gifting-index.vercel.app/).
 
-The page is an ikebana arrangement: calm seasonal walls, Shippori Mincho, and each house drawn as a flower on a stem, plum and pink for the gift names and green, lilac and teal for the cult houses, with antique gold for anything that's yours. Four sections:
+The page is an ikebana arrangement: calm seasonal walls, Shippori Mincho, and each house drawn as a flower on a stem, plum and pink for the gift names and green, lilac and teal for the cult houses, with antique gold for anything that's yours. Five sections:
 
 1. **The vase:** the next gifting moment is named, and you tap the flower you think it makes tallest. Until then every stem is the same height; after the pick each stem grows to that house's lift the week before the moment, and a month bar shows each month against a usual one (the wall colour follows the season). **Press a flower for someone** opens the gift card: a pressed month flower, an optional spray of a scent from the chosen house with its notes pressed beside it, who it is for, what it reminds you of, and your name; download or share it (made in the browser; nothing typed is saved or sent).
-2. **Every December:** a long tray with a pair of stems for each year, gift names against cult houses; stem height is the December lift.
-3. **One house, the whole year:** a branch with a blossom for each month, sized by that month's lift; pick any of the six houses.
-4. **Things I'm still not sure about:** the honest gaps, including the test of nine more houses (`scripts/screen_houses.py`, results in `data/screen.json`) that chose Molton Brown and Frédéric Malle.
+After the first guess, **Call all ten moments** runs through every gifting moment in calendar order (with "none of them" for the quiet ones), then scores you and makes a picture of your score to save or share.
+2. **Find them a perfume:** pick who it's for, the occasion and up to three notes they love; it suggests one scent from the six houses (leaning to the gift names for others and the niche houses for yourself) and opens the card with it already sprayed.
+3. **Every December:** a long tray with a pair of stems for each year, gift names against cult houses; stem height is the December lift.
+4. **One house, the whole year:** a branch with a blossom for each month, sized by that month's lift; pick any of the six houses.
+5. **Things I'm still not sure about:** the honest gaps, including the test of nine more houses (`scripts/screen_houses.py`, results in `data/screen.json`) that chose Molton Brown and Frédéric Malle.
 
 Every number is calculated in the page from the latest saved data, including the year count and the occasion lifts.
 

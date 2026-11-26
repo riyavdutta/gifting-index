@@ -40,6 +40,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 .stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .stem{transition:d 1.4s var(--ease)}
 .mv{transition:transform 1.4s var(--ease)}
+.init .mv,.init .stem{transition:none}
 .hd{cursor:pointer}.hd:focus{outline:none}.hd:focus-visible circle.ring{opacity:1}
 .legend{grid-column:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:14px 0 10px;text-align:center}
 .legend button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 2px}
@@ -48,10 +49,27 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 .legend b{font-size:24px;font-weight:600;line-height:1.2;min-height:1.2em;color:var(--ink)}
 @media (max-width:1180px){.legend{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}}
 .legend .mine .nm{border-bottom-color:var(--you);color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:8px 22px}
+.dots{display:flex;gap:7px;margin-top:18px}.dots i{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px #b7aea4}.dots i.r{background:#9b3a62;box-shadow:none}.dots i.w{background:#d9d1c7;box-shadow:none}.dots i.now{box-shadow:inset 0 0 0 2px var(--you)}
 .months{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:repeat(12,1fr);padding-bottom:26px;font-size:13px;transition:opacity .4s}
 .months.idle{opacity:.2;pointer-events:none}
 .months button,.hs button{padding:8px 0;color:#7a746d}
 .months button[aria-pressed=true],.hs button[aria-pressed=true]{color:var(--ink);font-weight:600}
+#find{background:#f3eee6;min-height:auto;padding-top:20px;padding-bottom:110px}
+#find .q{padding-top:110px}
+.finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;padding-top:110px;align-items:start}
+.lab{font-size:13px;color:var(--mute);margin:22px 0 10px}.lab:first-child{margin-top:0}.lab span{color:#b0a89f}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{font-size:14.5px;padding:7px 13px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--line);color:var(--soft);transition:background .3s,color .3s}
+.chips button[aria-pressed=true]{background:#2f2b29;color:#f3efe9;box-shadow:none}
+#fOcc{font:400 15px var(--mincho);color:var(--ink);background:#faf8f5;border:1px solid var(--line);border-radius:2px;padding:9px 12px;min-width:240px}
+.pickd{min-height:420px;display:flex;flex-direction:column;align-items:flex-start}
+.pickd svg{width:220px;height:240px;overflow:visible}
+.pickd h3{font-weight:400;font-size:30px;line-height:1.2;margin-top:6px}
+.pickd .hs2{font-size:15px;color:var(--mute);margin-top:4px}
+.pickd .nt{font-size:15px;color:var(--soft);margin-top:14px}
+.pickd .why{font-size:15px;line-height:1.85;color:var(--soft);margin-top:14px;max-width:44ch}
+.pickd .acts{margin-top:20px}
 #dec{background:#ecdfe6}
 #year{background:#eef0e4}
 .hs{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:22px;font-size:15px}
@@ -94,6 +112,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
   .months{font-size:11px;padding-bottom:16px}
   .legend{grid-column:1;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}.legend .nm{font-size:14px}.legend b{font-size:20px}
   #notes{padding-top:60px;padding-bottom:60px}
+  .finder{grid-template-columns:1fr;padding-top:24px;gap:28px}#find .q{padding-top:60px}#find{padding-bottom:50px}.pickd{min-height:0}.pickd svg{width:160px;height:170px}
   .yl{font-size:30px}.ml{font-size:30px}#dec,#year{min-height:auto;padding-bottom:40px}#dec .stage,#year .stage{min-height:300px}
   .press{place-items:start center;padding:14px}.pbox{grid-template-columns:1fr;gap:18px;justify-items:center}.pbox img,.pbox canvas{height:auto;width:min(100%,330px)}.tag{width:100%}
 }
@@ -108,10 +127,25 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 <section id="pick">
   <div class="q"><h1 id="kin">Which stem rises highest before the next gifting moment?</h1>
     <p id="say">Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.</p>
-    <p><button type="button" class="link" id="again" hidden>Pick again</button></p></div>
+    <p class="acts"><button type="button" class="link" id="none" hidden>None of them</button> <button type="button" class="link" id="nextB" hidden>Next moment</button> <button type="button" class="link" id="again" hidden>Pick again</button> <button type="button" class="link" id="roundGo" hidden>Call all ten moments</button></p>
+    <p class="dots" id="dots" aria-hidden="true"></p></div>
   <div class="stage"><svg id="vase" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax meet" role="group" aria-label="Six stems in a vase, one for each perfume house"></svg></div>
   <div class="legend" id="legend" role="group" aria-label="The six houses, in the same order as the stems"></div>
   <div class="months idle" id="months" role="group" aria-label="Month"></div>
+</section>
+
+<!-- the gift finder: who it's for, the occasion and what they love, then one scent from the six houses -->
+<section id="find">
+  <div class="q"><h2>Find them a perfume.</h2>
+    <p>Tell me who it's for, the occasion and a few things they love, and I'll pick one scent from the six houses.</p></div>
+  <div class="finder">
+    <div class="ask">
+      <p class="lab">It's for</p><div class="chips" id="fWho"></div>
+      <p class="lab">The occasion</p><select id="fOcc"></select>
+      <p class="lab">They love <span>(up to three)</span></p><div class="chips" id="fLove"></div>
+    </div>
+    <div class="pickd" id="fOut" aria-live="polite"></div>
+  </div>
 </section>
 
 <!-- 2 · every December: a pair of stems per year in a long tray -->
@@ -315,7 +349,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     $('legend').insertAdjacentHTML('beforeend', `<button type="button" id="lg-${h.id}" style="--c:${COL[h.id]}"><span class="nm"><i></i>${h.s}</span><b></b></button>`);
     const x = $('lg-' + h.id).querySelector('b');
     const ring = svgEl(g, 'circle', { class: 'ring', r: 30, fill: 'none', stroke: '#c9952c', 'stroke-width': 2, opacity: 0 });
-    const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };
+    const go = () => { if (!open) { picked = h.id; ready.then(reveal); } };   // works the same inside the round
     g.addEventListener('click', go); $('lg-' + h.id).addEventListener('click', go); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     return { h, s, g, x, ring, i };
   });
@@ -335,17 +369,59 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     });
   }
   const setWall = m => { $('pick').style.background = m == null ? '' : WALL[m]; };
-  function reveal() {   // after the pick: the week before the next gifting moment
-    open = true; month = new Date(NEXT.next).getUTCMonth();
-    arrange(Object.fromEntries(H.map(h => [h.id, NEXT.typ[h.id]]))); setWall(month); rail();
-    const N = NEXT.n, best = H.slice().sort((a, b) => NEXT.typ[b.id] - NEXT.typ[a.id])[0], p = H.find(h => h.id === picked);
-    const flat = NEXT.typ[best.id] < 1.1, right = NEXT.typ[p.id].toFixed(1) === NEXT.typ[best.id].toFixed(1);
-    $('say').innerHTML = (flat ? `A trick question: ${N} barely moves any of them.` :
-      right ? `<b>You called it.</b> ${p.s} grows the most the week before ${N}, to ${NEXT.typ[p.id].toFixed(1)} times a usual week.` :
-      `${p.s} reaches ×${NEXT.typ[p.id].toFixed(1)}, but <b>${best.s}</b> grows the most the week before ${N}, to ×${NEXT.typ[best.id].toFixed(1)}.`) +
-      ` Try the months below, or <button type="button" class="link" id="pressAny">press one for someone</button>.`;
-    $('again').hidden = false;
+  // the round: every gifting moment with data, in calendar order
+  let round = null;   // { list, k, res: [true/false] }
+  const occMonth = o => new Date(o.next || o.f(new Date(TODAY).getUTCFullYear())).getUTCMonth();
+  function verdict(o, id) {   // was the pick right? a quiet moment is right only for "none of them"
+    const best = H.slice().sort((a, b) => o.typ[b.id] - o.typ[a.id])[0], flat = o.typ[best.id] < 1.1;
+    return { best, flat, right: flat ? id === 'none' : id !== 'none' && o.typ[id].toFixed(1) === o.typ[best.id].toFixed(1) };
   }
+  function reveal() {   // after the pick: the week before the moment
+    const o = round ? round.list[round.k] : NEXT, N = o.n;
+    open = true; month = occMonth(o);
+    arrange(Object.fromEntries(H.map(h => [h.id, o.typ[h.id]]))); setWall(month); rail();
+    const { best, flat, right } = verdict(o, picked), p = H.find(h => h.id === picked);
+    const line = flat ? (right ? `<b>You saw through it.</b> ${N} barely moves any of them.` : `A trick question: ${N} barely moves any of them.`) :
+      picked === 'none' ? `Not this one: <b>${best.s}</b> grows to ×${o.typ[best.id].toFixed(1)} the week before ${N}.` :
+      right ? `<b>You called it.</b> ${p.s} grows the most the week before ${N}, to ${o.typ[p.id].toFixed(1)} times a usual week.` :
+      `${p.s} reaches ×${o.typ[p.id].toFixed(1)}, but <b>${best.s}</b> grows the most the week before ${N}, to ×${o.typ[best.id].toFixed(1)}.`;
+    $('none').hidden = true;
+    if (round) {
+      round.res[round.k] = right; dots();
+      const last = round.k === round.list.length - 1;
+      $('say').innerHTML = line;
+      $('nextB').textContent = last ? 'See my score' : 'Next moment'; $('nextB').hidden = false;
+      $('months').classList.add('idle');
+    } else {
+      $('say').innerHTML = line + ` Try the months below, or <button type="button" class="link" id="pressAny">press one for someone</button>.`;
+      $('again').hidden = false; $('roundGo').hidden = false;
+    }
+  }
+  function dots() { $('dots').innerHTML = round ? round.list.map((_, i) => `<i class="${round.res[i] === true ? 'r' : round.res[i] === false ? 'w' : ''}${i === round.k ? ' now' : ''}"></i>`).join('') : ''; }
+  function ask() {   // the next moment in the round
+    const o = round.list[round.k];
+    open = false; picked = null; arrange(null); setWall(occMonth(o)); rail();
+    $('kin').textContent = `Which stem rises highest before ${o.n}?`; kin();
+    $('say').innerHTML = `Moment ${round.k + 1} of ${round.list.length}. Tap the flower you think grows tallest, or <b>none of them</b> if you think nothing moves.`;
+    $('none').hidden = false; $('nextB').hidden = true; $('again').hidden = true; $('roundGo').hidden = true; dots();
+  }
+  function startRound() {
+    const y = new Date(TODAY).getUTCFullYear();
+    round = { list: OCC.filter(o => o.years.length).sort((a, b) => occMonth(a) - occMonth(b) || a.f(y) - b.f(y)), k: 0, res: [] };
+    ask(); $('pick').scrollIntoView({ behavior: MOTION ? 'smooth' : 'auto' });
+  }
+  function finish() {
+    const n = round.res.filter(Boolean).length, of = round.list.length;
+    $('kin').textContent = `You called ${n} of ${of}.`; kin();
+    $('say').innerHTML = (n >= of - 2 ? 'You know your gifting calendar.' : n >= of / 2 ? 'Not bad at all.' : 'Gifting is harder to call than it looks.') +
+      ` <button type="button" class="link" id="scoreDl">Save your score</button>, or <button type="button" class="link" id="pressAny">press a flower for someone</button>.`;
+    $('nextB').hidden = true; $('again').hidden = false; $('again').textContent = 'Play again';
+    $('scoreDl').onclick = () => saveScore(n, of);
+    round.done = true;
+  }
+  $('roundGo').onclick = startRound;
+  $('none').onclick = () => { if (!open) { picked = 'none'; reveal(); } };
+  $('nextB').onclick = () => { if (round.k < round.list.length - 1) { round.k++; ask(); } else finish(); };
   function rail() {
     $('months').classList.toggle('idle', !open);
     $('months').innerHTML = M.map((m, i) => `<button type="button" aria-pressed="${open && i === month}">${cap(m)}</button>`).join('');
@@ -356,12 +432,13 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
     const k = $('kin'); k.textContent = `Which stem rises highest before ${NEXT.n}?`; kin();
     $('say').innerHTML = `${NEXT.n} is ${when}. Six perfume houses, one vase. Tap the flower you think grows tallest, or <button type="button" class="link" id="pressAny">just press one for someone</button>.`;
   }
-  $('again').onclick = () => { open = false; picked = null; arrange(null); setWall(null); rail(); setPrompt(); $('again').hidden = true; };
-  arrange(null); rail();
+  $('again').onclick = () => { const was = round && round.done; round = null; dots(); $('again').textContent = 'Pick again'; open = false; picked = null; arrange(null); setWall(null); rail(); setPrompt(); $('again').hidden = true; $('roundGo').hidden = true; $('nextB').hidden = true; $('none').hidden = true; if (was) startRound(); };
+  vase.classList.add('init'); arrange(null); rail();
+  requestAnimationFrame(() => requestAnimationFrame(() => vase.classList.remove('init')));   // place the flowers at once on load; animate only later changes
   addEventListener('resize', () => arrange(shown));
   ready.then(setPrompt);
   // the floating card button stays out of the way while the vase (which has its own link) is on screen
-  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => $('pressFab').classList.toggle('away', e.isIntersecting), { threshold: .35 }).observe($('pick'));
+  if ('IntersectionObserver' in window) { const seen = new Set(), io = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); $('pressFab').classList.toggle('away', seen.size > 0); }, { threshold: .2 }); io.observe($('pick')); io.observe($('find')); }
 
   /* ---------- 2 · every December: a long low tray, a pair of stems for each year ---------- */
   ready.then(() => {
@@ -878,14 +955,19 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
   $('tag').addEventListener('submit', e => e.preventDefault());
   $('share').onclick = () => { if (fileForShare) navigator.share({ files: [fileForShare], title: 'A pressed flower', text: 'gifting-index.vercel.app' }).catch(() => {}); };
   let opener = null;
-  function openPress(from) {
+  function openPress(from, pre) {
     opener = from || null;
     ready.then(() => {
-      const occ = new Date(NEXT.next).getUTCMonth();
+      const occ = pre ? pre.month : new Date(NEXT.next).getUTCMonth();
       $('tHouse').innerHTML = H.map(h => `<option value="${h.id}"${h.id === (picked || 'jo') ? ' selected' : ''}>${h.n}</option>`).join('');
       $('tMon').innerHTML = M.map((m, i) => `<option value="${i}"${i === occ ? ' selected' : ''}>${cap(m)} · ${MF[i].toLowerCase()}${i === occ ? ' (' + NEXT.n + ')' : ''}</option>`).join('');
+      if (pre) $('tHouse').value = pre.house;
       fillScents(); resetSpray();
-      $('pressBox').hidden = false; redraw(); (picked ? $('tFor') : $('tHouse')).focus();
+      if (pre) {   // from the gift finder: their scent, already sprayed, and who it's for
+        $('tScent').value = pre.scent; showNotes(); $('tFor').value = pre.who || '';
+        sprays = [{ seed: 1000, tint: curScent().tint, origin: ORIGINS[0] }]; $('sprayB').textContent = 'Spray again';
+      }
+      $('pressBox').hidden = false; redraw(); (pre || picked ? $('tFor') : $('tHouse')).focus();
     });
   }
   $('pressEnd').onclick = () => openPress($('pressEnd'));
@@ -896,6 +978,75 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
   $('pressBox').addEventListener('click', e => { if (e.target.id === 'pressBox') $('pressBox').hidden = true; });
   addEventListener('keydown', e => { if (e.key === 'Escape') $('pressBox').hidden = true; });
 
+
+  /* ---------- the gift finder ---------- */
+  const WHO = [['Mum', 'Mum'], ['Dad', 'Dad'], ['partner', 'my partner'], ['a friend', 'a friend'], ['a colleague', 'a colleague'], ['myself', '']];
+  const LOVE = ['rose', 'jasmine', 'tuberose', 'orangeblossom', 'magnolia', 'violet', 'iris', 'freesia', 'fig', 'pear', 'seasalt', 'sage', 'bergamot', 'grapefruit', 'basil', 'sandalwood', 'cedar', 'vanilla', 'cinnamon', 'pepper', 'cardamom', 'rhubarb', 'raspberry'];
+  const fs = { who: 'Mum', occ: null, love: [] };
+  function finder() {
+    $('fWho').innerHTML = WHO.map(([w]) => `<button type="button" aria-pressed="${fs.who === w}">${w}</button>`).join('');
+    [...$('fWho').children].forEach((b, i) => b.onclick = () => { fs.who = WHO[i][0]; finder(); });
+    $('fLove').innerHTML = LOVE.map(k => `<button type="button" aria-pressed="${fs.love.includes(k)}">${NAME[k]}</button>`).join('');
+    [...$('fLove').children].forEach((b, i) => b.onclick = () => { const k = LOVE[i]; fs.love = fs.love.includes(k) ? fs.love.filter(x => x !== k) : [...fs.love, k].slice(-3); finder(); });
+    suggest();
+  }
+  function score(h, sc, o, self) {   // matches with what they love, then the finding: gift names for others, niche houses for yourself
+    const has = k => sc.pressed.includes(k) || new RegExp('\\b' + NAME[k] + '\\b').test(sc.notes);   // whole words, so rose never matches tuberose
+    const m = fs.love.filter(has).length, fit = (h.g === 'classic') !== self ? .6 : 0, lift = Math.min(.4, Math.max(0, (o.typ[h.id] || 1) - 1) * .25);
+    const named = fs.love.filter(k => sc.n.toLowerCase().includes(NAME[k])).length * .5;   // the note is in the scent's own name
+    return { m, s: m * 2 + named + fit + (self ? 0 : lift), matched: fs.love.filter(has) };
+  }
+  function suggest() {
+    const o = OCC.find(x => x.n === fs.occ) || NEXT, self = fs.who === 'myself';
+    const all = SCENTS.flatMap(hh => hh.scents.map(sc => ({ h: H.find(x => x.id === hh.id), sc }))).map(r => ({ ...r, ...score(r.h, r.sc, o, self) })).sort((a, b) => b.s - a.s);
+    const best = all[0], alt = all.find(r => r.h.id !== best.h.id), lift = o.typ[best.h.id], whoTxt = (WHO.find(w => w[0] === fs.who) || [])[1];
+    const quiet = !(lift >= 1.1), list = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+    const why = [
+      best.matched.length ? `It has the ${list(best.matched.map(k => NAME[k]))} ${self ? 'you' : 'they'} love.` : (fs.love.length ? `None of the six has exactly that, so this is the closest in spirit.` : `Pick a few things ${self ? 'you' : 'they'} love and I'll match them.`),
+      self ? `${best.h.s} is a niche house, the kind people tend to choose for themselves rather than receive.` :
+        best.h.g === 'classic' ? `${best.h.s} is a name people recognise as a present.` : `${best.h.s} is a niche house, so it feels more personal than an obvious gift.`,
+      quiet ? `${o.n} is a quiet time for perfume, so there's no rush.` : `Searches for ${best.h.s} rise to ×${lift.toFixed(1)} the week before ${o.n}, so it's worth ordering early.`];
+    const c = COL[best.h.id];
+    $('fOut').innerHTML = `<svg viewBox="-110 -120 220 240" aria-hidden="true"><path d="M0,10 C6,60 -6,90 2,108" fill="none" stroke="#6b7d5a" stroke-width="3" stroke-linecap="round"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-26" rx="17" ry="29" transform="rotate(${a})" fill="${c}" opacity=".85"/>`).join('')}<circle r="10" fill="#f3e3a3"/><ellipse cx="0" cy="116" rx="44" ry="6" fill="#2f2b29"/></svg>
+      <h3>${best.sc.n}</h3><p class="hs2">${best.h.n}</p><p class="nt">${best.sc.notes}</p><p class="why">${why.join(' ')}</p>
+      <p class="acts"><button type="button" class="link" id="fPress">${self ? 'Press it for yourself' : 'Press it for ' + (whoTxt || 'them')}</button>${alt ? ` <button type="button" class="link" id="fAlt">Or ${alt.sc.n} by ${alt.h.s}</button>` : ''}</p>`;
+    $('fPress').onclick = () => openPress($('fPress'), { house: best.h.id, scent: best.sc.id, who: self ? '' : (whoTxt || '').replace(/^my /, ''), month: occMonth(o) });
+    if (alt) $('fAlt').onclick = () => openPress($('fAlt'), { house: alt.h.id, scent: alt.sc.id, who: self ? '' : (whoTxt || '').replace(/^my /, ''), month: occMonth(o) });
+  }
+  ready.then(() => {
+    fs.occ = NEXT.n;
+    $('fOcc').innerHTML = OCC.filter(o => o.years.length).map(o => `<option${o === NEXT ? ' selected' : ''}>${o.n}</option>`).join('');
+    $('fOcc').onchange = () => { fs.occ = $('fOcc').value; suggest(); };
+    finder();
+  });
+
+  /* ---------- the round's score, as a picture to keep ---------- */
+  async function saveScore(n, of) {
+    await document.fonts.load("400 60px 'Shippori Mincho'");
+    const W = 1080, HT = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = HT; const c = cv.getContext('2d');
+    c.fillStyle = '#efeae4'; c.fillRect(0, 0, W, HT);
+    c.fillStyle = '#2a2724'; c.textAlign = 'center'; c.font = "400 84px 'Shippori Mincho', serif"; c.fillText(`I called ${n} of ${of}`, W / 2, 250);
+    c.font = "400 34px 'Shippori Mincho', serif"; c.fillStyle = '#5f5a54'; c.fillText('gifting moments on the Gifting Index', W / 2, 320);
+    // a branch with a blossom per moment: plum when called, pale when missed
+    const P = [[110, 840], [320, 470], [760, 450], [970, 820]], at = t => [0, 1].map(k => (1 - t) ** 3 * P[0][k] + 3 * (1 - t) ** 2 * t * P[1][k] + 3 * (1 - t) * t * t * P[2][k] + t ** 3 * P[3][k]);
+    c.strokeStyle = '#5a4a3c'; c.lineWidth = 10; c.lineCap = 'round'; c.beginPath(); c.moveTo(...P[0]); c.bezierCurveTo(...P[1], ...P[2], ...P[3]); c.stroke();
+    round.list.forEach((o, i) => {
+      const [x, y] = at(.06 + i * (.88 / (of - 1))), up = i % 2 ? 1 : -1, bx = x + up * 14, by = y - 52, ok = round.res[i];
+      c.lineWidth = 5; c.beginPath(); c.moveTo(x, y); c.lineTo(bx, by + 20); c.stroke();
+      for (let p = 0; p < 5; p++) { c.save(); c.translate(bx, by); c.rotate(p * Math.PI * 2 / 5); c.beginPath(); c.ellipse(0, -20, 13, 22, 0, 0, 7); c.fillStyle = ok ? 'rgba(155,58,98,.85)' : 'rgba(190,180,170,.55)'; c.fill(); c.restore(); }
+      c.fillStyle = '#f3e3a3'; c.beginPath(); c.arc(bx, by, 7, 0, 7); c.fill();
+      // the moments listed underneath in two columns, each with a small dot: plum when called
+      const col = i < 5 ? 0 : 1, row = i % 5, lx = 230 + col * 360, ly = 1000 + row * 48;
+      c.fillStyle = ok ? '#9b3a62' : '#cfc6bb'; c.beginPath(); c.arc(lx, ly - 9, 9, 0, 7); c.fill();
+      c.textAlign = 'left'; c.fillStyle = ok ? '#2a2724' : '#8a847c'; c.font = "400 28px 'Shippori Mincho', serif"; c.fillText(o.n.replace(/’/g, "'"), lx + 26, ly);
+    });
+    c.textAlign = 'center'; c.fillStyle = '#8a847c'; c.font = "400 26px 'Shippori Mincho', serif"; c.fillText('Can you beat it?  gifting-index.vercel.app', W / 2, HT - 90);
+    cv.toBlob(b => {
+      const f = new File([b], `gifting-index-${n}-of-${of}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [f] }) && matchMedia('(max-width:760px)').matches) { navigator.share({ files: [f], text: 'gifting-index.vercel.app' }).catch(() => {}); return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    });
+  }
 })();
 </script>
 
