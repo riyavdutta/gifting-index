@@ -607,28 +607,46 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
   }
 
   /* ---------- spray: a scent from the chosen house, misted onto the card, with its key notes pressed beside the flower ---------- */
-  // Two or three scents per house and their key notes. Diptyque's notes and Le Labo's Santal 33 and Thé Noir 29 notes are from the houses'
-  // own pages (checked 23 Nov 2026); Jo Malone, Molton Brown, Byredo and Frédéric Malle follow the notes retailers and reviewers agree on.
+  // Five scents per house and their key notes (list and sources: riya-portfolio-notes/gifting/scents-list.md).
+  // From the houses' own pages: all of Diptyque; Le Labo's Santal 33, Thé Noir 29 and Bergamote 22 (Rose 31's cumin and cedar from reviews);
+  // Jo Malone's Lime Basil & Mandarin; Frédéric Malle's Lipstick Rose, Musc Ravageur and En Passant. The rest follow the notes retailers agree on (checked 23–26 Nov 2026).
   const SCENTS = [
     { id: 'jo', n: 'Jo Malone London', c: '#8e3b5f', scents: [
       { id: 'wss', n: 'Wood Sage & Sea Salt', pm: 'Wood Sage', notes: 'ambrette seeds, sea salt, sage', tint: '#7f9a8c', pressed: ['sage', 'ambrette', 'seasalt'] },
-      { id: 'epf', n: 'English Pear & Freesia', pm: 'Pear & Freesia', notes: 'pear, freesia, patchouli', tint: '#b7a44e', pressed: ['pear', 'freesia', 'patchouli'] }] },
+      { id: 'epf', n: 'English Pear & Freesia', pm: 'Pear & Freesia', notes: 'pear, freesia, patchouli', tint: '#b7a44e', pressed: ['pear', 'freesia', 'patchouli'] },
+      { id: 'lbm', n: 'Lime Basil & Mandarin', pm: 'Lime Basil', notes: 'mandarin, basil, amberwood', tint: '#8fb04e', pressed: ['lime', 'basil', 'mandarin'] },
+      { id: 'pbs', n: 'Peony & Blush Suede', pm: 'Peony', notes: 'red apple, peony, suede', tint: '#e2939f', pressed: ['apple', 'peony'] },
+      { id: 'hd', n: 'Honeysuckle & Davana', pm: 'Honeysuckle', notes: 'davana, honeysuckle, rose, moss', tint: '#d9b25a', pressed: ['honeysuckle', 'davana', 'rose'] }] },
     { id: 'dip', n: 'Diptyque', c: '#c96f8a', scents: [
       { id: 'doson', n: 'Do Son', pm: 'Do Son', notes: 'tuberose, orange blossom, jasmine, a sea accord', tint: '#c96f8a', pressed: ['tuberose', 'orangeblossom', 'jasmine'] },
       { id: 'tamdao', n: 'Tam Dao', pm: 'Tam Dao', notes: 'sandalwood, cedar, cypress, coriander', tint: '#a07a52', pressed: ['sandalwood', 'cedar', 'cypress'] },
-      { id: 'philo', n: 'Philosykos', pm: 'Philosykos', notes: 'fig leaves, fig tree sap, fig tree wood, black pepper', tint: '#6f8f5e', pressed: ['figleaf', 'figwood', 'pepper'] }] },
+      { id: 'philo', n: 'Philosykos', pm: 'Philosykos', notes: 'fig leaves, fig tree sap, fig tree wood, black pepper', tint: '#6f8f5e', pressed: ['figleaf', 'figwood', 'pepper'] },
+      { id: 'erose', n: 'Eau Rose', pm: 'Eau Rose', notes: 'damask rose, centifolia rose, lychee, ambroxan', tint: '#dc7f9b', pressed: ['rose', 'lychee'] },
+      { id: 'fdp', n: 'Fleur de Peau', pm: 'Fleur de Peau', notes: 'iris, magnolia, musk', tint: '#ab98c4', pressed: ['iris', 'magnolia'] }] },
     { id: 'molton', n: 'Molton Brown', c: '#b03a5b', scents: [
       { id: 'rbp', n: 'Re-charge Black Pepper', pm: 'Black Pepper', notes: 'black pepper, ginger, basil, vetiver', tint: '#6b6560', pressed: ['pepper', 'ginger', 'basil'] },
-      { id: 'drr', n: 'Delicious Rhubarb & Rose', pm: 'Rhubarb & Rose', notes: 'grapefruit, rhubarb, rose, vanilla', tint: '#c9506a', pressed: ['rhubarb', 'rose', 'grapefruit'] }] },
+      { id: 'drr', n: 'Delicious Rhubarb & Rose', pm: 'Rhubarb & Rose', notes: 'grapefruit, rhubarb, rose, vanilla', tint: '#c9506a', pressed: ['rhubarb', 'rose', 'grapefruit'] },
+      { id: 'ccsf', n: 'Coastal Cypress & Sea Fennel', pm: 'Coastal Cypress', notes: 'fig leaves, cardamom, bergamot, a sea accord, jasmine, cypress, cedarwood, musk', tint: '#5f958f', pressed: ['figleaf', 'cardamom', 'cypress'] },
+      { id: 'jsr', n: 'Jasmine & Sun Rose', pm: 'Sun Rose', notes: 'raspberry, bergamot, peach, jasmine, osmanthus, rose, patchouli, musk', tint: '#d77f95', pressed: ['raspberry', 'jasmine', 'rose'] },
+      { id: 'hg', n: 'Heavenly Gingerlily', pm: 'Gingerlily', notes: 'ginger, cardamom, clove, lily, tuberose, jasmine, musk', tint: '#d98f8a', pressed: ['ginger', 'lily', 'tuberose'] }] },
     { id: 'lelabo', n: 'Le Labo', c: '#6f8f6a', scents: [
       { id: 's33', n: 'Santal 33', pm: 'Santal 33', notes: 'sandalwood, cardamom, iris, violet', tint: '#a07a52', pressed: ['cardamom', 'iris', 'violet'] },
-      { id: 'tn29', n: 'Thé Noir 29', pm: 'Thé Noir 29', notes: 'bergamot, fig, bay leaves, cedarwood', tint: '#7d6a52', pressed: ['bergamot', 'fig', 'bay'] }] },
+      { id: 'tn29', n: 'Thé Noir 29', pm: 'Thé Noir 29', notes: 'bergamot, fig, bay leaves, cedarwood', tint: '#7d6a52', pressed: ['bergamot', 'fig', 'bay'] },
+      { id: 'r31', n: 'Rose 31', pm: 'Rose 31', notes: 'centifolia rose, cumin, cedar', tint: '#ad4d68', pressed: ['rose', 'cedar'] },
+      { id: 'b22', n: 'Bergamote 22', pm: 'Bergamote 22', notes: 'bergamot, petitgrain, grapefruit, amber, musk, vetiver', tint: '#b9b45a', pressed: ['bergamot', 'grapefruit'] },
+      { id: 'fo27', n: "Fleur d'Oranger 27", pm: "Fleur d'Oranger", notes: 'orange blossom, bergamot, petitgrain, lemon, musk', tint: '#c8a74e', pressed: ['orangeblossom', 'bergamot', 'lemon'] }] },
     { id: 'byredo', n: 'Byredo', c: '#8a80b8', scents: [
       { id: 'gw', n: 'Gypsy Water', pm: 'Gypsy Water', notes: 'bergamot, incense, sandalwood, vanilla', tint: '#8a80b8', pressed: ['bergamot', 'sandalwood', 'vanilla'] },
-      { id: 'mg', n: 'Mojave Ghost', pm: 'Mojave Ghost', notes: 'magnolia, violet, sandalwood', tint: '#b39ab8', pressed: ['magnolia', 'violet', 'sandalwood'] }] },
+      { id: 'mg', n: 'Mojave Ghost', pm: 'Mojave Ghost', notes: 'magnolia, violet, sandalwood', tint: '#b39ab8', pressed: ['magnolia', 'violet', 'sandalwood'] },
+      { id: 'bda', n: "Bal d'Afrique", pm: "Bal d'Afrique", notes: 'African marigold, bergamot, violet, cedarwood, vetiver', tint: '#d9a13a', pressed: ['marigold', 'bergamot', 'cedar'] },
+      { id: 'blanche', n: 'Blanche', pm: 'Blanche', notes: 'white rose, pink pepper, peony, violet, neroli, sandalwood, musk', tint: '#c9bfd6', pressed: ['rose', 'peony', 'violet'] },
+      { id: 'ronml', n: "Rose of No Man's Land", pm: 'Rose of No Man', notes: 'pink pepper, rose, raspberry blossom, papyrus, white amber', tint: '#cf6f8a', pressed: ['pinkpepper', 'rose', 'raspberry'] }] },
     { id: 'malle', n: 'Frédéric Malle', c: '#5b8f86', scents: [
       { id: 'pol', n: 'Portrait of a Lady', pm: 'Portrait', notes: 'rose, raspberry, cinnamon, patchouli', tint: '#9e3a52', pressed: ['rose', 'raspberry', 'cinnamon'] },
-      { id: 'cf', n: 'Carnal Flower', pm: 'Carnal Flower', notes: 'tuberose, orange blossom', tint: '#d8a6b4', pressed: ['tuberose', 'orangeblossom'] }] }];
+      { id: 'cf', n: 'Carnal Flower', pm: 'Carnal Flower', notes: 'tuberose, orange blossom', tint: '#d8a6b4', pressed: ['tuberose', 'orangeblossom'] },
+      { id: 'lr', n: 'Lipstick Rose', pm: 'Lipstick Rose', notes: 'grapefruit, violet, rose, iris, raspberry, vanilla, musk', tint: '#cf6488', pressed: ['rose', 'violet', 'raspberry'] },
+      { id: 'mr', n: 'Musc Ravageur', pm: 'Musc Ravageur', notes: 'bergamot, mandarin, lavender, amber, vanilla, musk, sandalwood', tint: '#9483b8', pressed: ['lavender', 'bergamot', 'vanilla'] },
+      { id: 'ep', n: 'En Passant', pm: 'En Passant', notes: 'lilac, cucumber, cedar, white musk', tint: '#9a86c6', pressed: ['lilac', 'cucumber', 'cedar'] }] }];
   function hex(c, a) { const n = parseInt(c.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; }
   function mkRnd(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
   function gauss(r) { return (r() + r() + r() - 1.5) / 1.5; }
@@ -849,15 +867,88 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
         c.save(); c.shadowColor = 'rgba(60,40,30,.18)'; c.shadowBlur = 4; c.shadowOffsetY = 2; c.fillStyle = '#3b3430'; c.beginPath(); c.arc(x, y, 7.5, 0, 7); c.fill(); c.restore();
         c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, 4.5, i, i + 2); c.stroke();
       });
-    }
+    },
+  lemon: c => citrus(c, '#ecd75a', '#e2c43a'),
+  lily: c => {   // a white lily with six curving petals and long stamens
+    stem(c, [0, 72, 2, 40, -2, 20, 0, 8], 2.5); leaf(c, 0, 56, 44, 9, -.7);
+    for (let i = 0; i < 6; i++) { c.save(); c.rotate(i * Math.PI / 3 + .2);
+      pressedFill(c, new Path2D('M0,0 C10,-8 12,-30 2,-44 C-2,-40 -10,-26 0,0Z'), i % 2 ? '#fbf6ef' : '#f6ead8', .96, '#d8c3a6');
+      c.strokeStyle = '#e8b6b0'; c.globalAlpha = .6; c.lineWidth = 1; c.beginPath(); c.moveTo(0, -4); c.lineTo(3, -30); c.stroke(); c.restore(); }
+    c.strokeStyle = '#9b8a5a'; c.lineWidth = 1.2; for (let i = 0; i < 6; i++) { const a = -1.2 + i * .48; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(a) * 26, -Math.cos(a) * 26); c.stroke(); c.fillStyle = '#b4693a'; c.beginPath(); c.ellipse(Math.sin(a) * 27, -Math.cos(a) * 27, 2, 4, a, 0, 7); c.fill(); }
+  },
+  pinkpepper: c => {   // a little scatter of rosy peppercorns
+    [[-20, -10], [0, -18], [18, -6], [-8, 8], [12, 14], [-26, 16], [30, 10], [4, 2]].forEach(([x, y], i) => {
+      c.save(); c.shadowColor = 'rgba(60,40,30,.16)'; c.shadowBlur = 4; c.shadowOffsetY = 2; c.fillStyle = i % 2 ? '#d46a7a' : '#e08a95'; c.beginPath(); c.arc(x, y, 7, 0, 7); c.fill(); c.restore();
+      c.strokeStyle = 'rgba(255,255,255,.3)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, 4, i, i + 2); c.stroke();
+    });
+  },
+  lilac: c => {   // a cone-shaped cluster of tiny four-petal flowers
+    stem(c, [0, 72, 2, 44, -2, 28, 0, 14], 2.4); leaf(c, 0, 50, 40, 20, -1.1); leaf(c, 0, 44, 36, 18, 1.0);
+    for (let i = 0; i < 30; i++) { const t = i / 30, y = 8 - t * 62, w = 26 * (1 - t * .8), x = (((i * 37) % 17) / 17 - .5) * 2 * w;
+      c.save(); c.translate(x, y); c.rotate(i); for (let p = 0; p < 4; p++) { c.save(); c.rotate(p * Math.PI / 2); pressedFill(c, ell(0, -3.4, 2.4, 3.6), i % 3 ? '#a58fd0' : '#bba9de', .85); c.restore(); } c.restore(); }
+  },
+  cucumber: c => {   // two thin slices of cucumber
+    [[-18, -6, 22], [18, 10, 20]].forEach(([x, y, r]) => {
+      pressedFill(c, ell(x, y, r, r), '#5f8a4e', .9);
+      c.fillStyle = 'rgba(214,232,186,.95)'; c.beginPath(); c.arc(x, y, r - 4, 0, 7); c.fill();
+      c.fillStyle = 'rgba(160,190,130,.55)'; c.beginPath(); c.arc(x, y, r * .45, 0, 7); c.fill();
+      c.fillStyle = '#f3f0d8'; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; c.beginPath(); c.ellipse(x + Math.cos(a) * r * .3, y + Math.sin(a) * r * .3, 1.6, 3, a, 0, 7); c.fill(); }
+    });
+  },
+  lime: c => citrus(c, '#a9c95e', '#8cb53e'),
+  mandarin: c => citrus(c, '#f0b04e', '#e59a3f'),
+  apple: c => {   // a red apple with a leaf
+    c.save(); c.rotate(-.12);
+    pressedFill(c, new Path2D('M0,-30 C18,-44 46,-34 44,-2 C42,30 22,46 0,40 C-22,46 -42,30 -44,-2 C-46,-34 -18,-44 0,-30Z'), '#c8494f', .88, '#8f2a32');
+    c.fillStyle = 'rgba(255,255,255,.35)'; c.beginPath(); c.ellipse(-20, -12, 6, 12, -.4, 0, 7); c.fill();
+    c.strokeStyle = '#6b5a45'; c.lineWidth = 3; c.lineCap = 'round'; c.beginPath(); c.moveTo(0, -30); c.lineTo(4, -48); c.stroke();
+    c.restore(); leaf(c, 6, -44, 30, 11, 1.1);
+  },
+  peony: c => {   // a big, ruffled bloom
+    leaf(c, 0, 20, 52, 18, 2.4);
+    [[44, 16, '#f2c3cd', .7], [34, 14, '#eaa7b6', .75], [24, 12, '#e18ba0', .8], [14, 9, '#d4708a', .85]].forEach(([r, n, col, a], k) => {
+      for (let i = 0; i < n; i++) { c.save(); c.rotate(i * 2 * Math.PI / n + k * .3); pressedFill(c, new Path2D(`M0,0 C${r * .5},${-r * .4} ${r * .45},${-r} 0,${-r * 1.02} C${-r * .45},${-r} ${-r * .5},${-r * .4} 0,0Z`), col, a); c.restore(); }
+    });
+  },
+  lychee: c => {   // one lychee whole and bumpy, one peeled
+    pressedFill(c, ell(-18, 4, 24, 26), '#c8474f', .9, '#8f2a32');
+    c.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 26; i++) { const a = i * 2.4, d = (i % 6) * 3.8; c.beginPath(); c.arc(-18 + Math.cos(a) * d, 4 + Math.sin(a) * d, 1.6, 0, 7); c.fill(); }
+    pressedFill(c, ell(22, 10, 20, 22), '#f6f0e6', .95, '#cfc4b2');
+    c.fillStyle = 'rgba(200,190,170,.45)'; c.beginPath(); c.ellipse(26, 4, 5, 8, .3, 0, 7); c.fill();
+  },
+  marigold: c => {   // a frilly golden flower
+    stem(c, [0, 70, 2, 40, -2, 20, 0, 0], 2.5); leaf(c, 0, 52, 40, 12, -1.1);
+    ring(c, 20, 26, 6, '#e6a23a', .8); ring(c, 16, 18, 5.5, '#efb54a', .82, .5); ring(c, 10, 10, 5, '#d98a2a', .85);
+  },
+  lavender: c => {   // a slim stem with a spike of small purple buds
+    c.save(); c.rotate(.12); stem(c, [0, 72, 2, 30, -2, -10, 0, -60], 2);
+    for (let i = 0; i < 14; i++) { const y = -20 - i * 3.4, x = (i % 2 ? 1 : -1) * (5 - i * .2); pressedFill(c, ell(x, y, 3.8, 5.5, (i % 2 ? .4 : -.4)), i % 3 ? '#8f7cc0' : '#a493d1', .85); }
+    leaf(c, 0, 56, 30, 4, -.6); c.restore();
+  },
+  honeysuckle: c => {   // a cluster of long, curling trumpet flowers
+    stem(c, [-40, 70, -20, 40, 0, 20, 0, 0], 2.2); leaf(c, -14, 34, 34, 13, -1.6); leaf(c, -10, 30, 30, 11, 1.4);
+    [-1.3, -.8, -.3, .2, .7, 1.2].forEach((a, i) => { c.save(); c.rotate(a);
+      const col = i % 2 ? '#f6e7b4' : '#f3d08a';
+      c.strokeStyle = col; c.lineWidth = 5; c.lineCap = 'round'; c.globalAlpha = .9; c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(4, -24, 0, -46); c.stroke();
+      c.globalAlpha = 1; pressedFill(c, ell(5, -48, 8, 4, .5), col, .9, '#d6b36a');
+      c.strokeStyle = '#b9945a'; c.lineWidth = 1; c.globalAlpha = .6; c.beginPath(); c.moveTo(0, -46); c.lineTo(-3, -58); c.stroke(); c.restore(); });
+  },
+  davana: c => {   // a silvery, feathery herb
+    c.save(); c.rotate(-.2); stem(c, [0, 72, 2, 30, -2, -10, 0, -56], 2);
+    c.strokeStyle = '#9fae9a'; c.lineCap = 'round';
+    for (let i = 0; i < 12; i++) { const y = 50 - i * 9, side = i % 2 ? 1 : -1, L = 26 - i * 1.4; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(0, y); c.lineTo(side * L, y - 10); c.stroke();
+      for (let j = 1; j < 4; j++) { c.lineWidth = 1.2; c.beginPath(); c.moveTo(side * L * j / 4, y - 10 * j / 4); c.lineTo(side * (L * j / 4 + 6), y - 10 * j / 4 - 7); c.stroke(); } }
+    c.restore();
+  },
   };
   function citrus(c, rind, flesh) {   // a round slice with segments
     pressedFill(c, ell(0, 0, 40, 40), rind, .9);
     c.fillStyle = 'rgba(253,250,240,.95)'; c.beginPath(); c.arc(0, 0, 34, 0, 7); c.fill();
     for (let i = 0; i < 10; i++) { c.save(); c.rotate(i * Math.PI / 5); c.fillStyle = flesh; c.globalAlpha = .75; c.beginPath(); c.moveTo(0, -3); c.quadraticCurveTo(10, -16, 0, -31); c.quadraticCurveTo(-10, -16, 0, -3); c.fill(); c.restore(); }
   }
-  const NAME = { sage: 'sage', ambrette: 'ambrette seeds', seasalt: 'sea salt', pear: 'pear', freesia: 'freesia', patchouli: 'patchouli', ginger: 'ginger', basil: 'basil', rhubarb: 'rhubarb', rose: 'rose', grapefruit: 'grapefruit', bergamot: 'bergamot', cardamom: 'cardamom', iris: 'iris', violet: 'violet', fig: 'fig', bay: 'bay leaf', vanilla: 'vanilla', magnolia: 'magnolia', raspberry: 'raspberry', cinnamon: 'cinnamon', tuberose: 'tuberose', orangeblossom: 'orange blossom', jasmine: 'jasmine', sandalwood: 'sandalwood', cedar: 'cedar', cypress: 'cypress', figleaf: 'fig leaf', figwood: 'fig wood', pepper: 'black pepper' };
-  const BIG = { ambrette: 1.5, seasalt: 1.6, cardamom: 1.35, pepper: 1.35, raspberry: 1.2 };   // small things drawn larger so they read
+  const NAME = { sage: 'sage', ambrette: 'ambrette seeds', seasalt: 'sea salt', pear: 'pear', freesia: 'freesia', patchouli: 'patchouli', ginger: 'ginger', basil: 'basil', rhubarb: 'rhubarb', rose: 'rose', grapefruit: 'grapefruit', bergamot: 'bergamot', cardamom: 'cardamom', iris: 'iris', violet: 'violet', fig: 'fig', bay: 'bay leaf', vanilla: 'vanilla', magnolia: 'magnolia', raspberry: 'raspberry', cinnamon: 'cinnamon', tuberose: 'tuberose', orangeblossom: 'orange blossom', jasmine: 'jasmine', sandalwood: 'sandalwood', cedar: 'cedar', cypress: 'cypress', figleaf: 'fig leaf', figwood: 'fig wood', pepper: 'black pepper', lily: 'lily', lemon: 'lemon', pinkpepper: 'pink pepper', lilac: 'lilac', cucumber: 'cucumber', lime: 'lime', mandarin: 'mandarin', apple: 'apple', peony: 'peony', lychee: 'lychee', marigold: 'marigold', lavender: 'lavender', honeysuckle: 'honeysuckle', davana: 'davana', musk: 'musk', peach: 'peach' };
+  const BIG = { ambrette: 1.5, seasalt: 1.6, cardamom: 1.35, pepper: 1.35, pinkpepper: 1.35, raspberry: 1.2 };   // small things drawn larger so they read
   const SPOTS = [[225, 410, -.12], [240, 690, .1], [855, 575, .08]];   // left high, left low, right; clear of the flower and the writing
   function pressNotes(c, sc, t) {
     sc.pressed.forEach((id, i) => {
@@ -981,7 +1072,7 @@ h1,h2{font-weight:400;font-size:clamp(28px,2.8vw,40px);line-height:1.35}
 
   /* ---------- the gift finder ---------- */
   const WHO = [['Mum', 'Mum'], ['Dad', 'Dad'], ['partner', 'my partner'], ['a friend', 'a friend'], ['a colleague', 'a colleague'], ['myself', '']];
-  const LOVE = ['rose', 'jasmine', 'tuberose', 'orangeblossom', 'magnolia', 'violet', 'iris', 'freesia', 'fig', 'pear', 'seasalt', 'sage', 'bergamot', 'grapefruit', 'basil', 'sandalwood', 'cedar', 'vanilla', 'cinnamon', 'pepper', 'cardamom', 'rhubarb', 'raspberry'];
+  const LOVE = ['rose', 'peony', 'jasmine', 'tuberose', 'orangeblossom', 'magnolia', 'lily', 'honeysuckle', 'lilac', 'violet', 'iris', 'lavender', 'freesia', 'fig', 'pear', 'peach', 'raspberry', 'rhubarb', 'seasalt', 'sage', 'basil', 'bergamot', 'grapefruit', 'mandarin', 'lemon', 'lime', 'sandalwood', 'cedar', 'vanilla', 'musk', 'cinnamon', 'pepper', 'cardamom'];
   const fs = { who: 'Mum', occ: null, love: [] };
   function finder() {
     $('fWho').innerHTML = WHO.map(([w]) => `<button type="button" aria-pressed="${fs.who === w}">${w}</button>`).join('');
